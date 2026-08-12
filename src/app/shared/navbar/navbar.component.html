@@ -1,0 +1,50 @@
+<header class="navbar">
+
+  <!-- LOGO -->
+  <div class="logo-container">
+    <img src="assets/logo.png" alt="Bioproductos Agrícolas">
+  </div>
+
+  <!-- MENÚ -->
+  <nav class="menu" [class.menu-open]="menuOpen">
+
+    <a href="#" class="menu-item active">Inicio</a>
+
+    <a href="#" class="menu-item">Nosotros</a>
+
+    <!-- DROPDOWN -->
+    <div class="dropdown">
+      <button class="menu-item dropdown-btn" (click)="toggleDropdown()">
+        Productos
+        <span class="arrow">▼</span>
+      </button>
+
+      <div class="dropdown-menu" [class.show]="dropdownOpen">
+        <a href="#">Productos agrícolas</a>
+        <a href="#">Fertilizantes</a>
+        <a href="#">Bioinsumos</a>
+      </div>
+    </div>
+
+    <a href="#" class="menu-item">Distribuidores</a>
+
+    <a href="#" class="menu-item">Blog</a>
+
+    <a href="#" class="menu-item">Contacto</a>
+
+  </nav>
+
+  <!-- BOTÓN CONTACTO -->
+  <a href="#" class="contact-button">
+    Contáctanos
+    <span>→</span>
+  </a>
+
+  <!-- BOTÓN MENÚ MÓVIL -->
+  <button class="hamburger" (click)="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+</header>
