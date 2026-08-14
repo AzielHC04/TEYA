@@ -1,45 +1,64 @@
-<header class="navbar">
+<header class="navbar-header">
+  <div class="navbar-container">
+    
+    <!-- Logo / Marca TEYA -->
+    <a routerLink="/" class="navbar-brand">
+      <span class="brand-badge">🌱</span>
+      <span class="brand-text">TEYA <small>Bioproductos</small></span>
+    </a>
 
-  <!-- LOGO -->
-  <div class="logo-container">
-    <img src="assets/logo.png" alt="Bioproductos Agrícolas">
-  </div>
+    <!-- Enlaces de Navegación -->
+    <nav class="navbar-nav">
+      <ul>
+        <li>
+          <a routerLink="/" 
+             routerLinkActive="active" 
+             [routerLinkActiveOptions]="{exact: true}" 
+             class="nav-item">
+            Inicio
+          </a>
+        </li>
 
-  <!-- MENÚ -->
-  <nav class="menu" [class.menu-open]="menuOpen">
+        <!-- Menú Desplegable con Enlace Directo a Productos -->
+        <li class="dropdown">
+          <a routerLink="/productos" 
+             routerLinkActive="active" 
+             class="nav-item dropdown-toggle">
+            Productos <span class="arrow">▾</span>
+          </a>
+          
+          <!-- Submenú desplegable por Hover -->
+          <ul class="dropdown-menu">
+            <li><a routerLink="/productos">Todos los Productos</a></li>
+            <li><a routerLink="/productos">Orgánicos</a></li>
+            <li><a routerLink="/productos">Bioestimulantes</a></li>
+            <li><a routerLink="/productos">Nutrición Líquida</a></li>
+            <li><a routerLink="/productos">Bioplaguicidas</a></li>
+          </ul>
+        </li>
 
-    <a href="#" class="menu-item active">Inicio</a>
+        <li>
+          <a routerLink="/nosotros" 
+             routerLinkActive="active" 
+             class="nav-item">
+            Nosotros
+          </a>
+        </li>
 
+        <li>
+          <a routerLink="/carrito" 
+             routerLinkActive="active" 
+             class="nav-item cart-item">
+            🛒 Carrito
+          </a>
+        </li>
+      </ul>
+    </nav>
 
-    <!-- DROPDOWN -->
-    <div class="dropdown">
-      <button class="menu-item dropdown-btn" (click)="toggleDropdown()">
-        Productos
-        <span class="arrow">▼</span>
-      </button>
-
-      <div class="dropdown-menu" [class.show]="dropdownOpen">
-        <a href="#">Productos agrícolas</a>
-        <a href="#">Fertilizantes</a>
-        <a href="#">Bioinsumos</a>
-      </div>
+    <!-- Botón Destacado de Contacto -->
+    <div class="navbar-actions">
+      <a routerLink="/contacto" class="btn-contact">Contacto</a>
     </div>
 
-    <a href="#" class="menu-item">Distribuidores</a>
-
-  </nav>
-
-  <!-- BOTÓN CONTACTO -->
-  <a href="#" class="contact-button">
-    Contáctanos
-    <span>→</span>
-  </a>
-
-  <!-- BOTÓN MENÚ MÓVIL -->
-  <button class="hamburger" (click)="toggleMenu()">
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
-
+  </div>
 </header>
