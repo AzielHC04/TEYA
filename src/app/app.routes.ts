@@ -1,15 +1,21 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component'; // Ajusta la ruta según tu estructura de carpetas
-import {ProductsComponent} from "./pages/products/products.component";
+
+import { HomeComponent } from './pages/home/home.component';
+import { ProductsComponent } from './pages/products/products.component';
+import { CarritoComponent } from './pages/carrito/carrito.component';
 
 export const routes: Routes = [
-  // Ruta predeterminada (Página de inicio)
+
+  // Página de inicio
   { path: '', component: HomeComponent },
-  
-  // Ruta para la página de productos
+
+  // Página de productos
   { path: 'products', component: ProductsComponent },
 
+  // Página del carrito
+  { path: 'carrito', component: CarritoComponent },
 
-  // Comodín para redirigir si escriben una URL inexistente
+  // Redirección para rutas inexistentes
   { path: '**', redirectTo: '' }
+
 ];

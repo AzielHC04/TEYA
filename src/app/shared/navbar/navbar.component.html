@@ -1,63 +1,107 @@
 <header class="navbar-header">
   <div class="navbar-container">
-    
-    <!-- Logo / Marca TEYA -->
+
+    <!-- Logo y marca -->
     <a routerLink="/" class="navbar-brand">
       <span class="brand-badge">🌱</span>
-      <span class="brand-text">TEYA <small>Bioproductos</small></span>
+      <span class="brand-text">
+        TEYA
+        <small>Bioproductos</small>
+      </span>
     </a>
 
-    <!-- Enlaces de Navegación -->
+    <!-- Navegación principal -->
     <nav class="navbar-nav">
       <ul>
+
         <li>
-          <a routerLink="/" 
-             routerLinkActive="active" 
-             [routerLinkActiveOptions]="{exact: true}" 
-             class="nav-item">
+          <a
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-item"
+          >
             Inicio
           </a>
         </li>
 
-        <!-- Menú Desplegable con Enlace Directo a Productos -->
+        <!-- Menú de productos -->
         <li class="dropdown">
-          <a routerLink="/products" 
-             routerLinkActive="active" 
-             class="nav-item dropdown-toggle">
-            Productos <span class="arrow">▾</span>
+
+          <a
+            routerLink="/products"
+            routerLinkActive="active"
+            class="nav-item dropdown-toggle"
+          >
+            Productos
+            <span class="arrow">▾</span>
           </a>
-          
-          <!-- Submenú desplegable por Hover -->
+
           <ul class="dropdown-menu">
-            <li><a routerLink="/productos">Orgánicos</a></li>
-            <li><a routerLink="/productos">Bioestimulantes</a></li>
-            <li><a routerLink="/productos">Nutrición Líquida</a></li>
-            <li><a routerLink="/productos">Especialidades</a></li>
-            <li><a routerLink="/productos">Bioplaguicidas</a></li>
+            <li>
+              <a routerLink="/products">
+                Orgánicos
+              </a>
+            </li>
+
+            <li>
+              <a routerLink="/products">
+                Bioestimulantes
+              </a>
+            </li>
+
+            <li>
+              <a routerLink="/products">
+                Nutrición Líquida
+              </a>
+            </li>
+
+            <li>
+              <a routerLink="/products">
+                Especialidades
+              </a>
+            </li>
+
+            <li>
+              <a routerLink="/products">
+                Bioplaguicidas
+              </a>
+            </li>
           </ul>
+
         </li>
 
         <li>
-          <a routerLink="/nosotros" 
-             routerLinkActive="active" 
-             class="nav-item">
+          <a
+            routerLink="/nosotros"
+            routerLinkActive="active"
+            class="nav-item"
+          >
             Nosotros
           </a>
         </li>
 
         <li>
-          <a routerLink="/carrito" 
-             routerLinkActive="active" 
-             class="nav-item cart-item">
-             Carrito
+          <a
+            routerLink="/carrito"
+            routerLinkActive="active"
+            class="nav-item cart-item"
+          >
+            Carrito
           </a>
         </li>
+
       </ul>
     </nav>
 
-    <!-- Botón Destacado de Contacto -->
+    <!-- Acción de contacto -->
     <div class="navbar-actions">
-      <a routerLink="/contacto" class="btn-contact">Contacto</a>
+      <a
+        routerLink="/contacto"
+        class="btn-contact"
+      >
+        Contacto
+      </a>
     </div>
 
   </div>

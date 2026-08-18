@@ -1,1 +1,363 @@
-<p>carrito works!</p>
+<main class="carrito-page">
+
+  <!-- =====================================================
+       ENCABEZADO DE LA PÁGINA
+  ====================================================== -->
+  <section class="carrito-header">
+
+    <span class="carrito-badge">
+      🛒 Mi selección
+    </span>
+
+    <h1>Tu Carrito</h1>
+
+    <p>
+      Revisa los productos, cantidades y presentaciones antes
+      de solicitar tu cotización.
+    </p>
+
+  </section>
+
+
+  <!-- =====================================================
+       CONTENIDO DEL CARRITO
+  ====================================================== -->
+  <section class="carrito-container">
+
+    @if (carrito.length > 0) {
+
+      <div class="carrito-layout">
+
+        <!-- =================================================
+             COLUMNA IZQUIERDA
+             LISTA DE PRODUCTOS
+        ================================================== -->
+        <div class="productos-carrito">
+
+          <!-- Encabezado -->
+          <div class="productos-header">
+
+            <div>
+              <h2>Productos seleccionados</h2>
+
+              <p>
+                {{ totalProductos }}
+                {{ totalProductos === 1 ? 'producto' : 'productos' }}
+                en tu carrito
+              </p>
+            </div>
+
+            <button
+              type="button"
+              class="btn-vaciar"
+              (click)="vaciarCarrito()"
+            >
+              Vaciar carrito
+            </button>
+
+          </div>
+
+
+          <!-- ===============================================
+               PRODUCTOS
+          ================================================ -->
+          <div class="productos-lista">
+
+            @for (producto of carrito; track producto.id) {
+
+              <article class="producto-card">
+
+                <!-- Imagen del producto -->
+                <div class="producto-imagen">
+
+                  <img
+                    [src]="producto.imagen"
+                    [alt]="producto.nombre"
+                  >
+
+                </div>
+
+
+                <!-- Información -->
+                <div class="producto-info">
+
+                  <span class="producto-categoria">
+                    {{ producto.categoria }}
+                  </span>
+
+                  <h3>
+                    {{ producto.nombre }}
+                  </h3>
+
+                  <p class="producto-descripcion">
+                    {{ producto.descripcion }}
+                  </p>
+
+
+                  <!-- Presentación -->
+                  <div class="producto-opciones">
+
+                    <div class="opcion-grupo">
+
+                      <label
+                        [for]="'presentacion-' + producto.id"
+                      >
+                        Presentación
+                      </label>
+
+                      <select
+                        [id]="'presentacion-' + producto.id"
+                        [(ngModel)]="producto.presentacionSeleccionada"
+                      >
+
+                        @for (
+                          presentacion of producto.presentaciones;
+                          track presentacion
+                        ) {
+
+                          <option [value]="presentacion">
+                            {{ presentacion }}
+                          </option>
+
+                        }
+
+                      </select>
+
+                    </div>
+
+
+                    <!-- Cantidad -->
+                    <div class="opcion-grupo">
+
+                      <label>
+                        Cantidad
+                      </label>
+
+                      <div class="cantidad-control">
+
+                        <button
+                          type="button"
+                          class="cantidad-btn"
+                          aria-label="Disminuir cantidad"
+                          (click)="disminuirCantidad(producto)"
+                        >
+                          −
+                        </button>
+
+                        <span class="cantidad-numero">
+                          {{ producto.cantidad }}
+                        </span>
+
+                        <button
+                          type="button"
+                          class="cantidad-btn"
+                          aria-label="Aumentar cantidad"
+                          (click)="aumentarCantidad(producto)"
+                        >
+                          +
+                        </button>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <!-- Botón eliminar -->
+                <div class="producto-acciones">
+
+                  <button
+                    type="button"
+                    class="btn-eliminar"
+                    [attr.aria-label]="'Eliminar ' + producto.nombre"
+                    (click)="eliminarProducto(producto.id)"
+                  >
+                    <span class="eliminar-icono">×</span>
+                    <span>Eliminar</span>
+                  </button>
+
+                </div>
+
+              </article>
+
+            }
+
+          </div>
+
+
+          <!-- Seguir comprando -->
+          <div class="seguir-comprando">
+
+            <a
+                routerLink="/products"
+                class="btn-seguir"
+            >
+                <span>←</span>
+                Seguir explorando productos
+            </a>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             COLUMNA DERECHA
+             RESUMEN
+        ================================================== -->
+        <aside class="resumen-carrito">
+
+          <div class="resumen-card">
+
+            <h2>
+              Resumen de solicitud
+            </h2>
+
+            <p class="resumen-descripcion">
+              Verifica tu selección antes de continuar.
+            </p>
+
+
+            <!-- Datos -->
+            <div class="resumen-datos">
+
+              <div class="resumen-fila">
+
+                <span>
+                  Productos diferentes
+                </span>
+
+                <strong>
+                  {{ carrito.length }}
+                </strong>
+
+              </div>
+
+
+              <div class="resumen-fila">
+
+                <span>
+                  Total de unidades
+                </span>
+
+                <strong>
+                  {{ totalProductos }}
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <div class="resumen-separador"></div>
+
+
+            <!-- Información -->
+            <div class="cotizacion-info">
+
+              <div class="cotizacion-icono">
+                🌱
+              </div>
+
+              <div>
+                <strong>
+                  Cotización personalizada
+                </strong>
+
+                <p>
+                  Un asesor revisará los productos y cantidades
+                  seleccionadas para ofrecerte la mejor opción.
+                </p>
+              </div>
+
+            </div>
+
+
+            <!-- Botón principal -->
+            <button
+              type="button"
+              class="btn-cotizar"
+              (click)="solicitarCotizacion()"
+            >
+              Solicitar cotización
+              <span>→</span>
+            </button>
+
+
+            <p class="resumen-aviso">
+              No se realizará ningún pago en este paso.
+            </p>
+
+          </div>
+
+
+          <!-- ===============================================
+               AYUDA / ASESORÍA
+          ================================================ -->
+          <div class="asesoria-card">
+
+            <div class="asesoria-icono">
+              ?
+            </div>
+
+            <div class="asesoria-contenido">
+
+              <h3>
+                ¿Necesitas asesoría?
+              </h3>
+
+              <p>
+                Podemos ayudarte a elegir el producto y la cantidad
+                adecuada para tus cultivos.
+              </p>
+
+              <a routerLink="/contacto">
+                Hablar con un asesor →
+              </a>
+
+            </div>
+
+          </div>
+
+                </aside>
+
+      </div>
+
+    } @else {
+
+      <!-- Carrito vacío -->
+
+      <section class="carrito-vacio">
+
+        <div class="carrito-vacio-icono">
+          <span class="hoja hoja-izquierda"></span>
+          <span class="hoja hoja-derecha"></span>
+
+          <div class="maceta"></div>
+        </div>
+
+        <h2>Tu carrito está vacío</h2>
+
+        <p>
+          Aún no has agregado productos. Explora nuestro catálogo
+          y encuentra las soluciones ideales para tus cultivos.
+        </p>
+
+        <a
+          routerLink="/products"
+          class="btn-explorar"
+        >
+          Explorar productos
+          <span>→</span>
+        </a>
+
+      </section>
+
+    }
+
+  </section>
+
+</main>
