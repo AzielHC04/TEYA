@@ -1,1 +1,105 @@
-<p>products works!</p>
+<div class="products-page">
+
+  <!-- 1. HEADER DE LA PÁGINA -->
+  <section class="page-header">
+    <div class="header-content">
+      <span class="badge-tag">🍃 Catálogo Completo</span>
+      <h1>Nuestros Productos Bioagrícolas</h1>
+      <p>Soluciones avanzadas formuladas para la nutrición, protección y regeneración de tus cultivos.</p>
+    </div>
+  </section>
+
+  <!-- 2. CONTENIDO PRINCIPAL -->
+  <div class="main-container">
+
+    <!-- BARRA LATERAL DE FILTROS -->
+    <aside class="filters-sidebar">
+      <h3>Categorías</h3>
+      
+      <div class="filter-group">
+        <button 
+          class="filter-option-btn" 
+          [class.active]="categoriaSeleccionada === 'Todas'"
+          (click)="filtrarPorCategoria('Todas')">
+          Todas las Categorías
+        </button>
+        <button 
+          class="filter-option-btn" 
+          [class.active]="categoriaSeleccionada === 'Orgánicos'"
+          (click)="filtrarPorCategoria('Orgánicos')">
+          Orgánicos
+        </button>
+        <button 
+          class="filter-option-btn" 
+          [class.active]="categoriaSeleccionada === 'Bioestimulantes'"
+          (click)="filtrarPorCategoria('Bioestimulantes')">
+          Bioestimulantes
+        </button>
+        <button 
+          class="filter-option-btn" 
+          [class.active]="categoriaSeleccionada === 'Nutrición Líquida'"
+          (click)="filtrarPorCategoria('Nutrición Líquida')">
+          Nutrición Líquida
+        </button>
+        <button 
+          class="filter-option-btn" 
+          [class.active]="categoriaSeleccionada === 'Especialidades'"
+          (click)="filtrarPorCategoria('Especialidades')">
+          Especialidades
+        </button>
+        <button 
+          class="filter-option-btn" 
+          [class.active]="categoriaSeleccionada === 'Bioplaguicidas'"
+          (click)="filtrarPorCategoria('Bioplaguicidas')">
+          Bioplaguicidas
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- SECCIÓN DE CATÁLOGO Y GRID DE PRODUCTOS -->
+    <main class="catalog-section">
+
+      <!-- ENCABEZADO DEL GRID -->
+      <div class="catalog-header">
+        <span>Mostrando <strong>{{ productosPaginados.length }}</strong> de <strong>{{ productosFiltrados.length }}</strong> productos</span>
+      </div>
+
+      <!-- GRID DE TARJETAS -->
+      <div class="products-grid">
+        <div class="product-card" *ngFor="let producto of productosPaginados">
+          <div class="product-img-box">
+            <img [src]="producto.imagen" [alt]="producto.nombre">
+          </div>
+          <div class="product-info">
+            <span class="category-name">{{ producto.categoria }}</span>
+            <h3>{{ producto.nombre }}</h3>
+            <p class="product-desc">{{ producto.descripcion }}</p>
+            <a [routerLink]="['/products', producto.id]" class="btn-detail">Ficha Técnica &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTONES DE PAGINACIÓN -->
+      <div class="pagination-container" *ngIf="totalPaginas > 1">
+        <button 
+          class="btn-pagination" 
+          [disabled]="paginaActual === 1"
+          (click)="cambiarPagina(paginaActual - 1)">
+          &larr; Anterior
+        </button>
+
+        <span class="page-indicator">Página {{ paginaActual }} de {{ totalPaginas }}</span>
+
+        <button 
+          class="btn-pagination" 
+          [disabled]="paginaActual === totalPaginas"
+          (click)="cambiarPagina(paginaActual + 1)">
+          Siguiente &rarr;
+        </button>
+      </div>
+
+    </main>
+
+  </div>
+</div>

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MarketplaceComponent } from './marketplace.component';
+import { PageInfoComponent } from './page-info.component';
 
-describe('MarketplaceComponent', () => {
-  let component: MarketplaceComponent;
-  let fixture: ComponentFixture<MarketplaceComponent>;
+describe('PageInfoComponent', () => {
+  let component: PageInfoComponent;
+  let fixture: ComponentFixture<PageInfoComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MarketplaceComponent]
+      imports: [PageInfoComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(MarketplaceComponent);
+    fixture = TestBed.createComponent(PageInfoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

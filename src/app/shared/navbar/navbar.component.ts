@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [
     CommonModule, 
-    RouterModule // Habilita las directivas routerLink y routerLinkActive
+    RouterModule
   ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
@@ -18,6 +18,10 @@ export class NavbarComponent {
 
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
+  }
+
+  closeMenu(): void {
+    this.menuOpen = false;
   }
 
 }

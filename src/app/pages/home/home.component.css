@@ -31,17 +31,42 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, rgba(20, 35, 25, 0.85) 0%, rgba(0, 0, 0, 0.3) 100%);
+  z-index: 1;
+}
+
+/* PERSONAJE ANIMADO (REI AYANAMI) */
+.rei-character {
+  position: absolute;
+  bottom: 0px;
+  right: 8%;
+  width: 320px;
+  height: auto;
+  z-index: 2;
+  filter: drop-shadow(0 15px 15px rgba(0, 0, 0, 0.5));
+  animation: floatCharacter 4s ease-in-out infinite;
+}
+
+@keyframes floatCharacter {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-16px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .hero-content {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   max-width: 650px;
   color: white;
 }
 
 .hero-tag {
-  background:transparent;
+  background: transparent;
   color: white;
   border: 2px solid #2a520a;
   padding: 6px 14px;
@@ -182,13 +207,17 @@
 ========================= */
 .products-section {
   background-color: #f3f8f8;
-  padding: 70px 40px;
+  padding: 30px 20px 40px 20px;
+}
+
+.products-container {
+  max-width: 1240px;
+  margin: 0 auto;
 }
 
 .products-header {
   text-align: center;
-  max-width: 800px;
-  margin: 0 auto 40px auto;
+  margin-bottom: 25px;
 }
 
 .badge-tag {
@@ -196,87 +225,87 @@
   align-items: center;
   gap: 6px;
   background-color: #dcefdc;
-  color: #3b6e3b;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 6px 16px;
-  border-radius: 20px;
-  margin-bottom: 16px;
+  color: #2b5d38;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 16px;
+  margin-bottom: 8px;
 }
 
 .products-header h2 {
-  font-size: 2.6rem;
+  font-size: 2.2rem;
   color: #0b253a;
   font-weight: 800;
-  margin: 0 0 10px 0;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.3px;
 }
 
 .subtitle {
-  color: #667085;
-  font-size: 1.1rem;
-  margin-bottom: 30px;
+  color: #5d6b73;
+  font-size: 0.95rem;
+  margin: 0 0 20px 0;
+  font-weight: 400;
 }
 
 .category-filters {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 10px;
   flex-wrap: wrap;
-  gap: 12px;
 }
 
 .filter-btn {
   background: #ffffff;
-  border: 1px solid #d0d5dd;
+  border: 1px solid #d2dedb;
   color: #0b253a;
-  padding: 10px 22px;
+  padding: 8px 20px;
   border-radius: 30px;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .filter-btn:hover {
-  border-color: #275d38;
-  color: #275d38;
+  border-color: #2b5d38;
+  color: #2b5d38;
 }
 
-.filter-btn.active {
-  background: #ffffff;
-  border-color: #0b253a;
-  color: #0b253a;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
+/* GRID DE PRODUCTOS Y CONTROL DE ANCHO */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 20px;
-  max-width: 1300px;
-  margin: 0 auto;
+  justify-items: center;
 }
 
 .product-card {
-  background: transparent;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 200px;
 }
 
 .product-img-box {
-  background: #f7faf9;
-  border: 1px solid #e2ece8;
+  background: #ffffff;
+  border: 1px solid #e1ebe8;
   border-radius: 12px;
-  padding: 20px;
-  height: 280px;
+  padding: 15px;
+  height: 250px;
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .product-card:hover .product-img-box {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
 }
 
 .product-img-box img {
@@ -286,21 +315,22 @@
 }
 
 .product-info {
-  padding-top: 14px;
+  padding-top: 10px;
   text-align: left;
+  width: 100%;
 }
 
 .category-name {
-  color: #72a233;
-  font-size: 13px;
+  color: #83b632;
+  font-size: 11px;
   font-weight: 600;
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .product-info h3 {
   color: #0b253a;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 800;
   margin: 0;
   letter-spacing: -0.2px;
@@ -308,276 +338,23 @@
 
 .see-all-container {
   text-align: center;
-  margin-top: 45px;
+  margin-top: 25px;
 }
 
 .btn-see-all {
   display: inline-block;
-  background-color: #2b5d38;
+  background-color: #386a42;
   color: #ffffff;
-  padding: 12px 32px;
-  border-radius: 30px;
+  padding: 9px 26px;
+  border-radius: 20px;
   font-weight: 700;
   text-decoration: none;
-  font-size: 15px;
+  font-size: 13px;
   transition: background-color 0.2s ease;
 }
 
 .btn-see-all:hover {
-  background-color: #1f4428;
-}
-
-/* =========================
-   5. SECCIÓN TECNOLOGÍA E INVESTIGACIÓN (ESTILO IMAGEN)
-========================= */
-.tech-section {
-  position: relative;
-  background: url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=1600') center/cover no-repeat;
-  padding: 90px 40px;
-  color: #ffffff;
-}
-
-.tech-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(10, 25, 12, 0.75); /* Filtro oscuro para resaltar las tarjetas traslúcidas */
-}
-
-.tech-content {
-  position: relative;
-  z-index: 2;
-  max-width: 1300px;
-  margin: 0 auto;
-}
-
-.tech-header {
-  text-align: center;
-  max-width: 800px;
-  margin: 0 auto 50px auto;
-}
-
-.tech-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background-color: rgba(220, 239, 220, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #a1e8a1;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 6px 18px;
-  border-radius: 20px;
-  margin-bottom: 16px;
-}
-
-.tech-header h2 {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin: 0 0 14px 0;
-  color: #ffffff;
-}
-
-.tech-header p {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.85);
-  margin: 0;
-}
-
-.tech-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin-bottom: 50px;
-}
-
-/* Tarjetas efecto Glassmorphism (Cristal esmerilado) */
-.tech-card {
-  background: rgba(16, 35, 20, 0.55);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
-  padding: 30px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: transform 0.3s ease, border-color 0.3s ease;
-}
-
-.tech-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(108, 174, 53, 0.5);
-}
-
-.tech-icon {
-  width: 60px;
-  height: 60px;
-  background-color: #6cae35;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 26px;
-  margin-bottom: 22px;
-}
-
-.tech-card h3 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin: 0 0 14px 0;
-  color: #ffffff;
-}
-
-.tech-card p {
-  font-size: 0.92rem;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0;
-}
-
-.tech-buttons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-}
-
-.btn-tech-primary {
-  background-color: #38a5db; /* Celeste llamativo como la imagen */
-  color: #ffffff;
-  padding: 12px 28px;
-  border-radius: 30px;
-  font-weight: 700;
-  text-decoration: none;
-  font-size: 15px;
-  transition: background-color 0.2s ease;
-}
-
-.btn-tech-primary:hover {
-  background-color: #2b88b7;
-}
-
-.btn-tech-secondary {
-  color: #ffffff;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 15px;
-  transition: opacity 0.2s ease;
-}
-
-.btn-tech-secondary:hover {
-  opacity: 0.8;
-}
-
-/* =========================
-   6. SECCIÓN CONSERVACIÓN / JARDINES BOTÁNICOS
-========================= */
-.conservation-section {
-  background-color: #ffffff;
-  padding: 90px 50px;
-}
-
-.conservation-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 80px;
-}
-
-.info-block {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  align-items: center;
-}
-
-.info-block.reverse .info-text {
-  order: 1;
-}
-
-.info-block.reverse .info-image {
-  order: 2;
-}
-
-.info-tag {
-  color: #6cae35;
-  font-weight: 700;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.info-text h2 {
-  font-size: 2.2rem;
-  color: #2d713b;
-  margin: 10px 0 20px 0;
-  line-height: 1.25;
-}
-
-.info-text p {
-  color: #555555;
-  font-size: 1.05rem;
-  line-height: 1.6;
-  margin-bottom: 16px;
-}
-
-.info-image {
-  width: 100%;
-  height: 380px;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-}
-
-.info-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.info-image:hover img {
-  transform: scale(1.03);
-}
-
-.stats-mini {
-  display: flex;
-  gap: 40px;
-  margin-top: 25px;
-  padding-top: 20px;
-  border-top: 1px solid #eef2ee;
-}
-
-.stat-num {
-  display: block;
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: #2d713b;
-}
-
-.stat-label {
-  font-size: 0.85rem;
-  color: #777777;
-  font-weight: 600;
-}
-
-.btn-secondary-dark {
-  display: inline-block;
-  margin-top: 15px;
-  color: #2d713b;
-  font-weight: 700;
-  text-decoration: none;
-  font-size: 1rem;
-  transition: color 0.2s ease;
-}
-
-.btn-secondary-dark:hover {
-  color: #6cae35;
+  background-color: #274d2f;
 }
 
 /* =========================
@@ -587,9 +364,10 @@
   .products-grid {
     grid-template-columns: repeat(3, 1fr);
   }
-
-  .tech-grid {
-    grid-template-columns: repeat(2, 1fr);
+  
+  .rei-character {
+    width: 250px;
+    right: 3%;
   }
 }
 
@@ -611,53 +389,22 @@
     grid-template-columns: 1fr;
   }
 
-  .about-section, .products-section, .tech-section, .conservation-section {
+  .about-section {
     padding: 50px 20px;
   }
 
-  .conservation-container {
-    gap: 50px;
-  }
-
-  .info-block {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-
-  .info-block.reverse .info-text {
-    order: 2;
-  }
-
-  .info-block.reverse .info-image {
-    order: 1;
-  }
-
-  .info-image {
-    height: 260px;
-  }
-
-  .info-text h2, .tech-header h2 {
-    font-size: 1.8rem;
+  .rei-character {
+    opacity: 0.3; /* Reduce la opacidad en pantallas medianas para no tapar texto */
   }
 }
 
 @media (max-width: 768px) {
-  .products-header h2 {
-    font-size: 2rem;
-  }
-
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-}
-
-@media (max-width: 600px) {
-  .tech-grid {
-    grid-template-columns: 1fr;
-  }
   
-  .tech-buttons {
-    flex-direction: column;
+  .rei-character {
+    display: none; /* Se oculta en móviles pequeños para mantener limpio el hero */
   }
 }
 
