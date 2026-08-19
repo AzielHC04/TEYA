@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
+type TipoEnvio = 'estandar' | 'express';
+
 interface ProductoCarrito {
   id: number;
   nombre: string;
@@ -24,6 +26,10 @@ interface ProductoCarrito {
   styleUrl: './carrito.component.css'
 })
 export class CarritoComponent {
+
+  // Tipo de envío seleccionado
+  tipoEnvio: TipoEnvio = 'estandar';
+
 
   // Datos temporales del carrito
   carrito: ProductoCarrito[] = [
@@ -84,13 +90,13 @@ export class CarritoComponent {
   }
 
 
-  // Aumenta una unidad
+  // Aumenta la cantidad del producto
   aumentarCantidad(producto: ProductoCarrito): void {
     producto.cantidad++;
   }
 
 
-  // Disminuye una unidad sin bajar de 1
+  // Disminuye la cantidad sin bajar de una unidad
   disminuirCantidad(producto: ProductoCarrito): void {
     if (producto.cantidad > 1) {
       producto.cantidad--;
@@ -106,7 +112,7 @@ export class CarritoComponent {
   }
 
 
-  // Elimina todos los productos
+  // Vacía todos los productos del carrito
   vaciarCarrito(): void {
     const confirmar = window.confirm(
       '¿Deseas eliminar todos los productos del carrito?'
@@ -118,18 +124,41 @@ export class CarritoComponent {
   }
 
 
-  // Acción temporal para la solicitud de cotización
-  solicitarCotizacion(): void {
+  // Cambia el método de envío
+  seleccionarEnvio(tipo: TipoEnvio): void {
+    this.tipoEnvio = tipo;
+  }
 
-    const solicitud = {
+
+  // Obtiene el tiempo estimado según el tipo de envío
+  get tiempoEstimadoEnvio(): string {
+    if (this.tipoEnvio === 'express') {
+      return '1 a 2 días hábiles';
+    }
+
+    return '1 a 5 días hábiles';
+  }
+
+
+  // Acción temporal para continuar con la compra
+  continuarCompra(): void {
+
+    const pedido = {
       productos: this.carrito,
-      totalUnidades: this.totalProductos
+      totalUnidades: this.totalProductos,
+      tipoEnvio: this.tipoEnvio,
+      tiempoEstimado: this.tiempoEstimadoEnvio
     };
 
-    console.log('Solicitud de cotización:', solicitud);
+    console.log('Pedido:', pedido);
 
     window.alert(
-      'La solicitud está lista para continuar con el proceso de cotización.'
+      `Método seleccionado: ${
+        this.tipoEnvio === 'express'
+          ? 'Envío exprés'
+          : 'Envío estándar'
+      }\nTiempo estimado: ${this.tiempoEstimadoEnvio}`
     );
   }
+
 }

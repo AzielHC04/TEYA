@@ -213,11 +213,11 @@
           <div class="resumen-card">
 
             <h2>
-              Resumen de solicitud
+              Resumen del pedido
             </h2>
 
             <p class="resumen-descripcion">
-              Verifica tu selección antes de continuar.
+              Verifica tus productos y selecciona el tipo de envío.
             </p>
 
 
@@ -255,70 +255,130 @@
             <div class="resumen-separador"></div>
 
 
-            <!-- Información -->
-            <div class="cotizacion-info">
+            <!-- Método de envío -->
+            <div class="envio-seccion">
 
-              <div class="cotizacion-icono">
-                🌱
+              <div class="envio-titulo">
+                <div>
+                  <span class="envio-icono">🚚</span>
+
+                  <div>
+                    <h3>Forma de entrega</h3>
+                    <p>Selecciona el tipo de envío que prefieras.</p>
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <strong>
-                  Cotización personalizada
-                </strong>
+
+              <!-- Selector de tipo de envío -->
+              <div class="envio-selector">
+
+                <button
+                  type="button"
+                  class="envio-opcion"
+                  [class.active]="tipoEnvio === 'estandar'"
+                  (click)="seleccionarEnvio('estandar')"
+                >
+                  <span class="envio-opcion-nombre">
+                    Envío estándar
+                  </span>
+
+                  <span class="envio-opcion-tiempo">
+                    1 a 5 días
+                  </span>
+                </button>
+
+
+                <button
+                  type="button"
+                  class="envio-opcion"
+                  [class.active]="tipoEnvio === 'express'"
+                  (click)="seleccionarEnvio('express')"
+                >
+                  <span class="envio-opcion-nombre">
+                    Envío exprés
+                  </span>
+
+                  <span class="envio-opcion-tiempo">
+                    1 a 2 días
+                  </span>
+                </button>
+
+              </div>
+
+
+              <!-- Información del envío seleccionado -->
+              <div class="envio-detalle">
+
+                @if (tipoEnvio === 'estandar') {
+
+                  <div class="envio-detalle-icono">
+                    📦
+                  </div>
+
+                  <div class="envio-detalle-info">
+
+                    <strong>
+                      Envío estándar
+                    </strong>
+
+                    <p>
+                      Tu pedido será entregado aproximadamente
+                      entre 1 y 5 días hábiles.
+                    </p>
+
+                  </div>
+
+                } @else {
+
+                  <div class="envio-detalle-icono">
+                    ⚡
+                  </div>
+
+                  <div class="envio-detalle-info">
+
+                    <strong>
+                      Envío exprés
+                    </strong>
+
+                    <p>
+                      Tu pedido será entregado aproximadamente
+                      entre 1 y 2 días hábiles.
+                    </p>
+
+                  </div>
+
+                }
+
+              </div>
+
+
+              <!-- Aviso de entrega -->
+              <div class="envio-aviso">
+
+                <span class="envio-aviso-icono">
+                  ⓘ
+                </span>
 
                 <p>
-                  Un asesor revisará los productos y cantidades
-                  seleccionadas para ofrecerte la mejor opción.
+                  Los tiempos de entrega son aproximados y pueden variar
+                  dependiendo de la ubicación y disponibilidad del servicio.
                 </p>
+
               </div>
 
             </div>
 
 
-            <!-- Botón principal -->
+            <!-- Botón para continuar -->
             <button
               type="button"
-              class="btn-cotizar"
-              (click)="solicitarCotizacion()"
+              class="btn-continuar"
+              (click)="continuarCompra()"
             >
-              Solicitar cotización
+              Continuar
               <span>→</span>
             </button>
-
-
-            <p class="resumen-aviso">
-              No se realizará ningún pago en este paso.
-            </p>
-
-          </div>
-
-
-          <!-- ===============================================
-               AYUDA / ASESORÍA
-          ================================================ -->
-          <div class="asesoria-card">
-
-            <div class="asesoria-icono">
-              ?
-            </div>
-
-            <div class="asesoria-contenido">
-
-              <h3>
-                ¿Necesitas asesoría?
-              </h3>
-
-              <p>
-                Podemos ayudarte a elegir el producto y la cantidad
-                adecuada para tus cultivos.
-              </p>
-
-              <a routerLink="/contacto">
-                Hablar con un asesor →
-              </a>
-
-            </div>
 
           </div>
 

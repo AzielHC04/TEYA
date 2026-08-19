@@ -568,23 +568,149 @@
 }
 
 
-/* Información de cotización */
+/* Método de envío */
 
-.cotizacion-info {
-  display: flex;
-
-  gap: 13px;
-
+.envio-seccion {
   margin-bottom: 24px;
+}
+
+.envio-titulo {
+  margin-bottom: 16px;
+}
+
+.envio-titulo > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+}
+
+.envio-icono {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 38px;
+  height: 38px;
+
+  background-color: var(--color-primary-light);
+
+  border-radius: 50%;
+
+  font-size: 18px;
+}
+
+.envio-titulo h3 {
+  margin: 0 0 3px;
+
+  color: var(--color-title);
+
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.envio-titulo p {
+  margin: 0;
+
+  color: var(--color-text-light);
+
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+
+/* Selector de envío */
+
+.envio-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  margin-bottom: 16px;
+
+  overflow: hidden;
+
+  background-color: #f4f6f5;
+
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.envio-opcion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 4px;
+
+  min-height: 75px;
+
+  padding: 12px 8px;
+
+  color: var(--color-text);
+  background-color: transparent;
+
+  border: 2px solid transparent;
+  border-radius: 11px;
+
+  font-family: inherit;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.envio-opcion:hover {
+  background-color: #edf5ef;
+}
+
+.envio-opcion.active {
+  position: relative;
+  z-index: 1;
+
+  color: var(--color-primary-dark);
+  background-color: var(--color-white);
+
+  border-color: var(--color-primary);
+
+  box-shadow: 0 3px 10px rgba(40, 118, 58, 0.1);
+}
+
+.envio-opcion-nombre {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.envio-opcion-tiempo {
+  color: var(--color-primary);
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+/* Detalle del envío */
+
+.envio-detalle {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 12px;
+
   padding: 15px;
 
   background-color: #f1f8ee;
 
-  border: 1px solid #dcecd6;
+  border: 1px solid #dcebd7;
   border-radius: 12px;
 }
 
-.cotizacion-icono {
+.envio-detalle-icono {
   flex-shrink: 0;
 
   display: flex;
@@ -598,10 +724,14 @@
 
   border-radius: 50%;
 
-  font-size: 19px;
+  font-size: 18px;
 }
 
-.cotizacion-info strong {
+.envio-detalle-info {
+  min-width: 0;
+}
+
+.envio-detalle-info strong {
   display: block;
 
   margin-bottom: 4px;
@@ -611,7 +741,7 @@
   font-size: 14px;
 }
 
-.cotizacion-info p {
+.envio-detalle-info p {
   margin: 0;
 
   color: var(--color-text-light);
@@ -621,9 +751,45 @@
 }
 
 
-/* Botón cotización */
+/* Aviso del envío */
 
-.btn-cotizar {
+.envio-aviso {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 8px;
+
+  margin-top: 12px;
+  padding: 10px 11px;
+
+  background-color: #f8faf9;
+
+  border: 1px solid var(--color-border-light);
+  border-radius: 9px;
+}
+
+.envio-aviso-icono {
+  flex-shrink: 0;
+
+  color: var(--color-primary);
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.envio-aviso p {
+  margin: 0;
+
+  color: var(--color-text-light);
+
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+
+/* Botón continuar */
+
+.btn-continuar {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -655,7 +821,7 @@
     box-shadow 0.2s ease;
 }
 
-.btn-cotizar:hover {
+.btn-continuar:hover {
   background-color: var(--color-primary-dark);
 
   transform: translateY(-1px);
@@ -663,26 +829,15 @@
   box-shadow: 0 9px 22px rgba(40, 118, 58, 0.23);
 }
 
-.btn-cotizar span {
+.btn-continuar span {
   font-size: 18px;
 
   transition: transform 0.2s ease;
 }
 
-.btn-cotizar:hover span {
+.btn-continuar:hover span {
   transform: translateX(3px);
 }
-
-.resumen-aviso {
-  margin: 13px 0 0;
-
-  color: var(--color-text-light);
-
-  text-align: center;
-
-  font-size: 11px;
-}
-
 
 /* Tarjeta asesoría */
 
@@ -1055,7 +1210,26 @@ select:focus-visible {
 
     padding: 55px 24px;
   }
+    .envio-selector {
+    grid-template-columns: 1fr 1fr;
+  }
 
+  .envio-opcion {
+    min-height: 70px;
+    padding: 10px 5px;
+  }
+
+  .envio-opcion-nombre {
+    font-size: 12px;
+  }
+
+  .envio-opcion-tiempo {
+    font-size: 11px;
+  }
+
+  .envio-detalle {
+    padding: 13px;
+  }
 }
 
 
