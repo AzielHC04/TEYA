@@ -1,423 +1,155 @@
-<main class="carrito-page">
-
-  <!-- =====================================================
-       ENCABEZADO DE LA PÁGINA
-  ====================================================== -->
-  <section class="carrito-header">
-
-    <span class="carrito-badge">
-      🛒 Mi selección
+<div class="carrito-container">
+  <header class="carrito-header">
+    <h1>Carrito de Compras</h1>
+    <span class="badge-total" *ngIf="carrito.length > 0">
+      {{ totalProductos }} {{ totalProductos === 1 ? 'unidad' : 'unidades' }}
     </span>
-
-    <h1>Tu Carrito</h1>
-
-    <p>
-      Revisa los productos, cantidades y presentaciones antes
-      de solicitar tu cotización.
-    </p>
-
-  </section>
-
-
-  <!-- =====================================================
-       CONTENIDO DEL CARRITO
-  ====================================================== -->
-  <section class="carrito-container">
-
-    @if (carrito.length > 0) {
-
-      <div class="carrito-layout">
-
-        <!-- =================================================
-             COLUMNA IZQUIERDA
-             LISTA DE PRODUCTOS
-        ================================================== -->
-        <div class="productos-carrito">
-
-          <!-- Encabezado -->
-          <div class="productos-header">
-
-            <div>
-              <h2>Productos seleccionados</h2>
-
-              <p>
-                {{ totalProductos }}
-                {{ totalProductos === 1 ? 'producto' : 'productos' }}
-                en tu carrito
-              </p>
-            </div>
-
-            <button
-              type="button"
-              class="btn-vaciar"
-              (click)="vaciarCarrito()"
-            >
-              Vaciar carrito
-            </button>
-
-          </div>
-
-
-          <!-- ===============================================
-               PRODUCTOS
-          ================================================ -->
-          <div class="productos-lista">
-
-            @for (producto of carrito; track producto.id) {
-
-              <article class="producto-card">
-
-                <!-- Imagen del producto -->
-                <div class="producto-imagen">
-
-                  <img
-                    [src]="producto.imagen"
-                    [alt]="producto.nombre"
-                  >
-
-                </div>
-
-
-                <!-- Información -->
-                <div class="producto-info">
-
-                  <span class="producto-categoria">
-                    {{ producto.categoria }}
-                  </span>
-
-                  <h3>
-                    {{ producto.nombre }}
-                  </h3>
-
-                  <p class="producto-descripcion">
-                    {{ producto.descripcion }}
-                  </p>
-
-
-                  <!-- Presentación -->
-                  <div class="producto-opciones">
-
-                    <div class="opcion-grupo">
-
-                      <label
-                        [for]="'presentacion-' + producto.id"
-                      >
-                        Presentación
-                      </label>
-
-                      <select
-                        [id]="'presentacion-' + producto.id"
-                        [(ngModel)]="producto.presentacionSeleccionada"
-                      >
-
-                        @for (
-                          presentacion of producto.presentaciones;
-                          track presentacion
-                        ) {
-
-                          <option [value]="presentacion">
-                            {{ presentacion }}
-                          </option>
-
-                        }
-
-                      </select>
-
-                    </div>
-
-
-                    <!-- Cantidad -->
-                    <div class="opcion-grupo">
-
-                      <label>
-                        Cantidad
-                      </label>
-
-                      <div class="cantidad-control">
-
-                        <button
-                          type="button"
-                          class="cantidad-btn"
-                          aria-label="Disminuir cantidad"
-                          (click)="disminuirCantidad(producto)"
-                        >
-                          −
-                        </button>
-
-                        <span class="cantidad-numero">
-                          {{ producto.cantidad }}
-                        </span>
-
-                        <button
-                          type="button"
-                          class="cantidad-btn"
-                          aria-label="Aumentar cantidad"
-                          (click)="aumentarCantidad(producto)"
-                        >
-                          +
-                        </button>
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-
-                <!-- Botón eliminar -->
-                <div class="producto-acciones">
-
-                  <button
-                    type="button"
-                    class="btn-eliminar"
-                    [attr.aria-label]="'Eliminar ' + producto.nombre"
-                    (click)="eliminarProducto(producto.id)"
-                  >
-                    <span class="eliminar-icono">×</span>
-                    <span>Eliminar</span>
-                  </button>
-
-                </div>
-
-              </article>
-
-            }
-
-          </div>
-
-
-          <!-- Seguir comprando -->
-          <div class="seguir-comprando">
-
-            <a
-                routerLink="/products"
-                class="btn-seguir"
-            >
-                <span>←</span>
-                Seguir explorando productos
-            </a>
-
-          </div>
-
-        </div>
-
-
-        <!-- =================================================
-             COLUMNA DERECHA
-             RESUMEN
-        ================================================== -->
-        <aside class="resumen-carrito">
-
-          <div class="resumen-card">
-
-            <h2>
-              Resumen del pedido
-            </h2>
-
-            <p class="resumen-descripcion">
-              Verifica tus productos y selecciona el tipo de envío.
-            </p>
-
-
-            <!-- Datos -->
-            <div class="resumen-datos">
-
-              <div class="resumen-fila">
-
-                <span>
-                  Productos diferentes
-                </span>
-
-                <strong>
-                  {{ carrito.length }}
-                </strong>
-
-              </div>
-
-
-              <div class="resumen-fila">
-
-                <span>
-                  Total de unidades
-                </span>
-
-                <strong>
-                  {{ totalProductos }}
-                </strong>
-
-              </div>
-
-            </div>
-
-
-            <div class="resumen-separador"></div>
-
-
-            <!-- Método de envío -->
-            <div class="envio-seccion">
-
-              <div class="envio-titulo">
-                <div>
-                  <span class="envio-icono">🚚</span>
-
-                  <div>
-                    <h3>Forma de entrega</h3>
-                    <p>Selecciona el tipo de envío que prefieras.</p>
-                  </div>
-                </div>
-              </div>
-
-
-              <!-- Selector de tipo de envío -->
-              <div class="envio-selector">
-
-                <button
-                  type="button"
-                  class="envio-opcion"
-                  [class.active]="tipoEnvio === 'estandar'"
-                  (click)="seleccionarEnvio('estandar')"
-                >
-                  <span class="envio-opcion-nombre">
-                    Envío estándar
-                  </span>
-
-                  <span class="envio-opcion-tiempo">
-                    1 a 5 días
-                  </span>
-                </button>
-
-
-                <button
-                  type="button"
-                  class="envio-opcion"
-                  [class.active]="tipoEnvio === 'express'"
-                  (click)="seleccionarEnvio('express')"
-                >
-                  <span class="envio-opcion-nombre">
-                    Envío exprés
-                  </span>
-
-                  <span class="envio-opcion-tiempo">
-                    1 a 2 días
-                  </span>
-                </button>
-
-              </div>
-
-
-              <!-- Información del envío seleccionado -->
-              <div class="envio-detalle">
-
-                @if (tipoEnvio === 'estandar') {
-
-                  <div class="envio-detalle-icono">
-                    📦
-                  </div>
-
-                  <div class="envio-detalle-info">
-
-                    <strong>
-                      Envío estándar
-                    </strong>
-
-                    <p>
-                      Tu pedido será entregado aproximadamente
-                      entre 1 y 5 días hábiles.
-                    </p>
-
-                  </div>
-
-                } @else {
-
-                  <div class="envio-detalle-icono">
-                    ⚡
-                  </div>
-
-                  <div class="envio-detalle-info">
-
-                    <strong>
-                      Envío exprés
-                    </strong>
-
-                    <p>
-                      Tu pedido será entregado aproximadamente
-                      entre 1 y 2 días hábiles.
-                    </p>
-
-                  </div>
-
-                }
-
-              </div>
-
-
-              <!-- Aviso de entrega -->
-              <div class="envio-aviso">
-
-                <span class="envio-aviso-icono">
-                  ⓘ
-                </span>
-
-                <p>
-                  Los tiempos de entrega son aproximados y pueden variar
-                  dependiendo de la ubicación y disponibilidad del servicio.
-                </p>
-
-              </div>
-
-            </div>
-
-
-            <!-- Botón para continuar -->
-            <button
-              type="button"
-              class="btn-continuar"
-              (click)="continuarCompra()"
-            >
-              Continuar
-              <span>→</span>
-            </button>
-
-          </div>
-
-                </aside>
-
+  </header>
+
+  <!-- Estado Carrito Vacío -->
+  <div class="carrito-vacio" *ngIf="carrito.length === 0">
+    <div class="icono-vacio">🛒</div>
+    <h2>Tu carrito está vacío</h2>
+    <p>Aún no has agregado bioinsumos a tu lista de compra.</p>
+    <a routerLink="/products" class="btn-primary">Explorar Productos</a>
+  </div>
+
+  <!-- Contenido del Carrito -->
+  <div class="carrito-grid" *ngIf="carrito.length > 0">
+    <!-- Lista de Productos -->
+    <section class="productos-seccion">
+      <div class="acciones-lista">
+        <button class="btn-vaciar" (click)="vaciarCarrito()">
+          🗑 Vaciar Carrito
+        </button>
       </div>
 
-    } @else {
+      <article class="producto-card" *ngFor="let producto of carrito">
+        <img 
+          [src]="producto.imagen" 
+          [alt]="producto.nombre" 
+          class="producto-img"
+        />
 
-      <!-- Carrito vacío -->
+        <div class="producto-detalles">
+          <span class="categoria-tag">{{ producto.categoria }}</span>
+          <h3 class="producto-nombre">{{ producto.nombre }}</h3>
+          <p class="producto-descripcion">{{ producto.descripcion }}</p>
 
-      <section class="carrito-vacio">
-
-        <div class="carrito-vacio-icono">
-          <span class="hoja hoja-izquierda"></span>
-          <span class="hoja hoja-derecha"></span>
-
-          <div class="maceta"></div>
+          <div class="presentacion-selector">
+            <label [for]="'presentacion-' + producto.id">Presentación:</label>
+            <select 
+              [id]="'presentacion-' + producto.id" 
+              [(ngModel)]="producto.presentacionSeleccionada"
+              class="select-custom"
+            >
+              <option *ngFor="let pres of producto.presentaciones" [value]="pres">
+                {{ pres }}
+              </option>
+            </select>
+          </div>
         </div>
 
-        <h2>Tu carrito está vacío</h2>
+        <div class="producto-precio-cantidad">
+          <span class="precio-unitario">
+            {{ producto.precioUnitario | currency:'MXN':'symbol':'1.2-2' }} c/u
+          </span>
 
-        <p>
-          Aún no has agregado productos. Explora nuestro catálogo
-          y encuentra las soluciones ideales para tus cultivos.
-        </p>
+          <div class="cantidad-control">
+            <button 
+              type="button" 
+              (click)="disminuirCantidad(producto)"
+              [disabled]="producto.cantidad <= 1"
+            >-</button>
+            <span class="cantidad-numero">{{ producto.cantidad }}</span>
+            <button 
+              type="button" 
+              (click)="aumentarCantidad(producto)"
+              [disabled]="producto.cantidad >= MAX_CANTIDAD_PRODUCTO"
+            >+</button>
+          </div>
 
-        <a
-          routerLink="/products"
-          class="btn-explorar"
+          <span class="subtotal-item">
+            {{ (producto.precioUnitario * producto.cantidad) | currency:'MXN':'symbol':'1.2-2' }}
+          </span>
+
+          <button 
+            type="button" 
+            class="btn-eliminar" 
+            (click)="eliminarProducto(producto.id)"
+            title="Eliminar producto"
+          >✕</button>
+        </div>
+      </article>
+    </section>
+
+    <!-- Resumen de Pedido -->
+    <aside class="resumen-seccion">
+      <div class="resumen-card">
+        <h2>Resumen del Pedido</h2>
+
+        <div class="resumen-linea">
+          <span>Subtotal ({{ totalProductos }} prod.)</span>
+          <strong>{{ subtotal | currency:'MXN':'symbol':'1.2-2' }}</strong>
+        </div>
+
+        <!-- Opciones de Envío -->
+        <div class="envio-opciones">
+          <h3>Método de Envío</h3>
+
+          <label 
+            class="opcion-envio" 
+            [class.activa]="tipoEnvio === 'estandar'"
+          >
+            <input 
+              type="radio" 
+              name="tipoEnvio" 
+              value="estandar"
+              [checked]="tipoEnvio === 'estandar'"
+              (change)="seleccionarEnvio('estandar')"
+            />
+            <div class="envio-info">
+              <span class="envio-titulo">Envío Estándar</span>
+              <span class="envio-tiempo">1 a 5 días hábiles</span>
+            </div>
+            <span class="envio-precio">{{ COSTO_ENVIO_ESTANDAR | currency:'MXN':'symbol':'1.0-0' }}</span>
+          </label>
+
+          <label 
+            class="opcion-envio" 
+            [class.activa]="tipoEnvio === 'express'"
+          >
+            <input 
+              type="radio" 
+              name="tipoEnvio" 
+              value="express"
+              [checked]="tipoEnvio === 'express'"
+              (change)="seleccionarEnvio('express')"
+            />
+            <div class="envio-info">
+              <span class="envio-titulo">Envío Exprés ⚡</span>
+              <span class="envio-tiempo">1 a 2 días hábiles</span>
+            </div>
+            <span class="envio-precio">{{ COSTO_ENVIO_EXPRESS | currency:'MXN':'symbol':'1.0-0' }}</span>
+          </label>
+        </div>
+
+        <div class="resumen-divider"></div>
+
+        <div class="resumen-linea total-linea">
+          <span>Total a Pagar</span>
+          <span class="monto-total">{{ totalPagar | currency:'MXN':'symbol':'1.2-2' }}</span>
+        </div>
+
+        <button 
+          class="btn-primary btn-bloque" 
+          (click)="continuarCompra()"
         >
-          Explorar productos
-          <span>→</span>
-        </a>
+          Continuar Compra
+        </button>
 
-      </section>
-
-    }
-
-  </section>
-
-</main>
+        <a routerLink="/products" class="link-seguir">Seguir comprando</a>
+      </div>
+    </aside>
+  </div>
+</div>

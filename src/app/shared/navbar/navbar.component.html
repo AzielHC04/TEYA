@@ -39,31 +39,46 @@
 
           <ul class="dropdown-menu">
             <li>
-              <a routerLink="/products">
+              <a 
+                routerLink="/products" 
+                [queryParams]="{ categoria: 'organicos' }"
+              >
                 Orgánicos
               </a>
             </li>
 
             <li>
-              <a routerLink="/products">
+              <a 
+                routerLink="/products" 
+                [queryParams]="{ categoria: 'bioestimulantes' }"
+              >
                 Bioestimulantes
               </a>
             </li>
 
             <li>
-              <a routerLink="/products">
+              <a 
+                routerLink="/products" 
+                [queryParams]="{ categoria: 'nutricion-liquida' }"
+              >
                 Nutrición Líquida
               </a>
             </li>
 
             <li>
-              <a routerLink="/products">
+              <a 
+                routerLink="/products" 
+                [queryParams]="{ categoria: 'especialidades' }"
+              >
                 Especialidades
               </a>
             </li>
 
             <li>
-              <a routerLink="/products">
+              <a 
+                routerLink="/products" 
+                [queryParams]="{ categoria: 'bioplaguicidas' }"
+              >
                 Bioplaguicidas
               </a>
             </li>

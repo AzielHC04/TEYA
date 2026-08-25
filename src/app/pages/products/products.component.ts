@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 export interface Producto {
   id: string;
@@ -17,9 +18,11 @@ export interface Producto {
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent implements OnInit, OnDestroy {
 
-  // Catálogo completo de productos ampliados
+  private routeSub!: Subscription;
+
+  // Catálogo completo de productos
   productos: Producto[] = [
     // --- ORGÁNICOS ---
     { 
@@ -182,23 +185,51 @@ export class ProductsComponent implements OnInit {
   productosFiltrados: Producto[] = [];
   categoriaSeleccionada: string = 'Todas';
 
-  // Configuración de Paginación (Mostraremos 8 por página)
+  // Configuración de Paginación
   paginaActual: number = 1;
   productosPorPagina: number = 8;
 
+  constructor(private route: ActivatedRoute) {}
+
   ngOnInit(): void {
-    this.productosFiltrados = [...this.productos];
+    // Escucha activamente los cambios en la URL (queryParams)
+    this.routeSub = this.route.queryParams.subscribe(params => {
+      const categoriaParam = params['categoria'];
+      if (categoriaParam) {
+        this.filtrarPorCategoria(categoriaParam);
+      } else {
+        this.filtrarPorCategoria('Todas');
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.routeSub) {
+      this.routeSub.unsubscribe();
+    }
+  }
+
+  // Normaliza textos para comparar ignorando acentos y guiones
+  private normalizarTexto(texto: string): string {
+    return texto
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Elimina acentos
+      .toLowerCase()
+      .replace(/\s+/g, '-')             // Cambia espacios por guiones
+      .trim();
   }
 
   filtrarPorCategoria(categoria: string): void {
     this.categoriaSeleccionada = categoria;
     this.paginaActual = 1;
 
-    if (categoria === 'Todas') {
+    const catNormalizada = this.normalizarTexto(categoria);
+
+    if (catNormalizada === 'todas' || catNormalizada === 'todos') {
       this.productosFiltrados = [...this.productos];
     } else {
       this.productosFiltrados = this.productos.filter(
-        p => p.categoria.toLowerCase() === categoria.toLowerCase()
+        p => this.normalizarTexto(p.categoria) === catNormalizada
       );
     }
   }

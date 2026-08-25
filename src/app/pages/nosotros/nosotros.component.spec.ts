@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PageInfoComponent } from './page-info.component';
+import { NosotrosComponent } from './nosotros.component';
 
-describe('PageInfoComponent', () => {
-  let component: PageInfoComponent;
-  let fixture: ComponentFixture<PageInfoComponent>;
+describe('NosotrosComponent', () => {
+  let component: NosotrosComponent;
+  let fixture: ComponentFixture<NosotrosComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PageInfoComponent]
+      imports: [NosotrosComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(PageInfoComponent);
+    fixture = TestBed.createComponent(NosotrosComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
