@@ -50,7 +50,7 @@
           >
             <li>
               <a
-                routerLink="/productos"
+                routerLink="/products"
                 (click)="cerrarProductos()"
               >
                 Todos los Productos
@@ -59,7 +59,8 @@
 
             <li>
               <a
-                routerLink="/productos"
+                routerLink="/products"
+                [queryParams]="{ categoria: 'organicos' }"
                 (click)="cerrarProductos()"
               >
                 Orgánicos
@@ -68,7 +69,8 @@
 
             <li>
               <a
-                routerLink="/productos"
+                routerLink="/products"
+                [queryParams]="{ categoria: 'bioestimulantes' }"
                 (click)="cerrarProductos()"
               >
                 Bioestimulantes
@@ -77,7 +79,8 @@
 
             <li>
               <a
-                routerLink="/productos"
+                routerLink="/products"
+                [queryParams]="{ categoria: 'nutricion-liquida' }"
                 (click)="cerrarProductos()"
               >
                 Nutrición Líquida
@@ -86,14 +89,14 @@
 
             <li>
               <a
-                routerLink="/productos"
+                routerLink="/products"
+                [queryParams]="{ categoria: 'bioplaguicidas' }"
                 (click)="cerrarProductos()"
               >
                 Bioplaguicidas
               </a>
             </li>
           </ul>
-        </li>
 
         <!-- NOSOTROS -->
         <li>
