@@ -1,19 +1,20 @@
 <header class="navbar-header">
   <div class="navbar-container">
 
-    <!-- Logo y marca -->
+    <!-- LOGO -->
     <a routerLink="/" class="navbar-brand">
-      <span class="brand-badge">🌱</span>
-      <span class="brand-text">
-        TEYA
-        <small>Bioproductos</small>
-      </span>
+      <img
+        src="assets/images/L1.png"
+        alt="KABNIA - Soluciones naturales para cultivar"
+        class="navbar-logo"
+      >
     </a>
 
-    <!-- Navegación principal -->
+    <!-- NAVEGACIÓN -->
     <nav class="navbar-nav">
       <ul>
 
+        <!-- INICIO -->
         <li>
           <a
             routerLink="/"
@@ -21,101 +22,115 @@
             [routerLinkActiveOptions]="{ exact: true }"
             class="nav-item"
           >
-            Inicio
+            <span class="nav-icon home-icon">⌂</span>
+            <span>Inicio</span>
           </a>
         </li>
 
-        <!-- Menú de productos -->
+        <!-- PRODUCTOS -->
         <li class="dropdown">
-
-          <a
-            routerLink="/products"
-            routerLinkActive="active"
+          <button
+            type="button"
             class="nav-item dropdown-toggle"
+            [class.active]="productosAbierto"
+            (click)="toggleProductos()"
           >
-            Productos
-            <span class="arrow">▾</span>
-          </a>
+            <span class="nav-icon leaf-icon">♧</span>
+            <span>Productos</span>
+            <span
+              class="arrow"
+              [class.arrow-open]="productosAbierto"
+            >▾</span>
+          </button>
 
-          <ul class="dropdown-menu">
+          <!-- SUBMENÚ -->
+          <ul
+            class="dropdown-menu"
+            [class.show]="productosAbierto"
+          >
             <li>
-              <a 
-                routerLink="/products" 
-                [queryParams]="{ categoria: 'organicos' }"
+              <a
+                routerLink="/productos"
+                (click)="cerrarProductos()"
+              >
+                Todos los Productos
+              </a>
+            </li>
+
+            <li>
+              <a
+                routerLink="/productos"
+                (click)="cerrarProductos()"
               >
                 Orgánicos
               </a>
             </li>
 
             <li>
-              <a 
-                routerLink="/products" 
-                [queryParams]="{ categoria: 'bioestimulantes' }"
+              <a
+                routerLink="/productos"
+                (click)="cerrarProductos()"
               >
                 Bioestimulantes
               </a>
             </li>
 
             <li>
-              <a 
-                routerLink="/products" 
-                [queryParams]="{ categoria: 'nutricion-liquida' }"
+              <a
+                routerLink="/productos"
+                (click)="cerrarProductos()"
               >
                 Nutrición Líquida
               </a>
             </li>
 
             <li>
-              <a 
-                routerLink="/products" 
-                [queryParams]="{ categoria: 'especialidades' }"
-              >
-                Especialidades
-              </a>
-            </li>
-
-            <li>
-              <a 
-                routerLink="/products" 
-                [queryParams]="{ categoria: 'bioplaguicidas' }"
+              <a
+                routerLink="/productos"
+                (click)="cerrarProductos()"
               >
                 Bioplaguicidas
               </a>
             </li>
           </ul>
-
         </li>
 
+        <!-- NOSOTROS -->
         <li>
           <a
             routerLink="/nosotros"
             routerLinkActive="active"
             class="nav-item"
           >
-            Nosotros
+            <span class="nav-icon">♧</span>
+            <span>Nosotros</span>
           </a>
         </li>
 
+        <!-- CARRITO -->
         <li>
           <a
             routerLink="/carrito"
             routerLinkActive="active"
             class="nav-item cart-item"
           >
-            Carrito
+            <span class="nav-icon cart-icon">🛒</span>
+            <span>Carrito</span>
+            <span class="cart-badge">2</span>
           </a>
         </li>
 
       </ul>
     </nav>
 
-    <!-- Acción de contacto -->
+    <!-- SEPARADOR -->
+    <div class="nav-divider"></div>
+
+    <!-- MI PERFIL -->
     <div class="navbar-actions">
-      <a
-        routerLink="/contacto"
-        class="btn-contact"
-      >
-        Contacto
+      <a routerLink="/contacto" class="btn-profile">
+        <span class="profile-icon">♙</span>
+        <span>Mi Perfil</span>
       </a>
     </div>
 
