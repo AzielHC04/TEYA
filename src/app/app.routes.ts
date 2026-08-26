@@ -4,6 +4,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { ProductsComponent } from './pages/products/products.component';
 import { CarritoComponent } from './pages/carrito/carrito.component';
 import { NosotrosComponent } from './pages/nosotros/nosotros.component';
+import { MiperfilComponent } from './pages/miperfil/miperfil.component';
 
 export const routes: Routes = [
 
@@ -18,8 +19,13 @@ export const routes: Routes = [
 
   // Página de nosotros 
   { path: 'nosotros', component: NosotrosComponent },
+  
+  // Página de mi perfil
+  { path: 'miperfil', component: MiperfilComponent },
 
   // Redirección para rutas inexistentes
   { path: '**', redirectTo: '' }
+
+
 
 ];

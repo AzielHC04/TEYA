@@ -1,1 +1,502 @@
-<p>miperfil works!</p>
+<div class="perfil-container">
+
+  <!-- ENCABEZADO -->
+  <header class="perfil-header">
+    <div>
+      <span class="seccion-label">CUENTA</span>
+
+      <h1>Mi Perfil</h1>
+
+      <p>
+        Administra tu información y preferencias de compra.
+      </p>
+    </div>
+  </header>
+
+
+  <div class="perfil-grid">
+
+    <!-- =========================
+         COLUMNA IZQUIERDA
+    ========================== -->
+    <aside class="perfil-sidebar">
+
+      <!-- TARJETA DEL USUARIO -->
+      <div class="usuario-card">
+
+        <div class="avatar">
+          {{ iniciales }}
+        </div>
+
+        <h2>
+          {{ nombreCompleto }}
+        </h2>
+
+        <p class="usuario-correo">
+          {{ usuario.correo }}
+        </p>
+
+        <span class="cliente-badge">
+          Cliente Biofábrica
+        </span>
+
+      </div>
+
+
+      <!-- MENÚ -->
+      <nav class="perfil-menu">
+
+        <button
+          type="button"
+          class="menu-item activo"
+        >
+          <span class="menu-icon">◉</span>
+          <span>Información personal</span>
+        </button>
+
+
+        <a
+          routerLink="/orders"
+          class="menu-item"
+        >
+          <span class="menu-icon">▣</span>
+          <span>Mis pedidos</span>
+        </a>
+
+
+        <a
+          routerLink="/addresses"
+          class="menu-item"
+        >
+          <span class="menu-icon">⌂</span>
+          <span>Direcciones</span>
+        </a>
+
+
+        <button
+          type="button"
+          class="menu-item"
+          (click)="cambiarContrasena()"
+        >
+          <span class="menu-icon">⚙</span>
+          <span>Seguridad</span>
+        </button>
+
+
+        <button
+          type="button"
+          class="menu-item cerrar-sesion"
+          (click)="cerrarSesion()"
+        >
+          <span class="menu-icon">↪</span>
+          <span>Cerrar sesión</span>
+        </button>
+
+      </nav>
+
+    </aside>
+
+
+    <!-- =========================
+         CONTENIDO PRINCIPAL
+    ========================== -->
+    <main class="perfil-content">
+
+
+      <!-- =========================
+           INFORMACIÓN PERSONAL
+      ========================== -->
+      <section class="perfil-card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="card-label">
+              DATOS DE CUENTA
+            </span>
+
+            <h2>
+              Información personal
+            </h2>
+
+            <p>
+              Actualiza los datos asociados a tu cuenta.
+            </p>
+          </div>
+
+
+          <button
+            *ngIf="!editandoPerfil"
+            type="button"
+            class="btn-editar"
+            (click)="editarPerfil()"
+          >
+            ✎ Editar
+          </button>
+
+
+          <button
+            *ngIf="editandoPerfil"
+            type="button"
+            class="btn-guardar"
+            (click)="guardarPerfil()"
+          >
+            ✓ Guardar
+          </button>
+
+        </div>
+
+
+        <div class="datos-grid">
+
+          <!-- NOMBRE -->
+          <div class="campo">
+
+            <label>Nombre</label>
+
+            <input
+              *ngIf="editandoPerfil"
+              type="text"
+              [(ngModel)]="usuario.nombre"
+              class="campo-input"
+            >
+
+            <div
+              *ngIf="!editandoPerfil"
+              class="campo-valor"
+            >
+              {{ usuario.nombre }}
+            </div>
+
+          </div>
+
+
+          <!-- APELLIDOS -->
+          <div class="campo">
+
+            <label>Apellidos</label>
+
+            <input
+              *ngIf="editandoPerfil"
+              type="text"
+              [(ngModel)]="usuario.apellidos"
+              class="campo-input"
+            >
+
+            <div
+              *ngIf="!editandoPerfil"
+              class="campo-valor"
+            >
+              {{ usuario.apellidos }}
+            </div>
+
+          </div>
+
+
+          <!-- CORREO -->
+          <div class="campo">
+
+            <label>Correo electrónico</label>
+
+            <input
+              *ngIf="editandoPerfil"
+              type="email"
+              [(ngModel)]="usuario.correo"
+              class="campo-input"
+            >
+
+            <div
+              *ngIf="!editandoPerfil"
+              class="campo-valor"
+            >
+              {{ usuario.correo }}
+            </div>
+
+          </div>
+
+
+          <!-- TELÉFONO -->
+          <div class="campo">
+
+            <label>Teléfono</label>
+
+            <input
+              *ngIf="editandoPerfil"
+              type="tel"
+              [(ngModel)]="usuario.telefono"
+              class="campo-input"
+            >
+
+            <div
+              *ngIf="!editandoPerfil"
+              class="campo-valor"
+            >
+              {{ usuario.telefono }}
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           DIRECCIÓN
+      ========================== -->
+      <section class="perfil-card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="card-label">
+              ENVÍOS
+            </span>
+
+            <h2>
+              Dirección principal
+            </h2>
+
+            <p>
+              Dirección utilizada para recibir tus productos.
+            </p>
+          </div>
+
+
+          <button
+            *ngIf="!editandoDireccion"
+            type="button"
+            class="btn-editar"
+            (click)="editarDireccion()"
+          >
+            ✎ Editar
+          </button>
+
+
+          <button
+            *ngIf="editandoDireccion"
+            type="button"
+            class="btn-guardar"
+            (click)="guardarDireccion()"
+          >
+            ✓ Guardar
+          </button>
+
+        </div>
+
+
+        <div class="direccion-box">
+
+          <div class="direccion-icon">
+            ⌂
+          </div>
+
+
+          <div class="direccion-info">
+
+            <h3>
+              {{ nombreCompleto }}
+            </h3>
+
+
+            <input
+              *ngIf="editandoDireccion"
+              type="text"
+              [(ngModel)]="direccion.calle"
+              class="direccion-input"
+            >
+
+            <p *ngIf="!editandoDireccion">
+              {{ direccion.calle }}
+            </p>
+
+
+            <input
+              *ngIf="editandoDireccion"
+              type="text"
+              [(ngModel)]="direccion.colonia"
+              class="direccion-input"
+            >
+
+            <p *ngIf="!editandoDireccion">
+              {{ direccion.colonia }}
+            </p>
+
+
+            <div
+              *ngIf="editandoDireccion"
+              class="direccion-row"
+            >
+
+              <input
+                type="text"
+                [(ngModel)]="direccion.ciudad"
+                class="direccion-input"
+                placeholder="Ciudad"
+              >
+
+              <input
+                type="text"
+                [(ngModel)]="direccion.estado"
+                class="direccion-input"
+                placeholder="Estado"
+              >
+
+            </div>
+
+
+            <p *ngIf="!editandoDireccion">
+              {{ direccion.ciudad }}, {{ direccion.estado }}
+            </p>
+
+
+            <input
+              *ngIf="editandoDireccion"
+              type="text"
+              [(ngModel)]="direccion.codigoPostal"
+              class="direccion-input"
+            >
+
+            <p *ngIf="!editandoDireccion">
+              C.P. {{ direccion.codigoPostal }}
+            </p>
+
+
+            <span class="direccion-tag">
+              Dirección principal
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           RESUMEN DE CUENTA
+      ========================== -->
+      <section class="perfil-card">
+
+        <div class="card-header">
+
+          <div>
+            <span class="card-label">
+              ACTIVIDAD
+            </span>
+
+            <h2>
+              Resumen de cuenta
+            </h2>
+          </div>
+
+        </div>
+
+
+        <div class="estadisticas">
+
+          <!-- PEDIDOS -->
+          <div class="estadistica">
+
+            <div class="estadistica-icon pedidos">
+              ▣
+            </div>
+
+            <div>
+              <strong>
+                {{ estadisticas.pedidos }}
+              </strong>
+
+              <span>
+                Pedidos realizados
+              </span>
+            </div>
+
+          </div>
+
+
+          <!-- PRODUCTOS -->
+          <div class="estadistica">
+
+            <div class="estadistica-icon productos">
+              ♧
+            </div>
+
+            <div>
+              <strong>
+                {{ estadisticas.productos }}
+              </strong>
+
+              <span>
+                Productos adquiridos
+              </span>
+            </div>
+
+          </div>
+
+
+          <!-- CLIENTE DESDE -->
+          <div class="estadistica">
+
+            <div class="estadistica-icon cliente">
+              ★
+            </div>
+
+            <div>
+              <strong>
+                {{ estadisticas.clienteDesde }}
+              </strong>
+
+              <span>
+                Cliente desde
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           SEGURIDAD
+      ========================== -->
+      <section class="perfil-card seguridad-card">
+
+        <div class="card-header seguridad-header">
+
+          <div>
+
+            <span class="card-label">
+              SEGURIDAD
+            </span>
+
+            <h2>
+              Contraseña
+            </h2>
+
+            <p>
+              Mantén segura tu cuenta actualizando tu contraseña.
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="btn-secundario"
+            (click)="cambiarContrasena()"
+          >
+            Cambiar contraseña
+          </button>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</div>
