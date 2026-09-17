@@ -1,15 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
+import { ProductService, Producto } from '../../core/service/product.service';
 import { Subscription } from 'rxjs';
 
-export interface Producto {
-  id: string;
-  nombre: string;
-  categoria: string;
-  descripcion: string;
-  imagen: string;
-}
 
 @Component({
   selector: 'app-products',

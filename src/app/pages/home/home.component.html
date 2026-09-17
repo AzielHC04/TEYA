@@ -1,148 +1,152 @@
 <div class="home-container">
 
-  <!-- 1. HERO BANNER -->
-  <section class="hero-section">
-    <div class="hero-overlay"></div>
+  <!-- ================= CARRUSEL PROMOCIONAL DILUIDO (ESTILO MERCADO LIBRE) ================= -->
+  <section 
+    class="banner-carousel-section" 
+    [style.background]="'linear-gradient(180deg, ' + bannersPromocionales[bannerActual].bgColor + ' 0%, ' + bannersPromocionales[bannerActual].bgColor + ' 60%, rgba(235,235,235,0) 100%)'">
+    
+    <div class="carousel-wrapper">
+      <div 
+        class="carousel-slide" 
+        *ngFor="let banner of bannersPromocionales; let i = index"
+        [class.active]="i === bannerActual">
+        <img [src]="banner.imagen" [alt]="banner.titulo" class="banner-img" />
+      </div>
 
-    <!-- Imagen de Rei Ayanami agregada -->
-    <img src="assets/Rei.png" class="rei-character" alt="Rei Ayanami">
+      <!-- Flechas de Navegación -->
+      <button class="carousel-arrow prev" (click)="anteriorBanner()">&#10094;</button>
+      <button class="carousel-arrow next" (click)="siguienteBanner()">&#10095;</button>
 
-    <div class="hero-content">
-      <span class="hero-tag">Smart Agroecology</span>
-      <h1>Máximo Potencial para tus Cultivos</h1>
-      <p>Soluciones biológicas innovadoras y sostenibles para potenciar el rendimiento y la salud de tu suelo.</p>
-      <div class="hero-buttons">
-        <a routerLink="/productos" class="btn-primary">Explorar Productos</a>
-        <a routerLink="/contacto" class="btn-secondary">Asesoría Técnica</a>
+      <!-- Indicadores de los Banners -->
+      <div class="carousel-dots">
+        <span 
+          *ngFor="let banner of bannersPromocionales; let i = index" 
+          [class.active]="i === bannerActual"
+          (click)="seleccionarBanner(i)">
+        </span>
       </div>
     </div>
   </section>
 
-  <!-- 2. BANNERS DE VALOR / CARACTERÍSTICAS -->
+  <!-- ================= BARRA DE BENEFICIOS ================= -->
   <section class="features-bar">
     <div class="feature-item">
-      <div class="feature-icon">🌱</div>
+      <span class="feature-icon">🚚</span>
       <div>
-        <h3>Bioinsumos Certificados</h3>
-        <p>Alta efectividad biológica</p>
+        <h3>ENVÍOS A TODO EL PAÍS</h3>
+        <p>Envíos rápidos y asegurados</p>
       </div>
     </div>
     <div class="feature-item">
-      <div class="feature-icon">🔬</div>
+      <span class="feature-icon">💳</span>
       <div>
-        <h3>Biotecnología de Punta</h3>
-        <p>Formulaciones avanzadas</p>
+        <h3>PAGO SEGURO</h3>
+        <p>Tarjetas de crédito, débito y transferencias</p>
       </div>
     </div>
     <div class="feature-item">
-      <div class="feature-icon">🌍</div>
+      <span class="feature-icon">🌱</span>
       <div>
-        <h3>100% Sostenible</h3>
-        <p>Cuida la biodiversidad del suelo</p>
+        <h3>PRODUCTOS CERTIFICADOS</h3>
+        <p>Alta calidad para la nutrición de tu cultivo</p>
       </div>
     </div>
   </section>
 
-  <!-- 3. SECCIÓN INFORMATIVA / PROPUESTA -->
-  <section class="about-section">
-    <div class="about-grid">
-      <div class="about-image">
-        <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=800" alt="Cultivos TEYA">
-      </div>
-      <div class="about-text">
-        <h2>Transformamos la Agricultura Tradicional</h2>
-        <p>En <strong>TEYA</strong> desarrollamos soluciones bioagrícolas avanzadas que ayudan a los agricultores a incrementar sus rendimientos sin comprometer el equilibrio natural del medio ambiente.</p>
-        <ul class="about-list">
-          <li>✓ Biofertilizantes de rápida absorción</li>
-          <li>✓ Control biológico de plagas y enfermedades</li>
-          <li>✓ Regeneradores orgánicos del suelo</li>
-        </ul>
-        <a routerLink="/nosotros" class="btn-link">Conoce más sobre nosotros &rarr;</a>
+  <!-- ================= CARRUSEL: MÁS COMPRADOS ================= -->
+  <section class="products-carousel-section">
+    <div class="section-header">
+      <h2>MÁS COMPRADOS</h2>
+      <a routerLink="/productos" class="see-more-link">Ver todos</a>
+    </div>
+
+    <div class="horizontal-scroll">
+      <div 
+        class="product-card" 
+        *ngFor="let prod of masCompradosVisibles"
+        [routerLink]="['/productos', prod.id]">
+        
+        <div class="product-img-box">
+          <img [src]="prod.imagen" [alt]="prod.nombre" />
+        </div>
+
+        <div class="product-info">
+          <span class="category-tag">{{ prod.categoria }}</span>
+          <h3 class="product-title">{{ prod.nombre }}</h3>
+          
+          <p class="product-description" *ngIf="prod.descripcion">{{ prod.descripcion }}</p>
+
+          <div class="price-container">
+            <span class="old-price" *ngIf="prod.precioAnterior">${{ prod.precioAnterior }}</span>
+            <div class="current-price-row">
+              <span class="price">${{ prod.precio }}</span>
+              <span class="discount" *ngIf="prod.descuento">{{ prod.descuento }}</span>
+            </div>
+            <span class="full-shipping" *ngIf="prod.envioGratis">Envío gratis</span>
+          </div>
+
+          <span class="btn-ficha">Ficha Técnica &rarr;</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- 4. SECCIÓN PRODUCTOS / CATÁLOGO -->
-  <section class="products-section">
-    <div class="products-container">
+  <!-- ================= BANNERS DE ANUNCIOS ================= -->
+  <section class="ads-section">
+    <div class="ad-card ad-1">
+      <div class="ad-content">
+        <span class="ad-badge">OFERTA ESPECIAL</span>
+        <h3>BIOESTIMULANTES</h3>
+        <p>Regenera la nutrición y salud del suelo de tu cultivo.</p>
+        <a routerLink="/productos" class="btn-ad">COMPRAR AHORA</a>
+      </div>
+    </div>
 
-      <!-- Encabezado sutil y compacto -->
-      <div class="products-header">
-        <div class="badge-tag">
-          <span class="leaf-icon">🍃</span> Nuestros Productos
+    <div class="ad-card ad-2">
+      <div class="ad-content">
+        <span class="ad-badge">NUEVO</span>
+        <h3>BIOPLAGUICIDAS</h3>
+        <p>Protección natural y orgánica contra plagas comunes.</p>
+        <a routerLink="/productos" class="btn-ad">CONOCER MÁS</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CARRUSEL: ÚLTIMOS AGREGADOS ================= -->
+  <section class="products-carousel-section">
+    <div class="section-header">
+      <h2>ÚLTIMOS AGREGADOS</h2>
+      <a routerLink="/productos" class="see-more-link">Ver todos</a>
+    </div>
+
+    <div class="horizontal-scroll">
+      <div 
+        class="product-card" 
+        *ngFor="let prod of ultimosAgregadosVisibles"
+        [routerLink]="['/productos', prod.id]">
+
+        <div class="product-img-box">
+          <img [src]="prod.imagen" [alt]="prod.nombre" />
         </div>
-        <h2>Encuentra la Solución Ideal para tu Cultivo</h2>
-        <p class="subtitle">Líneas de productos, diseñadas para cada etapa</p>
 
-        <!-- Filtros -->
-        <div class="category-filters">
-          <button class="filter-btn active">Orgánicos</button>
-          <button class="filter-btn">Bioestimulantes</button>
-          <button class="filter-btn">Nutrición Líquida</button>
-          <button class="filter-btn">Especialidades</button>
-          <button class="filter-btn">Bioplaguicidas</button>
+        <div class="product-info">
+          <span class="category-tag">{{ prod.categoria }}</span>
+          <h3 class="product-title">{{ prod.nombre }}</h3>
+
+          <p class="product-description" *ngIf="prod.descripcion">{{ prod.descripcion }}</p>
+
+          <div class="price-container">
+            <span class="old-price" *ngIf="prod.precioAnterior">${{ prod.precioAnterior }}</span>
+            <div class="current-price-row">
+              <span class="price">${{ prod.precio }}</span>
+              <span class="discount" *ngIf="prod.descuento">{{ prod.descuento }}</span>
+            </div>
+            <span class="full-shipping" *ngIf="prod.envioGratis">Envío gratis</span>
+          </div>
+
+          <span class="btn-ficha">Ficha Técnica &rarr;</span>
         </div>
       </div>
-
-      <!-- Grid de productos -->
-      <div class="products-grid">
-
-        <div class="product-card">
-          <div class="product-img-box">
-            <img src="assets/Producto.jpg" alt="BP-CALCIO">
-          </div>
-          <div class="product-info">
-            <span class="category-name">Orgánicos</span>
-            <h3>BP-CALCIO</h3>
-          </div>
-        </div>
-
-        <div class="product-card">
-          <div class="product-img-box">
-            <img src="assets/Producto.jpg" alt="BP-MAGNESIO">
-          </div>
-          <div class="product-info">
-            <span class="category-name">Orgánicos</span>
-            <h3>BP-MAGNESIO</h3>
-          </div>
-        </div>
-
-        <div class="product-card">
-          <div class="product-img-box">
-            <img src="assets/Producto.jpg" alt="BP-POTASIO">
-          </div>
-          <div class="product-info">
-            <span class="category-name">Orgánicos</span>
-            <h3>BP-POTASIO</h3>
-          </div>
-        </div>
-
-        <div class="product-card">
-          <div class="product-img-box">
-            <img src="assets/Producto.jpg" alt="BP-MOOTS">
-          </div>
-          <div class="product-info">
-            <span class="category-name">Orgánicos</span>
-            <h3>BP-MOOTS</h3>
-          </div>
-        </div>
-
-        <div class="product-card">
-          <div class="product-img-box">
-            <img src="assets/Producto.jpg" alt="AE CALCIUM">
-          </div>
-          <div class="product-info">
-            <span class="category-name">Orgánicos</span>
-            <h3>AE CALCIUM</h3>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="see-all-container">
-        <a routerLink="/productos" class="btn-see-all">Ver Todos &rarr;</a>
-      </div>
-
     </div>
   </section>
 
