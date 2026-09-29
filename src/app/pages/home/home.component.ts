@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ProductService, Producto } from '../../core/service/product.service';
+import { ProductService, Product } from '../../core/service/product.service';
 
 @Component({
   selector: 'app-home',
@@ -59,8 +59,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   autoSlideTimer: any;
 
   // Listas de productos
-  masComprados: Producto[] = [];
-  ultimosAgregados: Producto[] = [];
+  masComprados: Product[] = [];
+  ultimosAgregados: Product[] = [];
 
   // Paginación de carruseles de productos
   paginaMasComprados = 0;
@@ -76,10 +76,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.iniciarAutoSlideBanners();
-
-    this.masComprados = this.productService.getMasComprados();
-    this.ultimosAgregados = this.productService.getUltimosAgregados();
-
+    this.cargarProductosDesdeAPI();
     this.iniciarCarruselesProductos(5000);
   }
 
@@ -87,6 +84,18 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.autoSlideTimer) clearInterval(this.autoSlideTimer);
     if (this.timerMasComprados) clearInterval(this.timerMasComprados);
     if (this.timerUltimosAgregados) clearInterval(this.timerUltimosAgregados);
+  }
+
+  // --- Carga de datos asíncrona desde NestJS / Supabase ---
+  cargarProductosDesdeAPI(): void {
+    this.productService.getProductos().subscribe({
+      next: (productos: Product[]) => {
+        // Filtrar productos clasificados desde la base de datos
+        this.masComprados = productos.filter(p => p.masComprado);
+        this.ultimosAgregados = productos.filter(p => p.ultimoAgregado);
+      },
+      error: (err) => console.error('Error al cargar productos en Home:', err)
+    });
   }
 
   // --- Lógica del Banner Principal ---
@@ -113,12 +122,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   // --- Getters para filtrar 5 productos según la página actual ---
-  get masCompradosVisibles(): Producto[] {
+  get masCompradosVisibles(): Product[] {
     const inicio = this.paginaMasComprados * 5;
     return this.masComprados.slice(inicio, inicio + 5);
   }
 
-  get ultimosAgregadosVisibles(): Producto[] {
+  get ultimosAgregadosVisibles(): Product[] {
     const inicio = this.paginaUltimosAgregados * 5;
     return this.ultimosAgregados.slice(inicio, inicio + 5);
   }
