@@ -123,13 +123,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // --- Getters para filtrar 5 productos según la página actual ---
   get masCompradosVisibles(): Product[] {
-    const inicio = this.paginaMasComprados * 5;
-    return this.masComprados.slice(inicio, inicio + 5);
+    const inicio = this.paginaMasComprados * 3;
+    return this.masComprados.slice(inicio, inicio + 3);
   }
 
   get ultimosAgregadosVisibles(): Product[] {
-    const inicio = this.paginaUltimosAgregados * 5;
-    return this.ultimosAgregados.slice(inicio, inicio + 5);
+    const inicio = this.paginaUltimosAgregados * 3;
+    return this.ultimosAgregados.slice(inicio, inicio + 3);
   }
 
   // --- Lógica de Carruseles de Productos ---
