@@ -23,9 +23,32 @@ export const routes: Routes = [
   // Página de mi perfil
   { path: 'miperfil', component: MiperfilComponent },
 
-  // Redirección para rutas inexistentes
+  // Ruta principal del Panel de Administración (Layout + Subrutas)
+  {
+    path: 'admin',
+    loadComponent: () => import('./pages/admin/admin-layout/admin-layout.component').then(m => m.AdminLayoutComponent),
+    children: [
+      { path: '', redirectTo: 'productos', pathMatch: 'full' },
+      { 
+        path: 'productos', 
+        loadComponent: () => import('./pages/admin/admin-productos/admin-productos.component').then(m => m.AdminProductosComponent) 
+      },
+      { 
+        path: 'tablas', 
+        loadComponent: () => import('./pages/admin/admin-tablas/admin-tablas.component').then(m => m.AdminTablasComponent) 
+      },
+      { 
+        path: 'users', 
+        loadComponent: () => import('./pages/admin/admin-users/admin-users.component').then(m => m.AdminUsersComponent) 
+      },
+      { 
+        path: 'reportes', 
+        loadComponent: () => import('./pages/admin/admin-reportes/admin-reportes.component').then(m => m.AdminReportesComponent) 
+      },
+    ]
+  },
+
+  // Redirección para rutas inexistentes (SIEMPRE debe ir al final)
   { path: '**', redirectTo: '' }
-
-
 
 ];

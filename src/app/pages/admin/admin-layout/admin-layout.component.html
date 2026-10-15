@@ -1,0 +1,41 @@
+<div class="admin-dashboard-container">
+  <!-- Sidebar Lateral -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h2>Teya <span>Admin</span></h2>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a routerLink="/admin/productos" routerLinkActive="active" class="menu-item">
+        <span class="icon">📦</span> Registrar Producto
+      </a>
+      <a routerLink="/admin/tablas" routerLinkActive="active" class="menu-item">
+        <span class="icon">📋</span> Inventario / Tablas
+      </a>
+      <a routerLink="/admin/users" routerLinkActive="active" class="menu-item">
+        <span class="icon">👥</span> Usuarios
+      </a>
+      <a routerLink="/admin/reportes" routerLinkActive="active" class="menu-item">
+        <span class="icon">📊</span> Reportes
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a routerLink="/home" class="btn-back">
+        <span class="icon">⬅️</span> Volver a la Tienda
+      </a>
+    </div>
+  </aside>
+
+  <!-- Contenido Principal -->
+  <main class="main-content">
+    <header class="topbar">
+      <h3>Panel de Control</h3>
+      <div class="user-badge">Administrador</div>
+    </header>
+
+    <div class="page-body">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

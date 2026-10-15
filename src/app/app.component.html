@@ -1,5 +1,8 @@
-<!-- Navbar fijo en la parte superior -->
-<app-navbar></app-navbar>
+<!-- El navbar solo se muestra si NO estás en el panel de administrador -->
+@if (!isAdminRoute) {
+  <!-- Navbar fijo en la parte superior -->
+  <app-navbar></app-navbar>
+}
 
 <!-- Contenido dinámico según las rutas de TEYA -->
 <main class="main-content">
