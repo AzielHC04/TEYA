@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/service/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ import { Router, RouterLink } from '@angular/router';
 export class LoginComponent {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private authService = inject(AuthService); // Inyectamos el AuthService
 
   email: string = '';
   password: string = '';
@@ -27,8 +29,8 @@ export class LoginComponent {
 
     this.http.post<any>('http://localhost:3000/api/users/login', payload).subscribe({
       next: (res) => {
-        // Guardamos los datos básicos del usuario en localStorage
-        localStorage.setItem('usuario', JSON.stringify(res.usuario));
+        // Usamos el AuthService para guardar el token, el usuario y actualizar la señal global
+        this.authService.login(res.token, res.usuario);
 
         // Redirigimos dependiendo del rol
         if (res.usuario.role === 'ADMIN') {

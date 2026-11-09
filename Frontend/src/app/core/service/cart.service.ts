@@ -12,7 +12,6 @@ export interface CartItem {
   providedIn: 'root'
 })
 export class CartService {
-  private cartKey = 'kabnia_real_cart';
   private platformId = inject(PLATFORM_ID);
   
   private cartItemsSubject = new BehaviorSubject<CartItem[]>(this.cargarDesdeStorage());
@@ -20,9 +19,27 @@ export class CartService {
 
   constructor() {}
 
+  // Genera una llave única basada en el usuario logueado actualmente
+  private obtenerCartKey(): string {
+    if (isPlatformBrowser(this.platformId)) {
+      const usuarioGuardado = localStorage.getItem('usuario');
+      if (usuarioGuardado && usuarioGuardado !== 'undefined' && usuarioGuardado !== 'null') {
+        try {
+          const usuario = JSON.parse(usuarioGuardado);
+          // Si el usuario tiene ID o email, lo usamos para separar su carrito
+          return `kabnia_cart_${usuario.id || usuario.email}`;
+        } catch (e) {
+          return 'kabnia_cart_invitado';
+        }
+      }
+    }
+    return 'kabnia_cart_invitado';
+  }
+
   private cargarDesdeStorage(): CartItem[] {
     if (isPlatformBrowser(this.platformId)) {
-      const data = localStorage.getItem(this.cartKey);
+      const key = this.obtenerCartKey();
+      const data = localStorage.getItem(key);
       return data ? JSON.parse(data) : [];
     }
     return [];
@@ -30,8 +47,15 @@ export class CartService {
 
   private guardarEnStorage(items: CartItem[]): void {
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem(this.cartKey, JSON.stringify(items));
+      const key = this.obtenerCartKey();
+      localStorage.setItem(key, JSON.stringify(items));
     }
+    this.cartItemsSubject.next(items);
+  }
+
+  // Método que llama el AuthService al iniciar sesión para recargar el carrito de ese usuario específico
+  public recargarCarritoUsuario(): void {
+    const items = this.cargarDesdeStorage();
     this.cartItemsSubject.next(items);
   }
 
@@ -88,10 +112,8 @@ export class CartService {
     return { exito: true, mensaje: 'Producto eliminado del carrito.' };
   }
 
+  // Ya no borramos el localStorage del carrito al salir, solo limpiamos la vista actual en memoria
   public limpiarCarrito(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem(this.cartKey);
-    }
     this.cartItemsSubject.next([]);
   }
 }
