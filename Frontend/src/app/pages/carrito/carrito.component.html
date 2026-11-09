@@ -1,35 +1,508 @@
+
 <div class="carrito-container">
-  <h2>🛒 Tu Carrito de Compras - KABNIA</h2>
 
+  <!-- ENCABEZADO -->
+  <header class="carrito-header">
+    <div>
+      <h1>🛒 Tu Carrito de Compras</h1>
+      <p>KABNIA | Finaliza tu pedido de forma segura</p>
+    </div>
+
+    <span class="badge-total">
+      {{ cantidadProductos }} productos
+    </span>
+  </header>
+
+  <!-- CARRITO VACÍO -->
   @if (carrito.length === 0) {
+
     <div class="carrito-vacio">
-      <p>Tu carrito está vacío actualmente.</p>
-      <a routerLink="/products" class="btn-explorar">Explorar Productos</a>
+      <div class="icono-vacio">🛍️</div>
+
+      <h2>Tu carrito está vacío</h2>
+
+      <p>
+        Agrega productos para comenzar tu compra.
+      </p>
+
+      <a routerLink="/products" class="btn-primary">
+        Explorar productos
+      </a>
     </div>
+
   } @else {
-    <div class="carrito-contenido">
-      <div class="lista-productos">
-        @for (item of carrito; track $index) {
-          <div class="item-card">
-            <img [src]="item.imagen" [alt]="item.nombre" class="item-img" />
-            <div class="item-info">
-              <h3>{{ item.nombre }}</h3>
-              <p class="precio">${{ item.precio }} MXN</p>
-              <p>Cantidad: {{ item.cantidad || 1 }}</p>
-            </div>
-            <button class="btn-eliminar" (click)="eliminarItem($index)">🗑️</button>
+
+    <div class="carrito-grid">
+
+      <!-- COLUMNA IZQUIERDA -->
+      <div class="columna-principal">
+
+        <!-- PRODUCTOS -->
+        <section class="productos-seccion">
+
+          <div class="seccion-titulo">
+            <h2>Productos seleccionados</h2>
+
+            <button
+              type="button"
+              class="btn-vaciar"
+              (click)="vaciarCarrito()"
+            >
+              Vaciar carrito
+            </button>
           </div>
-        }
+
+          @for (item of carrito; track item.producto.id) {
+
+            <div class="producto-card">
+
+              <img
+                [src]="item.producto.imagen"
+                [alt]="item.producto.nombre"
+                class="producto-img"
+              />
+
+              <div class="producto-detalles">
+
+                <h3 class="producto-nombre">
+                  {{ item.producto.nombre }}
+                </h3>
+
+                <p class="precio-unitario">
+                  Precio unitario:
+                  {{ item.producto.precio | currency:'MXN':'symbol':'1.2-2' }}
+                </p>
+
+                <p class="stock-info">
+                  Stock disponible:
+                  {{ item.producto.stock }}
+                </p>
+
+                <!-- CONTROL DE CANTIDAD -->
+                <div class="cantidad-control">
+
+                  <button
+                    type="button"
+                    (click)="disminuirCantidad(item)"
+                    [disabled]="item.cantidad <= 1"
+                    aria-label="Disminuir cantidad"
+                  >
+                    −
+                  </button>
+
+                  <span class="cantidad-numero">
+                    {{ item.cantidad }}
+                  </span>
+
+                  <button
+                    type="button"
+                    (click)="aumentarCantidad(item)"
+                    [disabled]="item.cantidad >= item.producto.stock"
+                    aria-label="Aumentar cantidad"
+                  >
+                    +
+                  </button>
+
+                </div>
+
+              </div>
+
+              <div class="producto-acciones">
+
+                <span class="subtotal-item">
+                  {{ (item.producto.precio * item.cantidad)
+                    | currency:'MXN':'symbol':'1.2-2' }}
+                </span>
+
+                <button
+                  type="button"
+                  class="btn-eliminar"
+                  (click)="eliminarItem(item)"
+                  aria-label="Eliminar producto"
+                >
+                  🗑️ Eliminar
+                </button>
+
+              </div>
+
+            </div>
+
+          }
+
+        </section>
+
+        <!-- FORMULARIO DE DIRECCIÓN -->
+        <section class="direccion-card">
+
+          <div class="seccion-titulo">
+            <h2>📍 Dirección de entrega</h2>
+          </div>
+
+          <p class="texto-ayuda">
+            Completa tus datos para registrar la dirección
+            de entrega. Los campos con * son obligatorios.
+          </p>
+
+          <form
+            [formGroup]="direccionForm"
+            (ngSubmit)="guardarDireccion()"
+            novalidate
+          >
+
+            <div class="form-grid">
+
+              <!-- CORREO -->
+              <div class="campo campo-completo">
+
+                <label for="correo">
+                  Correo electrónico *
+                </label>
+
+                <input
+                  id="correo"
+                  type="email"
+                  formControlName="correo"
+                  placeholder="ejemplo@correo.com"
+                  autocomplete="email"
+                />
+
+                @if (campoInvalido('correo')) {
+                  <small class="error">
+                    Introduce un correo electrónico válido.
+                  </small>
+                }
+
+              </div>
+
+              <!-- NOMBRE -->
+              <div class="campo">
+
+                <label for="nombre">
+                  Nombre completo *
+                </label>
+
+                <input
+                  id="nombre"
+                  type="text"
+                  formControlName="nombre"
+                  placeholder="Nombre del destinatario"
+                  autocomplete="name"
+                />
+
+                @if (campoInvalido('nombre')) {
+                  <small class="error">
+                    Introduce tu nombre completo.
+                  </small>
+                }
+
+              </div>
+
+              <!-- TELÉFONO -->
+              <div class="campo">
+
+                <label for="telefono">
+                  Teléfono *
+                </label>
+
+                <input
+                  id="telefono"
+                  type="tel"
+                  formControlName="telefono"
+                  placeholder="10 dígitos"
+                  maxlength="10"
+                  inputmode="numeric"
+                  autocomplete="tel"
+                />
+
+                @if (campoInvalido('telefono')) {
+                  <small class="error">
+                    Introduce un teléfono de 10 dígitos.
+                  </small>
+                }
+
+              </div>
+
+              <!-- CALLE -->
+              <div class="campo">
+
+                <label for="calle">
+                  Calle *
+                </label>
+
+                <input
+                  id="calle"
+                  type="text"
+                  formControlName="calle"
+                  placeholder="Nombre de la calle"
+                  autocomplete="address-line1"
+                />
+
+                @if (campoInvalido('calle')) {
+                  <small class="error">
+                    La calle es obligatoria.
+                  </small>
+                }
+
+              </div>
+
+              <!-- NÚMERO EXTERIOR -->
+              <div class="campo">
+
+                <label for="numero">
+                  Número exterior *
+                </label>
+
+                <input
+                  id="numero"
+                  type="text"
+                  formControlName="numero"
+                  placeholder="Ejemplo: 125 o S/N"
+                />
+
+                @if (campoInvalido('numero')) {
+                  <small class="error">
+                    Introduce el número exterior.
+                  </small>
+                }
+
+              </div>
+
+              <!-- NÚMERO INTERIOR -->
+              <div class="campo">
+
+                <label for="interior">
+                  Número interior
+                </label>
+
+                <input
+                  id="interior"
+                  type="text"
+                  formControlName="interior"
+                  placeholder="Departamento, piso, etc."
+                />
+
+              </div>
+
+              <!-- COLONIA -->
+              <div class="campo">
+
+                <label for="colonia">
+                  Colonia *
+                </label>
+
+                <input
+                  id="colonia"
+                  type="text"
+                  formControlName="colonia"
+                  placeholder="Colonia"
+                  autocomplete="address-line2"
+                />
+
+                @if (campoInvalido('colonia')) {
+                  <small class="error">
+                    La colonia es obligatoria.
+                  </small>
+                }
+
+              </div>
+
+              <!-- CIUDAD -->
+              <div class="campo">
+
+                <label for="ciudad">
+                  Ciudad o municipio *
+                </label>
+
+                <input
+                  id="ciudad"
+                  type="text"
+                  formControlName="ciudad"
+                  placeholder="Ciudad o municipio"
+                  autocomplete="address-level2"
+                />
+
+                @if (campoInvalido('ciudad')) {
+                  <small class="error">
+                    Introduce tu ciudad o municipio.
+                  </small>
+                }
+
+              </div>
+
+              <!-- ESTADO -->
+              <div class="campo">
+
+                <label for="estado">
+                  Estado *
+                </label>
+
+                <select
+                  id="estado"
+                  formControlName="estado"
+                  autocomplete="address-level1"
+                >
+                  <option value="">
+                    Selecciona un estado
+                  </option>
+
+                  @for (estado of estados; track estado) {
+                    <option [value]="estado">
+                      {{ estado }}
+                    </option>
+                  }
+
+                </select>
+
+                @if (campoInvalido('estado')) {
+                  <small class="error">
+                    Selecciona un estado.
+                  </small>
+                }
+
+              </div>
+
+              <!-- CÓDIGO POSTAL -->
+              <div class="campo">
+
+                <label for="codigoPostal">
+                  Código postal *
+                </label>
+
+                <input
+                  id="codigoPostal"
+                  type="text"
+                  formControlName="codigoPostal"
+                  placeholder="5 dígitos"
+                  maxlength="5"
+                  inputmode="numeric"
+                  autocomplete="postal-code"
+                />
+
+                @if (campoInvalido('codigoPostal')) {
+                  <small class="error">
+                    Introduce un código postal de 5 dígitos.
+                  </small>
+                }
+
+              </div>
+
+              <!-- REFERENCIAS -->
+              <div class="campo campo-completo">
+
+                <label for="referencias">
+                  Referencias adicionales
+                </label>
+
+                <textarea
+                  id="referencias"
+                  formControlName="referencias"
+                  rows="3"
+                  placeholder="Color de la casa, entre calles, referencias, etc."
+                ></textarea>
+
+              </div>
+
+            </div>
+
+            <!-- GUARDAR DIRECCIÓN -->
+            <button
+              type="submit"
+              class="btn-primary btn-guardar"
+            >
+              💾 Guardar dirección
+            </button>
+
+            @if (direccionGuardada) {
+
+              <div class="mensaje-exito" role="status">
+                ✅ Dirección guardada correctamente.
+              </div>
+
+            }
+
+          </form>
+
+        </section>
+
       </div>
 
-      <div class="resumen-card">
-        <h3>Resumen del Pedido</h3>
-        <div class="total-line">
-          <span>Total a pagar:</span>
-          <span class="monto">${{ total }} MXN</span>
+      <!-- RESUMEN DEL PEDIDO -->
+      <aside class="resumen-card">
+
+        <h2>Resumen del pedido</h2>
+
+        <div class="resumen-linea">
+          <span>Productos</span>
+          <strong>{{ cantidadProductos }}</strong>
         </div>
-        <button class="btn-pagar" (click)="procederAlPago()">Proceder al Pago</button>
-      </div>
+
+        <div class="resumen-linea">
+          <span>Subtotal</span>
+
+          <strong>
+            {{ total | currency:'MXN':'symbol':'1.2-2' }}
+          </strong>
+        </div>
+
+        <div class="resumen-divider"></div>
+
+        <div class="resumen-linea total-linea">
+          <span>Total de productos</span>
+
+          <span class="monto-total">
+            {{ total | currency:'MXN':'symbol':'1.2-2' }}
+          </span>
+        </div>
+
+        <p class="texto-ayuda">
+          Los gastos de envío, si aplican,
+          se calcularán durante el pago.
+        </p>
+
+        @if (direccionGuardada) {
+
+          <div class="direccion-confirmada">
+            <strong>✅ Dirección registrada</strong>
+
+            <p>
+              {{ direccionForm.get('correo')?.value }}
+            </p>
+
+            <p>
+              {{ direccionForm.get('calle')?.value }},
+              {{ direccionForm.get('numero')?.value }}
+            </p>
+
+            <p>
+              {{ direccionForm.get('ciudad')?.value }},
+              {{ direccionForm.get('estado')?.value }}
+            </p>
+          </div>
+
+        } @else {
+
+          <p class="aviso-direccion">
+            ⚠️ Guarda tu dirección para continuar con el pago.
+          </p>
+
+        }
+
+        <button
+          type="button"
+          class="btn-primary btn-bloque"
+          (click)="procederAlPago()"
+        >
+          Proceder al pago
+        </button>
+
+        <a routerLink="/products" class="link-seguir">
+          ← Seguir comprando
+        </a>
+
+      </aside>
+
     </div>
+
   }
+
 </div>
