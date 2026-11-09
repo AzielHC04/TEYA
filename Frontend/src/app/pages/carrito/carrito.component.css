@@ -1,0 +1,389 @@
+:host {
+  display: block;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #2c3e50;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+.carrito-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+.carrito-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.carrito-header h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1e293b;
+}
+
+.badge-total {
+  background-color: #e2e8f0;
+  color: #475569;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* Grid Layout */
+.carrito-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 992px) {
+  .carrito-grid {
+    grid-template-columns: 1fr 380px;
+  }
+}
+
+/* Sección Productos */
+.acciones-lista {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.btn-vaciar {
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.btn-vaciar:hover {
+  background-color: #fee2e2;
+}
+
+/* Tarjeta Producto */
+.producto-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 1.25rem;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+}
+
+@media (min-width: 640px) {
+  .producto-card {
+    grid-template-columns: 100px 1fr auto;
+  }
+}
+
+.producto-img {
+  width: 100%;
+  height: 100px;
+  object-fit: contain;
+  background-color: #f1f5f9;
+  border-radius: 8px;
+  padding: 0.5rem;
+}
+
+.producto-detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.categoria-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #16a34a;
+  letter-spacing: 0.05em;
+}
+
+.producto-nombre {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.producto-descripcion {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.presentacion-selector {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.select-custom {
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background-color: #fff;
+  font-size: 0.875rem;
+}
+
+/* Precios y Cantidad */
+.producto-precio-cantidad {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+  grid-column: span 2;
+}
+
+@media (min-width: 640px) {
+  .producto-precio-cantidad {
+    grid-column: span 1;
+  }
+}
+
+.precio-unitario {
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+.cantidad-control {
+  display: flex;
+  align-items: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.cantidad-control button {
+  background: #f8fafc;
+  border: none;
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #334155;
+  transition: background-color 0.2s;
+}
+
+.cantidad-control button:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+.cantidad-control button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.cantidad-numero {
+  padding: 0 0.75rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.subtotal-item {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+.btn-eliminar {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.25rem;
+  transition: color 0.2s;
+}
+
+.btn-eliminar:hover {
+  color: #ef4444;
+}
+
+/* Resumen Seccion */
+.resumen-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  position: sticky;
+  top: 2rem;
+}
+
+.resumen-card h2 {
+  font-size: 1.25rem;
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  color: #0f172a;
+}
+
+.resumen-linea {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.9375rem;
+  color: #475569;
+}
+
+/* Opciones Envío */
+.envio-opciones {
+  margin: 1.5rem 0;
+}
+
+.envio-opciones h3 {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  margin-bottom: 0.75rem;
+}
+
+.opcion-envio {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.opcion-envio:hover {
+  border-color: #cbd5e1;
+}
+
+.opcion-envio.activa {
+  border-color: #16a34a;
+  background-color: #f0fdf4;
+}
+
+.envio-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.envio-titulo {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.envio-tiempo {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.envio-precio {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #0f172a;
+}
+
+.resumen-divider {
+  height: 1px;
+  background-color: #e2e8f0;
+  margin: 1.25rem 0;
+}
+
+.total-linea {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.monto-total {
+  font-size: 1.5rem;
+  color: #16a34a;
+}
+
+/* Botones & Enlaces */
+.btn-primary {
+  background-color: #16a34a;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #15803d;
+}
+
+.btn-bloque {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.link-seguir {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  color: #64748b;
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.link-seguir:hover {
+  text-decoration: underline;
+}
+
+/* Estado Vacío */
+.carrito-vacio {
+  text-align: center;
+  padding: 4rem 1rem;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.icono-vacio {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.carrito-vacio h2 {
+  margin: 0 0 0.5rem 0;
+  color: #1e293b;
+}
+
+.carrito-vacio p {
+  color: #64748b;
+  margin-bottom: 1.5rem;
+}

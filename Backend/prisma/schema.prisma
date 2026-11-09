@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// 1. Tabla de Productos (Respetando tu estructura actual con UUID)
+model Producto {
+  id             String      @id @default(uuid())
+  nombre         String
+  categoria      String
+  descripcion    String?
+  precio         Float
+  precioAnterior Float?
+  descuento      String?
+  envioGratis    Boolean     @default(false)
+  imagen         String
+  stock          Int         @default(10)
+  masComprado    Boolean     @default(false)
+  ultimoAgregado Boolean     @default(false)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  orderItems     OrderItem[] // Relación con los elementos de los pedidos
+}
+
+// 2. Tabla de Usuarios / Clientes (Para el Login y Registro)
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // Aquí se guardará la contraseña cifrada (hash)
+  name      String
+  role      String   @default("CLIENT") // Puede ser "ADMIN" o "CLIENT"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]  // Relación: Un usuario puede tener múltiples pedidos
+}
+
+// 3. Tabla de Pedidos (Órdenes de compra)
+model Order {
+  id        String      @id @default(uuid())
+  userId    String      // Llave foránea que apunta al ID del usuario logueado
+  user      User        @relation(fields: [userId], references: [id])
+  total     Float
+  status    String      @default("PENDING") // PENDING, COMPLETED, CANCELLED
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  items     OrderItem[] // Relación: Un pedido contiene varios productos/items
+}
+
+// 4. Tabla Detalle del Pedido (Relación de Muchos a Muchos entre Order y Producto)
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Producto @relation(fields: [productId], references: [id])
+  quantity  Int      // Cuántas unidades de este producto compró
+  price     Float    // Precio fijo del producto en el momento exacto de la compra
+}

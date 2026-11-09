@@ -1,0 +1,96 @@
+<header class="navbar-header">
+  <div class="navbar-container">
+
+    <!-- LOGO -->
+    <a routerLink="/" class="navbar-brand">
+      <img
+        src="assets/images/L1.png"
+        alt="KABNIA"
+        class="navbar-logo"
+      >
+    </a>
+
+    <!-- NAVEGACIÓN -->
+    <nav class="navbar-nav">
+      <ul>
+        <li>
+          <a
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link"
+            (click)="cerrarProductos()"
+          >
+            Inicio
+          </a>
+        </li>
+
+        <li class="dropdown">
+          <button
+            type="button"
+            class="nav-link dropdown-toggle"
+            [class.active-dropdown]="productosAbierto"
+            (click)="toggleProductos()"
+          >
+            <span>Productos</span>
+            <span class="arrow" [class.arrow-open]="productosAbierto"></span>
+          </button>
+
+          <ul class="dropdown-menu" [class.show]="productosAbierto">
+            <li><a routerLink="/products" (click)="cerrarProductos()">Todos los productos</a></li>
+            <li><a routerLink="/products" [queryParams]="{ categoria: 'microorganismos' }" (click)="cerrarProductos()">Microorganismos</a></li>
+            <li><a routerLink="/products" [queryParams]="{ categoria: 'fungicidas' }" (click)="cerrarProductos()">Fungicidas</a></li>
+            <li><a routerLink="/products" [queryParams]="{ categoria: 'insecticidas' }" (click)="cerrarProductos()">Insecticidas</a></li>
+            <li><a routerLink="/products" [queryParams]="{ categoria: 'adherentes' }" (click)="cerrarProductos()">Adherentes</a></li>
+            <li><a routerLink="/products" [queryParams]="{ categoria: 'antiestresantes' }" (click)="cerrarProductos()">Antiestresantes</a></li>
+          </ul>
+        </li>
+
+        <li>
+          <a
+            routerLink="/nosotros"
+            routerLinkActive="active"
+            class="nav-link"
+            (click)="cerrarProductos()"
+          >
+            Nosotros
+          </a>
+        </li>
+
+        <li>
+          <a
+            routerLink="/carrito"
+            routerLinkActive="active"
+            class="nav-link cart-link"
+            (click)="cerrarProductos()"
+          >
+            <span>Carrito</span>
+            <span class="cart-badge" *ngIf="totalProductosEnCarrito > 0">
+              {{ totalProductosEnCarrito }}
+            </span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- ACCIÓN DE AUTENTICACIÓN EXACTA -->
+    <div class="navbar-actions">
+      @if (!usuarioLogueado) {
+        <!-- 1. Si NO hay sesión: Muestra ÚNICAMENTE el botón de Iniciar Sesión -->
+        <a routerLink="/login" class="btn-profile" (click)="cerrarProductos()">
+          Iniciar Sesión
+        </a>
+      } @else {
+        <!-- 2. Si SÍ hay sesión iniciada: Desaparece el login y muestra Mi cuenta + Salir -->
+        <a routerLink="/miperfil" class="btn-profile" (click)="cerrarProductos()">
+          Mi cuenta
+        </a>
+
+        <button type="button" class="btn-logout-text" (click)="cerrarSesion(); cerrarProductos()">
+          Salir
+        </button>
+      }
+    </div>
+
+  </div>
+</header>

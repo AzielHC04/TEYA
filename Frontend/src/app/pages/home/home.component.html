@@ -1,0 +1,153 @@
+<div class="home-container">
+
+  <!-- CARRUSEL PROMOCIONAL (BANNER PRINCIPAL) -->
+  <section class="banner-carousel-section">
+    <div class="carousel-wrapper">
+      <div 
+        class="carousel-slide" 
+        *ngFor="let banner of bannersPromocionales; let i = index"
+        [class.active]="i === bannerActual"
+      >
+        <img [src]="banner.imagen" [alt]="banner.titulo" class="banner-img">
+      </div>
+
+      <!-- Controles de navegación del banner -->
+      <button class="carousel-arrow prev" (click)="anteriorBanner()">&lsaquo;</button>
+      <button class="carousel-arrow next" (click)="siguienteBanner()">&rsaquo;</button>
+
+      <!-- Indicadores (Puntitos) -->
+      <div class="carousel-dots">
+        <span 
+          *ngFor="let banner of bannersPromocionales; let i = index"
+          [class.active]="i === bannerActual"
+          (click)="seleccionarBanner(i)"
+        ></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN: LOS MÁS COMPRADOS -->
+  <section class="products-carousel-section">
+    <div class="section-header-centered">
+      <h2>Los más comprados</h2>
+      <a routerLink="/products" class="see-more-link">Ver todos &rarr;</a>
+    </div>
+
+    <!-- Contenedor horizontal de productos -->
+    <div class="horizontal-scroll">
+      <div class="product-card" *ngFor="let producto of masCompradosVisibles">
+        
+        <div class="product-img-box">
+          <img [src]="producto.imagen" [alt]="producto.nombre">
+        </div>
+
+        <div class="product-info">
+          <span class="category-tag">{{ producto.categoria }}</span>
+          <h3 class="product-title">{{ producto.nombre }}</h3>
+          
+          <!-- Stock en tiempo real -->
+          <div class="stock-badge" [class.stock-bajo]="producto.stock <= 5">
+             Stock: <strong>{{ producto.stock }} disp.</strong>
+          </div>
+
+          <p class="product-description">{{ producto.descripcion }}</p>
+
+          <div class="price-container">
+            <div class="current-price-row">
+              <span class="price">{{ producto.precio | currency:'MXN':'symbol':'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <!-- Botonera inferior compacta -->
+          <div class="card-actions">
+            <a [routerLink]="['/products', producto.id]" class="btn-ficha">
+              Ficha Técnica
+            </a>
+            <button 
+              type="button" 
+              class="btn-add-cart"
+              (click)="agregarAlCarrito(producto)"
+              [disabled]="producto.stock === 0"
+            >
+              {{ producto.stock === 0 ? 'Agotado' : '🛒 Agregar' }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN: ÚLTIMOS AGREGADOS -->
+  <section class="products-carousel-section">
+    <div class="section-header-centered">
+      <h2>Últimos agregados</h2>
+      <a routerLink="/products" class="see-more-link">Ver todos &rarr;</a>
+    </div>
+
+    <!-- Contenedor horizontal de productos -->
+    <div class="horizontal-scroll">
+      <div class="product-card" *ngFor="let producto of ultimosAgregadosVisibles">
+        
+        <div class="product-img-box">
+          <img [src]="producto.imagen" [alt]="producto.nombre">
+        </div>
+
+        <div class="product-info">
+          <span class="category-tag">{{ producto.categoria }}</span>
+          <h3 class="product-title">{{ producto.nombre }}</h3>
+          
+          <!-- Stock en tiempo real -->
+          <div class="stock-badge" [class.stock-bajo]="producto.stock <= 5">
+           Stock: <strong>{{ producto.stock }} disp.</strong>
+          </div>
+
+          <p class="product-description">{{ producto.descripcion }}</p>
+
+          <div class="price-container">
+            <div class="current-price-row">
+              <span class="price">{{ producto.precio | currency:'MXN':'symbol':'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <!-- Botonera inferior compacta -->
+          <div class="card-actions">
+            <a [routerLink]="['/products', producto.id]" class="btn-ficha">
+              Ficha Técnica
+            </a>
+            <button 
+              type="button" 
+              class="btn-add-cart"
+              (click)="agregarAlCarrito(producto)"
+              [disabled]="producto.stock === 0"
+            >
+              {{ producto.stock === 0 ? 'Agotado' : '🛒 Agregar' }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BANNERS DE ANUNCIOS INFERIORES -->
+  <section class="ads-section">
+    <div class="ad-card ad-1">
+      <div class="ad-content">
+        <span class="ad-badge">KABNIA BIO</span>
+        <h3>Nutrición Avanzada</h3>
+        <p>Maximiza el rendimiento y la resistencia natural de tus cultivos.</p>
+        <a routerLink="/products" class="btn-ad">Ver catálogo</a>
+      </div>
+    </div>
+    <div class="ad-card ad-2">
+      <div class="ad-content">
+        <span class="ad-badge">ASESORÍA</span>
+        <h3>Soporte Técnico</h3>
+        <p>Contáctanos para recomendaciones específicas de aplicación.</p>
+        <a routerLink="/nosotros" class="btn-ad">Conócenos</a>
+      </div>
+    </div>
+  </section>
+
+</div>

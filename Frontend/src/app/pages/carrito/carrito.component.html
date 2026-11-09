@@ -1,0 +1,35 @@
+<div class="carrito-container">
+  <h2>🛒 Tu Carrito de Compras - KABNIA</h2>
+
+  @if (carrito.length === 0) {
+    <div class="carrito-vacio">
+      <p>Tu carrito está vacío actualmente.</p>
+      <a routerLink="/products" class="btn-explorar">Explorar Productos</a>
+    </div>
+  } @else {
+    <div class="carrito-contenido">
+      <div class="lista-productos">
+        @for (item of carrito; track $index) {
+          <div class="item-card">
+            <img [src]="item.imagen" [alt]="item.nombre" class="item-img" />
+            <div class="item-info">
+              <h3>{{ item.nombre }}</h3>
+              <p class="precio">${{ item.precio }} MXN</p>
+              <p>Cantidad: {{ item.cantidad || 1 }}</p>
+            </div>
+            <button class="btn-eliminar" (click)="eliminarItem($index)">🗑️</button>
+          </div>
+        }
+      </div>
+
+      <div class="resumen-card">
+        <h3>Resumen del Pedido</h3>
+        <div class="total-line">
+          <span>Total a pagar:</span>
+          <span class="monto">${{ total }} MXN</span>
+        </div>
+        <button class="btn-pagar" (click)="procederAlPago()">Proceder al Pago</button>
+      </div>
+    </div>
+  }
+</div>

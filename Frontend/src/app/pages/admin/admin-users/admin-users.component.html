@@ -1,0 +1,52 @@
+<div class="inventory-container">
+  <div class="inventory-header">
+    <h2>Gestión de Usuarios</h2>
+    <p>Visualiza y administra todos los usuarios registrados en el e-commerce KABNIA.</p>
+  </div>
+
+  @if (mensajeExito) {
+    <div class="alert alert-success">{{ mensajeExito }}</div>
+  }
+  @if (mensajeError) {
+    <div class="alert alert-danger">{{ mensajeError }}</div>
+  }
+
+  @if (cargando) {
+    <div class="loading">Cargando usuarios...</div>
+  } @else {
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Correo Electrónico</th>
+            <th>Rol</th>
+            <th>Fecha de Registro</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of usuarios; track user.id) {
+            <tr>
+              <td><strong>{{ user.name }}</strong></td>
+              <td>{{ user.email }}</td>
+              <td>
+                <span class="badge-role" [class.badge-admin]="user.role === 'ADMIN'">
+                  {{ user.role }}
+                </span>
+              </td>
+              <td>{{ user.createdAt | date:'mediumDate' }}</td>
+              <td class="actions-cell">
+                <button class="btn-delete" (click)="eliminarUsuario(user.id)">🗑️ Eliminar</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="empty-msg">No hay usuarios registrados en la plataforma.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,38 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2>🌱 Únete a KABNIA</h2>
+      <p>Crea tu cuenta para comenzar a comprar</p>
+    </div>
+
+    @if (mensajeError) {
+      <div class="alert alert-danger">{{ mensajeError }}</div>
+    }
+    @if (mensajeExito) {
+      <div class="alert alert-success">{{ mensajeExito }}</div>
+    }
+
+    <form (ngSubmit)="registrarUsuario()">
+      <div class="form-group">
+        <label>Nombre Completo</label>
+        <input type="text" [(ngModel)]="name" name="name" required placeholder="Tu nombre..." />
+      </div>
+
+      <div class="form-group">
+        <label>Correo Electrónico</label>
+        <input type="email" [(ngModel)]="email" name="email" required placeholder="correo@ejemplo.com" />
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" [(ngModel)]="password" name="password" required placeholder="••••••••" />
+      </div>
+
+      <button type="submit" class="btn-submit">Registrarse</button>
+    </form>
+
+    <div class="auth-footer">
+      <p>¿Ya tienes una cuenta? <a routerLink="/login">Inicia sesión aquí</a></p>
+    </div>
+  </div>
+</div>
