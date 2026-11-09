@@ -11,7 +11,43 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// 1. Tabla de Productos (Respetando tu estructura actual con UUID)
+// 1. Tabla de Usuarios / Clientes (Centro de relaciones de la cuenta)
+model User {
+  id          String      @id @default(uuid())
+  email       String      @unique
+  password    String      // Contraseña cifrada (hash)
+  name        String      // Nombre principal
+  apellidos   String?     // Apellidos (opcional o requerido según prefieras)
+  telefono    String?     // Teléfono de contacto del usuario
+  role        String      @default("CLIENT") // "ADMIN" o "CLIENT"
+  
+  // Relaciones coherentes del usuario:
+  direcciones Address[]   // Un usuario puede tener múltiples direcciones de entrega
+  orders      Order[]     // Un usuario puede realizar múltiples pedidos
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+// 2. Tabla de Direcciones (Relacionada directamente con el usuario)
+model Address {
+  id           String   @id @default(uuid())
+  calle        String
+  colonia      String
+  ciudad       String
+  estado       String
+  codigoPostal String
+  esPrincipal  Boolean  @default(false) // Para identificar la dirección predeterminada de envío
+  
+  // Llave foránea hacia el Usuario propietario de la dirección
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// 3. Tabla de Productos
 model Producto {
   id             String      @id @default(uuid())
   nombre         String
@@ -30,22 +66,10 @@ model Producto {
   orderItems     OrderItem[] // Relación con los elementos de los pedidos
 }
 
-// 2. Tabla de Usuarios / Clientes (Para el Login y Registro)
-model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String   // Aquí se guardará la contraseña cifrada (hash)
-  name      String
-  role      String   @default("CLIENT") // Puede ser "ADMIN" o "CLIENT"
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  orders    Order[]  // Relación: Un usuario puede tener múltiples pedidos
-}
-
-// 3. Tabla de Pedidos (Órdenes de compra)
+// 4. Tabla de Pedidos (Órdenes de compra)
 model Order {
   id        String      @id @default(uuid())
-  userId    String      // Llave foránea que apunta al ID del usuario logueado
+  userId    String      // Llave foránea que apunta al usuario que compró
   user      User        @relation(fields: [userId], references: [id])
   total     Float
   status    String      @default("PENDING") // PENDING, COMPLETED, CANCELLED
@@ -54,13 +78,13 @@ model Order {
   items     OrderItem[] // Relación: Un pedido contiene varios productos/items
 }
 
-// 4. Tabla Detalle del Pedido (Relación de Muchos a Muchos entre Order y Producto)
+// 5. Tabla Detalle del Pedido (Relación de Muchos a Muchos entre Order y Producto)
 model OrderItem {
   id        String   @id @default(uuid())
   orderId   String
   order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productId String
   product   Producto @relation(fields: [productId], references: [id])
-  quantity  Int      // Cuántas unidades de este producto compró
-  price     Float    // Precio fijo del producto en el momento exacto de la compra
+  quantity  Int      // Unidades compradas
+  price     Float    // Precio fijo al momento de la compra
 }
