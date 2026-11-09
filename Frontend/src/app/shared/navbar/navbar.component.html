@@ -73,9 +73,9 @@
       </ul>
     </nav>
 
-    <!-- ACCIÓN DE AUTENTICACIÓN EXACTA -->
+    <!-- ACCIÓN DE AUTENTICACIÓN REACTIVA -->
     <div class="navbar-actions">
-      @if (!usuarioLogueado) {
+      @if (!authService.usuarioActual()) {
         <!-- 1. Si NO hay sesión: Muestra ÚNICAMENTE el botón de Iniciar Sesión -->
         <a routerLink="/login" class="btn-profile" (click)="cerrarProductos()">
           Iniciar Sesión
