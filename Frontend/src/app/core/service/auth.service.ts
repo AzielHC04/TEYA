@@ -1,52 +1,120 @@
-import { Injectable, signal, PLATFORM_ID, inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { CartService } from './cart.service';
+
+import {
+  Injectable,
+  signal,
+  PLATFORM_ID,
+  inject
+} from '@angular/core';
+
+import {
+  isPlatformBrowser
+} from '@angular/common';
+
+import {
+  CartService
+} from './cart.service';
+
+export interface UsuarioAutenticado {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  apellidos?: string;
+  telefono?: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
   private platformId = inject(PLATFORM_ID);
   private cartService = inject(CartService);
 
-  // Señal reactiva que almacena el usuario actual
-  public usuarioActual = signal<any>(this.obtenerUsuarioInicial());
+  // Estado reactivo de la cuenta actual.
+  public usuarioActual = signal<UsuarioAutenticado | null>(
+    this.obtenerUsuarioInicial()
+  );
 
-  private obtenerUsuarioInicial() {
-    if (isPlatformBrowser(this.platformId)) {
-      const usuarioGuardado = localStorage.getItem('usuario');
-      if (usuarioGuardado && usuarioGuardado !== 'undefined' && usuarioGuardado !== 'null') {
-        try {
-          return JSON.parse(usuarioGuardado);
-        } catch (e) {
-          return null;
-        }
-      }
+  // Recuperar usuario guardado.
+  private obtenerUsuarioInicial(): UsuarioAutenticado | null {
+
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
     }
+
+    const guardado = localStorage.getItem('usuario');
+
+    if (!guardado) {
+      return null;
+    }
+
+    try {
+      const usuario = JSON.parse(guardado);
+
+      if (
+        usuario &&
+        typeof usuario === 'object' &&
+        !Array.isArray(usuario) &&
+        usuario.id &&
+        usuario.email
+      ) {
+        return usuario as UsuarioAutenticado;
+      }
+
+    } catch (error) {
+      console.error(
+        'Error al recuperar usuario:',
+        error
+      );
+    }
+
     return null;
   }
 
-  // Método para iniciar sesión
-  login(token: string, usuario: any): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem('token', token);
-      localStorage.setItem('usuario', JSON.stringify(usuario));
-    }
-    this.usuarioActual.set(usuario); // Actualiza la señal (Navbar se entera)
+  // Iniciar sesión con la respuesta REAL del backend.
+  login(usuario: UsuarioAutenticado): void {
 
-    // 🛒 CARGAMOS EL CARRITO ESPECÍFICO DE ESTE USUARIO
-    this.cartService.recargarCarritoUsuario();
+    if (isPlatformBrowser(this.platformId)) {
+
+      localStorage.setItem(
+        'usuario',
+        JSON.stringify(usuario)
+      );
+
+      // Evitar utilizar tokens anteriores
+      // que no pertenecen a esta autenticación.
+      localStorage.removeItem('token');
+    }
+
+    // Actualización inmediata para el navbar.
+    this.usuarioActual.set(usuario);
   }
 
-  // Método para cerrar sesión
+  // Cerrar sesión.
   logout(): void {
+
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('token');
       localStorage.removeItem('usuario');
+      localStorage.removeItem('token');
+      localStorage.removeItem('direccion_kabnia');
     }
-    this.usuarioActual.set(null); // Limpia la señal del usuario
-    
-    // Limpiamos la vista del carrito actual, pero SUS DATOS SIGUEN GUARDADOS en su llave de localStorage
+
+    this.usuarioActual.set(null);
+
+    // Tu CartService actual utiliza un carrito local
+    // compartido, así que lo limpiamos al salir para
+    // que otra persona no vea esos productos.
     this.cartService.limpiarCarrito();
+  }
+
+  // Consultar estado local.
+  estaLogueado(): boolean {
+    return this.usuarioActual() !== null;
+  }
+
+  // Comprobar rol.
+  esAdministrador(): boolean {
+    return this.usuarioActual()?.role === 'ADMIN';
   }
 }

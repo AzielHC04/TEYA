@@ -1,77 +1,80 @@
+
 <div class="perfil-container">
 
   <!-- ENCABEZADO -->
   <header class="perfil-header">
-    <div>
-      <span class="seccion-label">CUENTA</span>
+    <span class="seccion-label">MI CUENTA</span>
 
-      <h1>Mi Perfil</h1>
+    <h1>Mi Perfil</h1>
 
-      <p>
-        Administra tu información y preferencias de compra.
-      </p>
-    </div>
+    <p>
+      Administra tu información personal,
+      dirección de entrega y preferencias de compra.
+    </p>
   </header>
 
+  <!-- MENSAJES -->
+  @if (mensaje) {
+    <div
+      class="mensaje"
+      [class.mensaje-exito]="tipoMensaje === 'exito'"
+      [class.mensaje-error]="tipoMensaje === 'error'"
+      role="status"
+    >
+      {{ mensaje }}
+    </div>
+  }
 
   <div class="perfil-grid">
 
-    <!-- =========================
-         COLUMNA IZQUIERDA
-    ========================== -->
+    <!-- BARRA LATERAL -->
     <aside class="perfil-sidebar">
 
-      <!-- TARJETA DEL USUARIO -->
+      <!-- USUARIO -->
       <div class="usuario-card">
 
         <div class="avatar">
           {{ iniciales }}
         </div>
 
-        <h2>
-          {{ nombreCompleto }}
-        </h2>
+        <h2>{{ nombreCompleto }}</h2>
 
         <p class="usuario-correo">
-          {{ usuario.correo }}
+          {{ usuario.correo || 'Correo no disponible' }}
         </p>
 
         <span class="cliente-badge">
-          Cliente Biofábrica
+          Cliente KABNIA
         </span>
 
       </div>
 
-
       <!-- MENÚ -->
       <nav class="perfil-menu">
 
-        <button
-          type="button"
+        <a
+          routerLink="/miperfil"
           class="menu-item activo"
         >
           <span class="menu-icon">◉</span>
-          <span>Información personal</span>
-        </button>
-
+          Información personal
+        </a>
 
         <a
           routerLink="/orders"
           class="menu-item"
         >
           <span class="menu-icon">▣</span>
-          <span>Mis pedidos</span>
+          Mis pedidos
         </a>
-
 
         <a
           routerLink="/addresses"
           class="menu-item"
         >
           <span class="menu-icon">⌂</span>
-          <span>Direcciones</span>
+          Direcciones
         </a>
-
 
         <button
           type="button"
@@ -79,9 +82,8 @@
           (click)="cambiarContrasena()"
         >
           <span class="menu-icon">⚙</span>
-          <span>Seguridad</span>
+          Seguridad
         </button>
-
 
         <button
           type="button"
@@ -89,23 +91,17 @@
           (click)="cerrarSesion()"
         >
           <span class="menu-icon">↪</span>
-          <span>Cerrar sesión</span>
+          Cerrar sesión
         </button>
 
       </nav>
 
     </aside>
 
-
-    <!-- =========================
-         CONTENIDO PRINCIPAL
-    ========================== -->
+    <!-- CONTENIDO -->
     <main class="perfil-content">
 
-
-      <!-- =========================
-           INFORMACIÓN PERSONAL
-      ========================== -->
+      <!-- INFORMACIÓN PERSONAL -->
       <section class="perfil-card">
 
         <div class="card-header">
@@ -115,135 +111,130 @@
               DATOS DE CUENTA
             </span>
 
-            <h2>
-              Información personal
-            </h2>
+            <h2>Información personal</h2>
 
             <p>
-              Actualiza los datos asociados a tu cuenta.
+              Datos asociados con tu cuenta KABNIA.
             </p>
           </div>
 
+          <div class="acciones-header">
 
-          <button
-            *ngIf="!editandoPerfil"
-            type="button"
-            class="btn-editar"
-            (click)="editarPerfil()"
-          >
-            ✎ Editar
-          </button>
+            @if (!editandoPerfil) {
+              <button
+                type="button"
+                class="btn-editar"
+                (click)="editarPerfil()"
+              >
+                ✎ Editar
+              </button>
+            } @else {
 
+              <button
+                type="button"
+                class="btn-cancelar"
+                (click)="cancelarPerfil()"
+              >
+                Cancelar
+              </button>
 
-          <button
-            *ngIf="editandoPerfil"
-            type="button"
-            class="btn-guardar"
-            (click)="guardarPerfil()"
-          >
-            ✓ Guardar
-          </button>
+              <button
+                type="button"
+                class="btn-guardar"
+                (click)="guardarPerfil()"
+              >
+                ✓ Guardar
+              </button>
+            }
+
+          </div>
 
         </div>
-
 
         <div class="datos-grid">
 
           <!-- NOMBRE -->
           <div class="campo">
+            <label for="nombre">Nombre</label>
 
-            <label>Nombre</label>
-
-            <input
-              *ngIf="editandoPerfil"
-              type="text"
-              [(ngModel)]="usuario.nombre"
-              class="campo-input"
-            >
-
-            <div
-              *ngIf="!editandoPerfil"
-              class="campo-valor"
-            >
-              {{ usuario.nombre }}
-            </div>
-
+            @if (editandoPerfil) {
+              <input
+                id="nombre"
+                type="text"
+                [(ngModel)]="usuario.nombre"
+                class="campo-input"
+                placeholder="Tu nombre"
+                autocomplete="given-name"
+              />
+            } @else {
+              <div class="campo-valor">
+                {{ usuario.nombre || 'No registrado' }}
+              </div>
+            }
           </div>
-
 
           <!-- APELLIDOS -->
           <div class="campo">
+            <label for="apellidos">Apellidos</label>
 
-            <label>Apellidos</label>
-
-            <input
-              *ngIf="editandoPerfil"
-              type="text"
-              [(ngModel)]="usuario.apellidos"
-              class="campo-input"
-            >
-
-            <div
-              *ngIf="!editandoPerfil"
-              class="campo-valor"
-            >
-              {{ usuario.apellidos }}
-            </div>
-
+            @if (editandoPerfil) {
+              <input
+                id="apellidos"
+                type="text"
+                [(ngModel)]="usuario.apellidos"
+                class="campo-input"
+                placeholder="Tus apellidos"
+                autocomplete="family-name"
+              />
+            } @else {
+              <div class="campo-valor">
+                {{ usuario.apellidos || 'No registrados' }}
+              </div>
+            }
           </div>
-
 
           <!-- CORREO -->
           <div class="campo">
-
             <label>Correo electrónico</label>
 
-            <input
-              *ngIf="editandoPerfil"
-              type="email"
-              [(ngModel)]="usuario.correo"
-              class="campo-input"
-            >
-
-            <div
-              *ngIf="!editandoPerfil"
-              class="campo-valor"
-            >
-              {{ usuario.correo }}
+            <div class="campo-valor">
+              {{ usuario.correo || 'No registrado' }}
             </div>
 
+            @if (editandoPerfil) {
+              <small class="campo-ayuda">
+                El correo de la cuenta no se modifica
+                desde esta pantalla.
+              </small>
+            }
           </div>
-
 
           <!-- TELÉFONO -->
           <div class="campo">
+            <label for="telefono">Teléfono</label>
 
-            <label>Teléfono</label>
-
-            <input
-              *ngIf="editandoPerfil"
-              type="tel"
-              [(ngModel)]="usuario.telefono"
-              class="campo-input"
-            >
-
-            <div
-              *ngIf="!editandoPerfil"
-              class="campo-valor"
-            >
-              {{ usuario.telefono }}
-            </div>
-
+            @if (editandoPerfil) {
+              <input
+                id="telefono"
+                type="tel"
+                [(ngModel)]="usuario.telefono"
+                class="campo-input"
+                maxlength="15"
+                placeholder="10 dígitos"
+                autocomplete="tel"
+              />
+            } @else {
+              <div class="campo-valor">
+                {{ usuario.telefono || 'No registrado' }}
+              </div>
+            }
           </div>
 
         </div>
 
       </section>
 
-
-      <!-- =========================
-           DIRECCIÓN
-      ========================== -->
+      <!-- DIRECCIÓN PRINCIPAL -->
       <section class="perfil-card">
 
         <div class="card-header">
@@ -253,37 +244,45 @@
               ENVÍOS
             </span>
 
-            <h2>
-              Dirección principal
-            </h2>
+            <h2>Dirección principal</h2>
 
             <p>
-              Dirección utilizada para recibir tus productos.
+              Dirección para recibir tus productos.
             </p>
           </div>
 
+          <div class="acciones-header">
 
-          <button
-            *ngIf="!editandoDireccion"
-            type="button"
-            class="btn-editar"
-            (click)="editarDireccion()"
-          >
-            ✎ Editar
-          </button>
+            @if (!editandoDireccion) {
+              <button
+                type="button"
+                class="btn-editar"
+                (click)="editarDireccion()"
+              >
+                ✎ {{ tieneDireccion ? 'Editar' : 'Agregar' }}
+              </button>
+            } @else {
 
+              <button
+                type="button"
+                class="btn-cancelar"
+                (click)="cancelarDireccion()"
+              >
+                Cancelar
+              </button>
 
-          <button
-            *ngIf="editandoDireccion"
-            type="button"
-            class="btn-guardar"
-            (click)="guardarDireccion()"
-          >
-            ✓ Guardar
-          </button>
+              <button
+                type="button"
+                class="btn-guardar"
+                (click)="guardarDireccion()"
+              >
+                ✓ Guardar
+              </button>
+            }
+
+          </div>
 
         </div>
-
 
         <div class="direccion-box">
 
@@ -291,80 +290,152 @@
             ⌂
           </div>
 
-
           <div class="direccion-info">
 
-            <h3>
-              {{ nombreCompleto }}
-            </h3>
+            <h3>{{ nombreCompleto }}</h3>
 
+            @if (editandoDireccion) {
 
-            <input
-              *ngIf="editandoDireccion"
-              type="text"
-              [(ngModel)]="direccion.calle"
-              class="direccion-input"
-            >
+              <div class="direccion-form">
 
-            <p *ngIf="!editandoDireccion">
-              {{ direccion.calle }}
-            </p>
+                <label for="calle">Calle *</label>
+                <input
+                  id="calle"
+                  type="text"
+                  [(ngModel)]="direccion.calle"
+                  class="direccion-input"
+                  placeholder="Nombre de la calle"
+                  autocomplete="address-line1"
+                />
 
+                <div class="direccion-row">
+                  <div>
+                    <label for="numero">Número exterior *</label>
+                    <input
+                      id="numero"
+                      type="text"
+                      [(ngModel)]="direccion.numero"
+                      class="direccion-input"
+                      placeholder="Ej. 125"
+                    />
+                  </div>
 
-            <input
-              *ngIf="editandoDireccion"
-              type="text"
-              [(ngModel)]="direccion.colonia"
-              class="direccion-input"
-            >
+                  <div>
+                    <label for="interior">Número interior</label>
+                    <input
+                      id="interior"
+                      type="text"
+                      [(ngModel)]="direccion.interior"
+                      class="direccion-input"
+                      placeholder="Opcional"
+                    />
+                  </div>
+                </div>
 
-            <p *ngIf="!editandoDireccion">
-              {{ direccion.colonia }}
-            </p>
+                <label for="colonia">Colonia *</label>
+                <input
+                  id="colonia"
+                  type="text"
+                  [(ngModel)]="direccion.colonia"
+                  class="direccion-input"
+                  placeholder="Colonia"
+                  autocomplete="address-line2"
+                />
 
+                <div class="direccion-row">
 
-            <div
-              *ngIf="editandoDireccion"
-              class="direccion-row"
-            >
+                  <div>
+                    <label for="ciudad">Ciudad o municipio *</label>
+                    <input
+                      id="ciudad"
+                      type="text"
+                      [(ngModel)]="direccion.ciudad"
+                      class="direccion-input"
+                      placeholder="Ciudad"
+                      autocomplete="address-level2"
+                    />
+                  </div>
 
-              <input
-                type="text"
-                [(ngModel)]="direccion.ciudad"
-                class="direccion-input"
-                placeholder="Ciudad"
-              >
+                  <div>
+                    <label for="estado">Estado *</label>
+                    <input
+                      id="estado"
+                      type="text"
+                      [(ngModel)]="direccion.estado"
+                      class="direccion-input"
+                      placeholder="Estado"
+                      autocomplete="address-level1"
+                    />
+                  </div>
 
-              <input
-                type="text"
-                [(ngModel)]="direccion.estado"
-                class="direccion-input"
-                placeholder="Estado"
-              >
+                </div>
 
-            </div>
+                <label for="codigoPostal">Código postal *</label>
+                <input
+                  id="codigoPostal"
+                  type="text"
+                  [(ngModel)]="direccion.codigoPostal"
+                  class="direccion-input"
+                  maxlength="5"
+                  inputmode="numeric"
+                  placeholder="5 dígitos"
+                  autocomplete="postal-code"
+                />
 
+                <label for="referencias">Referencias</label>
+                <textarea
+                  id="referencias"
+                  [(ngModel)]="direccion.referencias"
+                  class="direccion-input"
+                  rows="3"
+                  placeholder="Entre calles, color de la casa, etc."
+                ></textarea>
 
-            <p *ngIf="!editandoDireccion">
-              {{ direccion.ciudad }}, {{ direccion.estado }}
-            </p>
+              </div>
 
+            } @else {
 
-            <input
-              *ngIf="editandoDireccion"
-              type="text"
-              [(ngModel)]="direccion.codigoPostal"
-              class="direccion-input"
-            >
+              @if (tieneDireccion) {
 
-            <p *ngIf="!editandoDireccion">
-              C.P. {{ direccion.codigoPostal }}
-            </p>
+                <p>
+                  {{ direccion.calle }}
+                  {{ direccion.numero }}
+                  {{ direccion.interior }}
+                </p>
 
+                <p>{{ direccion.colonia }}</p>
 
-            <span class="direccion-tag">
-              Dirección principal
-            </span>
+                <p>
+                  {{ direccion.ciudad }},
+                  {{ direccion.estado }}
+                </p>
+
+                <p>C.P. {{ direccion.codigoPostal }}</p>
+
+                @if (direccion.referencias) {
+                  <p>
+                    Referencias: {{ direccion.referencias }}
+                  </p>
+                }
+
+                <span class="direccion-tag">
+                  Dirección principal
+                </span>
+
+              } @else {
+
+                <p>
+                  Aún no tienes una dirección registrada.
+                </p>
+
+                <p>
+                  Agrega una dirección para facilitar
+                  tus próximas compras.
+                </p>
+
+              }
+
+            }
 
           </div>
 
@@ -372,116 +443,69 @@
 
       </section>
 
-
-      <!-- =========================
-           RESUMEN DE CUENTA
-      ========================== -->
+      <!-- RESUMEN DE CUENTA -->
       <section class="perfil-card">
 
         <div class="card-header">
-
           <div>
-            <span class="card-label">
-              ACTIVIDAD
-            </span>
-
-            <h2>
-              Resumen de cuenta
-            </h2>
+            <span class="card-label">ACTIVIDAD</span>
+            <h2>Resumen de cuenta</h2>
+            <p>Información disponible de tu actividad.</p>
           </div>
-
         </div>
-
 
         <div class="estadisticas">
 
-          <!-- PEDIDOS -->
           <div class="estadistica">
-
-            <div class="estadistica-icon pedidos">
-              ▣
-            </div>
-
+            <div class="estadistica-icon pedidos">▣</div>
             <div>
-              <strong>
-                {{ estadisticas.pedidos }}
-              </strong>
-
-              <span>
-                Pedidos realizados
-              </span>
+              <strong>{{ estadisticas.pedidos }}</strong>
+              <span>Pedidos registrados</span>
             </div>
-
           </div>
 
-
-          <!-- PRODUCTOS -->
           <div class="estadistica">
-
-            <div class="estadistica-icon productos">
-              ♧
-            </div>
-
+            <div class="estadistica-icon productos">♧</div>
             <div>
-              <strong>
-                {{ estadisticas.productos }}
-              </strong>
-
-              <span>
-                Productos adquiridos
-              </span>
+              <strong>{{ estadisticas.productos }}</strong>
+              <span>Productos adquiridos</span>
             </div>
-
           </div>
 
-
-          <!-- CLIENTE DESDE -->
           <div class="estadistica">
-
-            <div class="estadistica-icon cliente">
-              ★
-            </div>
-
+            <div class="estadistica-icon cliente">★</div>
             <div>
-              <strong>
-                {{ estadisticas.clienteDesde }}
-              </strong>
-
-              <span>
-                Cliente desde
-              </span>
+              <strong>{{ estadisticas.clienteDesde }}</strong>
+              <span>Cliente desde</span>
             </div>
-
           </div>
 
         </div>
 
+        <p class="campo-ayuda estadisticas-aviso">
+          Las estadísticas dependen de la información
+          disponible en la sesión. Para consultar el
+          historial real de compras se requiere
+          conectar el sistema de pedidos.
+        </p>
+
       </section>
 
-
-      <!-- =========================
-           SEGURIDAD
-      ========================== -->
+      <!-- SEGURIDAD -->
       <section class="perfil-card seguridad-card">
 
         <div class="card-header seguridad-header">
 
           <div>
+            <span class="card-label">SEGURIDAD</span>
 
-            <span class="card-label">
-              SEGURIDAD
-            </span>
-
-            <h2>
-              Contraseña
-            </h2>
+            <h2>Contraseña</h2>
 
             <p>
-              Mantén segura tu cuenta actualizando tu contraseña.
+              Protege tu cuenta manteniendo
+              actualizada tu contraseña.
             </p>
-
           </div>
-
 
           <button
             type="button"

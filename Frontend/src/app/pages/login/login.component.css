@@ -1,10 +1,23 @@
+
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f8fafc;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 .auth-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 80vh;
   background-color: #f8fafc;
-  padding: 20px;
+  padding: 24px 16px;
 }
 
 .auth-card {
@@ -13,7 +26,7 @@
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   width: 100%;
-  max-width: 420px;
+  max-width: 450px;
   border: 1px solid #e2e8f0;
 }
 
@@ -22,23 +35,39 @@
   margin-bottom: 25px;
 }
 
+.auth-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  height: 62px;
+  margin: 0 auto 18px;
+  background: #ecfdf5;
+  border-radius: 50%;
+  font-size: 1.8rem;
+}
+
 .auth-header h2 {
   font-size: 1.5rem;
   color: #0f172a;
-  margin: 0 0 6px 0;
+  margin: 0 0 8px;
+  font-weight: 700;
 }
 
 .auth-header p {
   color: #64748b;
   font-size: 0.9rem;
   margin: 0;
+  line-height: 1.6;
 }
+
+/* FORMULARIO */
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 16px;
+  gap: 7px;
+  margin-bottom: 17px;
 }
 
 .form-group label {
@@ -48,12 +77,22 @@
 }
 
 .form-group input {
-  padding: 10px 14px;
+  width: 100%;
+  padding: 12px 14px;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   font-size: 0.95rem;
+  font-family: inherit;
+  color: #0f172a;
+  background: white;
   outline: none;
-  transition: border-color 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.form-group input::placeholder {
+  color: #94a3b8;
 }
 
 .form-group input:focus {
@@ -61,46 +100,149 @@
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
+.form-group input[readonly] {
+  background: #f1f5f9;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.form-group input.ng-invalid.ng-touched:not(:focus) {
+  border-color: #ef4444;
+}
+
+.input-ayuda {
+  color: #64748b;
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+/* BOTÓN PRINCIPAL */
+
 .btn-submit {
   width: 100%;
   background-color: #10b981;
   color: white;
   border: none;
-  padding: 12px;
+  padding: 13px;
   border-radius: 8px;
   font-size: 1rem;
+  font-family: inherit;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
-  margin-top: 10px;
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+  margin-top: 12px;
 }
 
-.btn-submit:hover {
+.btn-submit:hover:not(:disabled) {
   background-color: #059669;
 }
 
+.btn-submit:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.btn-submit:disabled {
+  background-color: #a7b8b1;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* PIE DE PÁGINA */
+
 .auth-footer {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 24px;
   font-size: 0.88rem;
   color: #64748b;
 }
 
+.auth-footer p {
+  margin: 0;
+}
+
 .auth-footer a {
-  color: #10b981;
+  color: #059669;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .auth-footer a:hover {
   text-decoration: underline;
 }
 
+/* MENSAJES */
+
 .alert {
-  padding: 10px 14px;
+  padding: 12px 14px;
   border-radius: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   font-size: 0.85rem;
+  line-height: 1.5;
 }
-.alert-success { background: #dcfce7; color: #15803d; }
-.alert-danger { background: #fee2e2; color: #b91c1c; }
+
+.alert-success {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.alert-danger {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+/* INFORMACIÓN ADICIONAL */
+
+.informacion-perfil {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 18px;
+}
+
+.informacion-perfil span {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.informacion-perfil p {
+  color: #166534;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 600px) {
+  .auth-container {
+    padding: 20px 12px;
+    align-items: flex-start;
+  }
+
+  .auth-card {
+    padding: 26px 20px;
+    border-radius: 12px;
+  }
+
+  .auth-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .auth-icon {
+    width: 54px;
+    height: 54px;
+    font-size: 1.5rem;
+  }
+
+  .form-group input {
+    font-size: 16px;
+  }
+}
