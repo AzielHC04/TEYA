@@ -1,0 +1,164 @@
+<div class="inventory-container">
+  <div class="inventory-header">
+    <h2>Control de Inventario y Tablas</h2>
+    <p>Administra, edita a detalle o elimina los productos existentes en la base de datos.</p>
+  </div>
+
+  @if (mensajeExito) {
+    <div class="alert alert-success">{{ mensajeExito }}</div>
+  }
+  @if (mensajeError) {
+    <div class="alert alert-danger">{{ mensajeError }}</div>
+  }
+
+  @if (cargando) {
+    <div class="loading">Cargando inventario...</div>
+  } @else {
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (prod of productos; track prod.id) {
+            <tr>
+              <td>
+                <img [src]="prod.imagen" alt="{{ prod.nombre }}" class="prod-thumbnail" />
+              </td>
+              <td><strong>{{ prod.nombre }}</strong></td>
+              <td><span class="badge-cat">{{ prod.categoria }}</span></td>
+              <td>
+                @if (prod.precioAnterior) {
+                  <span class="old-price">${{ prod.precioAnterior }}</span>
+                }
+                <strong>${{ prod.precio }}</strong>
+              </td>
+              <td>
+                <span [ngClass]="{'low-stock': prod.stock < 5, 'good-stock': prod.stock >= 5}">
+                  {{ prod.stock }} unidades
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button class="btn-edit" (click)="abrirModalEditar(prod)">✏️ Editar Completo</button>
+                <button class="btn-delete" (click)="eliminarProducto(prod.id)">🗑️ Eliminar</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty-msg">No hay productos registrados en el inventario.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+<!-- MODAL DE EDICIÓN COMPLETA -->
+@if (productoEditando) {
+  <div class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Editar Producto: {{ productoEditando.nombre }}</h3>
+        <button class="btn-close" (click)="cerrarModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-grid">
+          
+          <!-- Nombre -->
+          <div class="form-group span-2">
+            <label>Nombre del Producto *</label>
+            <input type="text" [(ngModel)]="editNombre" placeholder="Nombre..." />
+          </div>
+
+          <!-- Categoría -->
+          <div class="form-group">
+            <label>Categoría</label>
+            <select [(ngModel)]="editCategoria">
+              <option value="Orgánicos">Orgánicos</option>
+              <option value="Herramientas">Herramientas</option>
+              <option value="Semillas">Semillas</option>
+              <option value="Macetas">Macetas</option>
+              <option value="Accesorios">Accesorios</option>
+            </select>
+          </div>
+
+          <!-- Stock -->
+          <div class="form-group">
+            <label>Stock Disponible *</label>
+            <input type="number" [(ngModel)]="editStock" min="0" />
+          </div>
+
+          <!-- Precio -->
+          <div class="form-group">
+            <label>Precio Regular ($) *</label>
+            <input type="number" [(ngModel)]="editPrecio" step="0.01" min="0" />
+          </div>
+
+          <!-- Descuento -->
+          <div class="form-group discount-box">
+            <label class="checkbox-label">
+              <input type="checkbox" [(ngModel)]="editTieneDescuento" />
+              <span>¿Aplicar Descuento?</span>
+            </label>
+
+            @if (editTieneDescuento) {
+              <div class="sub-discount">
+                <label>Porcentaje (%)</label>
+                <input type="number" [(ngModel)]="editPorcentajeDescuento" min="1" max="99" />
+                <p class="final-price-preview">Precio Final: <strong>${{ precioFinalEdit | number:'1.2-2' }}</strong></p>
+              </div>
+            }
+          </div>
+
+          <!-- Descripción -->
+          <div class="form-group span-2">
+            <label>Descripción detallada</label>
+            <textarea [(ngModel)]="editDescripcion" rows="3"></textarea>
+          </div>
+
+          <!-- Flags -->
+          <div class="form-group span-2 flags-group">
+            <label class="checkbox-label">
+              <input type="checkbox" [(ngModel)]="editEnvioGratis" />
+              <span>Envío Gratis</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" [(ngModel)]="editMasComprado" />
+              <span>Más Comprado</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" [(ngModel)]="editUltimoAgregado" />
+              <span>Nuevo / Último Agregado</span>
+            </label>
+          </div>
+
+          <!-- Imagen -->
+          <div class="form-group span-2">
+            <label>Imagen del Producto (Opcional: Selecciona una nueva para reemplazar la actual)</label>
+            <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+            @if (vistaPrevia) {
+              <div class="preview-container">
+                <img [src]="vistaPrevia" alt="Vista previa" class="img-preview" />
+              </div>
+            }
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn-save" (click)="guardarCambiosProducto()">💾 Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+}

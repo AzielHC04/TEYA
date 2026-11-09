@@ -1,0 +1,155 @@
+<div class="carrito-container">
+  <header class="carrito-header">
+    <h1>Carrito de Compras</h1>
+    <span class="badge-total" *ngIf="carrito.length > 0">
+      {{ totalProductos }} {{ totalProductos === 1 ? 'unidad' : 'unidades' }}
+    </span>
+  </header>
+
+  <!-- Estado Carrito Vacío -->
+  <div class="carrito-vacio" *ngIf="carrito.length === 0">
+    <div class="icono-vacio">🛒</div>
+    <h2>Tu carrito está vacío</h2>
+    <p>Aún no has agregado bioinsumos a tu lista de compra.</p>
+    <a routerLink="/products" class="btn-primary">Explorar Productos</a>
+  </div>
+
+  <!-- Contenido del Carrito -->
+  <div class="carrito-grid" *ngIf="carrito.length > 0">
+    <!-- Lista de Productos -->
+    <section class="productos-seccion">
+      <div class="acciones-lista">
+        <button class="btn-vaciar" (click)="vaciarCarrito()">
+          🗑 Vaciar Carrito
+        </button>
+      </div>
+
+      <article class="producto-card" *ngFor="let producto of carrito">
+        <img 
+          [src]="producto.imagen" 
+          [alt]="producto.nombre" 
+          class="producto-img"
+        />
+
+        <div class="producto-detalles">
+          <span class="categoria-tag">{{ producto.categoria }}</span>
+          <h3 class="producto-nombre">{{ producto.nombre }}</h3>
+          <p class="producto-descripcion">{{ producto.descripcion }}</p>
+
+          <div class="presentacion-selector">
+            <label [for]="'presentacion-' + producto.id">Presentación:</label>
+            <select 
+              [id]="'presentacion-' + producto.id" 
+              [(ngModel)]="producto.presentacionSeleccionada"
+              class="select-custom"
+            >
+              <option *ngFor="let pres of producto.presentaciones" [value]="pres">
+                {{ pres }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="producto-precio-cantidad">
+          <span class="precio-unitario">
+            {{ producto.precioUnitario | currency:'MXN':'symbol':'1.2-2' }} c/u
+          </span>
+
+          <div class="cantidad-control">
+            <button 
+              type="button" 
+              (click)="disminuirCantidad(producto)"
+              [disabled]="producto.cantidad <= 1"
+            >-</button>
+            <span class="cantidad-numero">{{ producto.cantidad }}</span>
+            <button 
+              type="button" 
+              (click)="aumentarCantidad(producto)"
+              [disabled]="producto.cantidad >= MAX_CANTIDAD_PRODUCTO"
+            >+</button>
+          </div>
+
+          <span class="subtotal-item">
+            {{ (producto.precioUnitario * producto.cantidad) | currency:'MXN':'symbol':'1.2-2' }}
+          </span>
+
+          <button 
+            type="button" 
+            class="btn-eliminar" 
+            (click)="eliminarProducto(producto.id)"
+            title="Eliminar producto"
+          >✕</button>
+        </div>
+      </article>
+    </section>
+
+    <!-- Resumen de Pedido -->
+    <aside class="resumen-seccion">
+      <div class="resumen-card">
+        <h2>Resumen del Pedido</h2>
+
+        <div class="resumen-linea">
+          <span>Subtotal ({{ totalProductos }} prod.)</span>
+          <strong>{{ subtotal | currency:'MXN':'symbol':'1.2-2' }}</strong>
+        </div>
+
+        <!-- Opciones de Envío -->
+        <div class="envio-opciones">
+          <h3>Método de Envío</h3>
+
+          <label 
+            class="opcion-envio" 
+            [class.activa]="tipoEnvio === 'estandar'"
+          >
+            <input 
+              type="radio" 
+              name="tipoEnvio" 
+              value="estandar"
+              [checked]="tipoEnvio === 'estandar'"
+              (change)="seleccionarEnvio('estandar')"
+            />
+            <div class="envio-info">
+              <span class="envio-titulo">Envío Estándar</span>
+              <span class="envio-tiempo">1 a 5 días hábiles</span>
+            </div>
+            <span class="envio-precio">{{ COSTO_ENVIO_ESTANDAR | currency:'MXN':'symbol':'1.0-0' }}</span>
+          </label>
+
+          <label 
+            class="opcion-envio" 
+            [class.activa]="tipoEnvio === 'express'"
+          >
+            <input 
+              type="radio" 
+              name="tipoEnvio" 
+              value="express"
+              [checked]="tipoEnvio === 'express'"
+              (change)="seleccionarEnvio('express')"
+            />
+            <div class="envio-info">
+              <span class="envio-titulo">Envío Exprés ⚡</span>
+              <span class="envio-tiempo">1 a 2 días hábiles</span>
+            </div>
+            <span class="envio-precio">{{ COSTO_ENVIO_EXPRESS | currency:'MXN':'symbol':'1.0-0' }}</span>
+          </label>
+        </div>
+
+        <div class="resumen-divider"></div>
+
+        <div class="resumen-linea total-linea">
+          <span>Total a Pagar</span>
+          <span class="monto-total">{{ totalPagar | currency:'MXN':'symbol':'1.2-2' }}</span>
+        </div>
+
+        <button 
+          class="btn-primary btn-bloque" 
+          (click)="continuarCompra()"
+        >
+          Continuar Compra
+        </button>
+
+        <a routerLink="/products" class="link-seguir">Seguir comprando</a>
+      </div>
+    </aside>
+  </div>
+</div>

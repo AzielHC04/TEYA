@@ -1,0 +1,412 @@
+:host {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #333;
+  background-color: #ebebeb;
+  padding-bottom: 40px;
+  overflow-x: hidden;
+}
+
+.home-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+/* =========================================
+   CARRUSEL PROMOCIONAL DILUIDO (ESTILO MERCADO LIBRE)
+========================================= */
+.banner-carousel-section {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding-top: 10px;
+  padding-bottom: 40px;
+  transition: background 0.6s ease-in-out;
+}
+
+.carousel-wrapper {
+  position: relative;
+  max-width: 1240px;
+  margin: 0 auto;
+  height: 360px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.carousel-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+}
+
+.banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  border: none;
+  width: 40px;
+  height: 60px;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.2s;
+}
+
+.carousel-arrow:hover {
+  background: #ffffff;
+}
+
+.carousel-arrow.prev {
+  left: 0;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+}
+
+.carousel-arrow.next {
+  right: 0;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 12px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  z-index: 10;
+}
+
+.carousel-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.carousel-dots span.active {
+  background: #ffffff;
+  width: 20px;
+  border-radius: 10px;
+}
+
+/* =========================================
+   BARRA DE BENEFICIOS
+========================================= */
+.features-bar {
+  display: flex;
+  justify-content: space-around;
+  background: #ffffff;
+  margin-top: -15px;
+  position: relative;
+  z-index: 5;
+  padding: 16px 20px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.feature-icon {
+  font-size: 26px;
+}
+
+.feature-item h3 {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+  font-weight: 600;
+}
+
+.feature-item p {
+  margin: 2px 0 0 0;
+  font-size: 12px;
+  color: #777;
+}
+
+/* =========================================
+   CARRUSELES HORIZONTALES DE PRODUCTOS (5 CARDS DISTRIBUIDAS)
+========================================= */
+.products-carousel-section {
+  margin-top: 25px;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 15px;
+  margin-bottom: 12px;
+}
+
+.section-header h2 {
+  font-size: 20px;
+  color: #4a4a4a;
+  font-weight: 300;
+  margin: 0;
+}
+
+.see-more-link {
+  font-size: 14px;
+  color: #3483fa;
+  text-decoration: none;
+}
+
+.see-more-link:hover {
+  text-decoration: underline;
+}
+
+.horizontal-scroll {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 5px 0 15px 0;
+  width: 100%;
+}
+
+.product-card {
+  flex: 1;
+  min-width: 0;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.product-img-box {
+  width: 100%;
+  height: 190px;
+  padding: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background: #ffffff;
+}
+
+.product-img-box img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.product-info {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.category-tag {
+  font-size: 12px;
+  color: #558b2f;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.product-title {
+  font-size: 15px;
+  color: #0f172a;
+  font-weight: 800;
+  margin: 0 0 6px 0;
+  text-transform: uppercase;
+}
+
+.product-description {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.price-container {
+  margin-top: auto;
+}
+
+.old-price {
+  font-size: 11px;
+  color: #999;
+  text-decoration: line-through;
+  display: block;
+}
+
+.current-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.price {
+  font-size: 20px;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.discount {
+  font-size: 12px;
+  color: #00a650;
+  font-weight: 600;
+}
+
+.full-shipping {
+  font-size: 11px;
+  color: #00a650;
+  font-weight: 600;
+  margin-top: 4px;
+  display: block;
+}
+
+.btn-ficha {
+  display: block;
+  text-align: center;
+  background-color: #2e5b37;
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-ficha:hover {
+  background-color: #1e3e25;
+}
+
+/* =========================================
+   BANNERS DE ANUNCIOS
+========================================= */
+.ads-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.ad-card {
+  position: relative;
+  border-radius: 8px;
+  padding: 30px 25px;
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.ad-1 {
+  background: linear-gradient(135deg, #2b5d38 0%, #173820 100%);
+  color: white;
+}
+
+.ad-2 {
+  background: linear-gradient(135deg, #1b3d54 0%, #0c1e2b 100%);
+  color: white;
+}
+
+.ad-content {
+  max-width: 80%;
+}
+
+.ad-badge {
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.ad-content h3 {
+  font-size: 20px;
+  margin: 8px 0 4px 0;
+}
+
+.ad-content p {
+  font-size: 12px;
+  opacity: 0.85;
+  margin: 0 0 14px 0;
+}
+
+.btn-ad {
+  display: inline-block;
+  background: #ffffff;
+  color: #333;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.btn-ad:hover {
+  background: #f0f0f0;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .carousel-wrapper {
+    height: 200px;
+  }
+
+  .features-bar {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .horizontal-scroll {
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+
+  .product-card {
+    min-width: 220px;
+  }
+
+  .ads-section {
+    grid-template-columns: 1fr;
+  }
+}

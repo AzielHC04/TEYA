@@ -1,0 +1,153 @@
+<div class="home-container">
+
+  <!-- ================= CARRUSEL PROMOCIONAL DILUIDO (ESTILO MERCADO LIBRE) ================= -->
+  <section 
+    class="banner-carousel-section" 
+    [style.background]="'linear-gradient(180deg, ' + bannersPromocionales[bannerActual].bgColor + ' 0%, ' + bannersPromocionales[bannerActual].bgColor + ' 60%, rgba(235,235,235,0) 100%)'">
+    
+    <div class="carousel-wrapper">
+      <div 
+        class="carousel-slide" 
+        *ngFor="let banner of bannersPromocionales; let i = index"
+        [class.active]="i === bannerActual">
+        <img [src]="banner.imagen" [alt]="banner.titulo" class="banner-img" />
+      </div>
+
+      <!-- Flechas de Navegación -->
+      <button class="carousel-arrow prev" (click)="anteriorBanner()">&#10094;</button>
+      <button class="carousel-arrow next" (click)="siguienteBanner()">&#10095;</button>
+
+      <!-- Indicadores de los Banners -->
+      <div class="carousel-dots">
+        <span 
+          *ngFor="let banner of bannersPromocionales; let i = index" 
+          [class.active]="i === bannerActual"
+          (click)="seleccionarBanner(i)">
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BARRA DE BENEFICIOS ================= -->
+  <section class="features-bar">
+    <div class="feature-item">
+      <span class="feature-icon">🚚</span>
+      <div>
+        <h3>ENVÍOS A TODO EL PAÍS</h3>
+        <p>Envíos rápidos y asegurados</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">💳</span>
+      <div>
+        <h3>PAGO SEGURO</h3>
+        <p>Tarjetas de crédito, débito y transferencias</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">🌱</span>
+      <div>
+        <h3>PRODUCTOS CERTIFICADOS</h3>
+        <p>Alta calidad para la nutrición de tu cultivo</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CARRUSEL: MÁS COMPRADOS ================= -->
+  <section class="products-carousel-section">
+    <div class="section-header">
+      <h2>MÁS COMPRADOS</h2>
+      <a routerLink="/productos" class="see-more-link">Ver todos</a>
+    </div>
+
+    <div class="horizontal-scroll">
+      <div 
+        class="product-card" 
+        *ngFor="let prod of masCompradosVisibles"
+        [routerLink]="['/productos', prod.id]">
+        
+        <div class="product-img-box">
+          <img [src]="prod.imagen" [alt]="prod.nombre" />
+        </div>
+
+        <div class="product-info">
+          <span class="category-tag">{{ prod.categoria }}</span>
+          <h3 class="product-title">{{ prod.nombre }}</h3>
+          
+          <p class="product-description" *ngIf="prod.descripcion">{{ prod.descripcion }}</p>
+
+          <div class="price-container">
+            <span class="old-price" *ngIf="prod.precioAnterior">${{ prod.precioAnterior }}</span>
+            <div class="current-price-row">
+              <span class="price">${{ prod.precio }}</span>
+              <span class="discount" *ngIf="prod.descuento">{{ prod.descuento }}</span>
+            </div>
+            <span class="full-shipping" *ngIf="prod.envioGratis">Envío gratis</span>
+          </div>
+
+          <span class="btn-ficha">Ficha Técnica &rarr;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BANNERS DE ANUNCIOS ================= -->
+  <section class="ads-section">
+    <div class="ad-card ad-1">
+      <div class="ad-content">
+        <span class="ad-badge">OFERTA ESPECIAL</span>
+        <h3>BIOESTIMULANTES</h3>
+        <p>Regenera la nutrición y salud del suelo de tu cultivo.</p>
+        <a routerLink="/productos" class="btn-ad">COMPRAR AHORA</a>
+      </div>
+    </div>
+
+    <div class="ad-card ad-2">
+      <div class="ad-content">
+        <span class="ad-badge">NUEVO</span>
+        <h3>BIOPLAGUICIDAS</h3>
+        <p>Protección natural y orgánica contra plagas comunes.</p>
+        <a routerLink="/productos" class="btn-ad">CONOCER MÁS</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CARRUSEL: ÚLTIMOS AGREGADOS ================= -->
+  <section class="products-carousel-section">
+    <div class="section-header">
+      <h2>ÚLTIMOS AGREGADOS</h2>
+      <a routerLink="/productos" class="see-more-link">Ver todos</a>
+    </div>
+
+    <div class="horizontal-scroll">
+      <div 
+        class="product-card" 
+        *ngFor="let prod of ultimosAgregadosVisibles"
+        [routerLink]="['/productos', prod.id]">
+
+        <div class="product-img-box">
+          <img [src]="prod.imagen" [alt]="prod.nombre" />
+        </div>
+
+        <div class="product-info">
+          <span class="category-tag">{{ prod.categoria }}</span>
+          <h3 class="product-title">{{ prod.nombre }}</h3>
+
+          <p class="product-description" *ngIf="prod.descripcion">{{ prod.descripcion }}</p>
+
+          <div class="price-container">
+            <span class="old-price" *ngIf="prod.precioAnterior">${{ prod.precioAnterior }}</span>
+            <div class="current-price-row">
+              <span class="price">${{ prod.precio }}</span>
+              <span class="discount" *ngIf="prod.descuento">{{ prod.descuento }}</span>
+            </div>
+            <span class="full-shipping" *ngIf="prod.envioGratis">Envío gratis</span>
+          </div>
+
+          <span class="btn-ficha">Ficha Técnica &rarr;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

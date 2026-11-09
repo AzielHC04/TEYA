@@ -1,0 +1,141 @@
+<header class="navbar-header">
+  <div class="navbar-container">
+
+    <!-- LOGO -->
+    <a routerLink="/" class="navbar-brand">
+      <img
+        src="assets/images/L1.png"
+        alt="KABNIA - Soluciones naturales para cultivar"
+        class="navbar-logo"
+      >
+    </a>
+
+    <!-- NAVEGACIÓN -->
+    <nav class="navbar-nav">
+      <ul>
+
+        <!-- INICIO -->
+        <li>
+          <a
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-item"
+          >
+            <span class="nav-icon home-icon">⌂</span>
+            <span>Inicio</span>
+          </a>
+        </li>
+
+        <!-- PRODUCTOS -->
+        <li class="dropdown">
+          <button
+            type="button"
+            class="nav-item dropdown-toggle"
+            [class.active]="productosAbierto"
+            (click)="toggleProductos()"
+          >
+            <span class="nav-icon leaf-icon">♧</span>
+            <span>Productos</span>
+            <span
+              class="arrow"
+              [class.arrow-open]="productosAbierto"
+            >▾</span>
+          </button>
+
+          <!-- SUBMENÚ -->
+          <ul
+            class="dropdown-menu"
+            [class.show]="productosAbierto"
+          >
+            <li>
+              <a
+                routerLink="/products"
+                (click)="cerrarProductos()"
+              >
+                Todos los Productos
+              </a>
+            </li>
+
+            <li>
+              <a
+                routerLink="/products"
+                [queryParams]="{ categoria: 'organicos' }"
+                (click)="cerrarProductos()"
+              >
+                Orgánicos
+              </a>
+            </li>
+
+            <li>
+              <a
+                routerLink="/products"
+                [queryParams]="{ categoria: 'bioestimulantes' }"
+                (click)="cerrarProductos()"
+              >
+                Bioestimulantes
+              </a>
+            </li>
+
+            <li>
+              <a
+                routerLink="/products"
+                [queryParams]="{ categoria: 'nutricion-liquida' }"
+                (click)="cerrarProductos()"
+              >
+                Nutrición Líquida
+              </a>
+            </li>
+
+            <li>
+              <a
+                routerLink="/products"
+                [queryParams]="{ categoria: 'bioplaguicidas' }"
+                (click)="cerrarProductos()"
+              >
+                Bioplaguicidas
+              </a>
+            </li>
+          </ul>
+
+        <!-- NOSOTROS -->
+        <li>
+          <a
+            routerLink="/nosotros"
+            routerLinkActive="active"
+            class="nav-item"
+          >
+            <span class="nav-icon">♧</span>
+            <span>Nosotros</span>
+          </a>
+        </li>
+
+        <!-- CARRITO -->
+        <li>
+          <a
+            routerLink="/carrito"
+            routerLinkActive="active"
+            class="nav-item cart-item"
+          >
+            <span class="nav-icon cart-icon">🛒</span>
+            <span>Carrito</span>
+            <span class="cart-badge">2</span>
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+
+    <!-- SEPARADOR -->
+    <div class="nav-divider"></div>
+
+    <!-- MI PERFIL -->
+    <div class="navbar-actions">
+      <a routerLink="/miperfil" class="btn-profile">
+        <span class="profile-icon">♙</span>
+        <span>Mi Perfil</span>
+      </a>
+    </div>
+
+  </div>
+</header>

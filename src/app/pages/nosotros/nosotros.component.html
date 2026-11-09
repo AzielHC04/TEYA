@@ -1,0 +1,81 @@
+<div class="nosotros-container">
+
+  <!-- Encabezado Principal -->
+  <header class="nosotros-header">
+    <span class="badge-origen">Tradición & Biotecnología</span>
+    <h1>Nuestra Historia y Raíces</h1>
+    <p>
+      Inspirados en la riqueza natural de la región de Yucatán y comprometidos con la agricultura sustentable, transformamos la ciencia biológica en nutrición efectiva para tus cultivos.
+    </p>
+  </header>
+
+  <!-- Sección Hacienda Teya -->
+  <section class="teya-seccion">
+    <div class="teya-card">
+      <div class="teya-info">
+        <span class="subtitulo-tag">Inspiración Yucateca</span>
+        <h2>El Vínculo con Hacienda Teya (Mérida)</h2>
+        <p>
+          Ubicada a pocos minutos de Mérida, **Hacienda Teya** es un símbolo histórico fundado en el siglo XVII. Originalmente dedicada a la ganadería y posteriormente al auge henequenero, hoy en día destaca por su arquitectura restaurada, sus frondosos jardines botánicos y su compromiso con la preservación ecológica.
+        </p>
+        <p>
+          Tomamos como pilar la resiliencia de la flora de Teya y la fertilidad de los suelos peninsulares para desarrollar bioinsumos que respetan el ecosistema, devolviendo la vitalidad al suelo sin químicos agresivos.
+        </p>
+        
+        <div class="teya-puntos">
+          <div class="punto-item">
+            <span class="punto-icono">🏛️</span>
+            <div>
+              <strong>Legado Histórico</strong>
+              <p>Tradición agrícola adaptada a la biotecnología moderna.</p>
+            </div>
+          </div>
+          <div class="punto-item">
+            <span class="punto-icono">🌿</span>
+            <div>
+              <strong>Flora Resiliente</strong>
+              <p>Formulaciones inspiradas en la nutrición de la vegetación local.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="teya-imagen-wrapper">
+        <div class="teya-imagen-placeholder">
+          <span class="imagen-icono">🌳</span>
+          <span>Jardines & Entorno de Teya</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección Proceso de Elaboración -->
+  <section class="proceso-seccion">
+    <div class="proceso-header">
+      <h2>¿Cómo Elaboramos Nuestros Productos?</h2>
+      <p>Un proceso biológico meticuloso para garantizar bioinsumos puros, estables y de alta asimilación.</p>
+    </div>
+
+    <div class="proceso-grid">
+      <article class="proceso-card" *ngFor="let paso of pasosElaboracion">
+        <div class="paso-badge">{{ paso.paso }}</div>
+        <div class="paso-icono">{{ paso.icono }}</div>
+        <h3>{{ paso.titulo }}</h3>
+        <p>{{ paso.descripcion }}</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Sección Llamado a la Acción (CTA) -->
+  <section class="cta-seccion">
+    <div class="cta-card">
+      <h2>Lleva la Nutrición Orgánica a tu Cultivo</h2>
+      <p>Explora nuestra línea de bioinsumos formulados con precisión técnica y conciencia ambiental.</p>
+      <div class="cta-acciones">
+        <a routerLink="/products" class="btn-primary">Ver Catálogo de Bioinsumos</a>
+        <a routerLink="/contacto" class="btn-secundario">Solicitar Asesoría Agrónoma</a>
+      </div>
+    </div>
+  </section>
+
+</div>

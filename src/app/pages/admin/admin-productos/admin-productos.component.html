@@ -1,0 +1,106 @@
+<div class="form-container">
+  <div class="form-header">
+    <h2>Registrar Nuevo Producto</h2>
+    <p>Completa los detalles para dar de alta un producto en el catálogo de Teya.</p>
+  </div>
+
+  @if (mensajeExito) {
+    <div class="alert alert-success">{{ mensajeExito }}</div>
+  }
+  @if (mensajeError) {
+    <div class="alert alert-danger">{{ mensajeError }}</div>
+  }
+
+  <form (submit)="onSubmit(); $event.preventDefault()">
+    <div class="form-grid">
+      
+      <!-- Nombre -->
+      <div class="form-group span-2">
+        <label>Nombre del Producto *</label>
+        <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Ej. Abono orgánico premium..." required />
+      </div>
+
+      <!-- Categoría -->
+      <div class="form-group">
+        <label>Categoría</label>
+        <select [(ngModel)]="categoria" name="categoria">
+          <option value="Orgánicos">Orgánicos</option>
+          <option value="Herramientas">Herramientas</option>
+          <option value="Semillas">Semillas</option>
+          <option value="Macetas">Macetas</option>
+          <option value="Accesorios">Accesorios</option>
+        </select>
+      </div>
+
+      <!-- Stock -->
+      <div class="form-group">
+        <label>Stock Disponible *</label>
+        <input type="number" [(ngModel)]="stock" name="stock" placeholder="Ej. 50" min="0" required />
+      </div>
+
+      <!-- Precio Base -->
+      <div class="form-group">
+        <label>Precio Regular ($) *</label>
+        <input type="number" [(ngModel)]="precio" name="precio" placeholder="0.00" step="0.01" min="0" required />
+      </div>
+
+      <!-- Descuento Configuración -->
+      <div class="form-group discount-box">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="tieneDescuento" name="tieneDescuento" />
+          <span>¿Aplicar Descuento?</span>
+        </label>
+
+        @if (tieneDescuento) {
+          <div class="sub-discount">
+            <label>Porcentaje (%)</label>
+            <input type="number" [(ngModel)]="porcentajeDescuento" name="porcentajeDescuento" placeholder="Ej. 20" min="1" max="99" />
+            <p class="final-price-preview">Precio Final: <strong>${{ precioFinal | number:'1.2-2' }}</strong></p>
+          </div>
+        }
+      </div>
+
+      <!-- Descripción -->
+      <div class="form-group span-2">
+        <label>Descripción detallada</label>
+        <textarea [(ngModel)]="descripcion" name="descripcion" rows="4" placeholder="Escribe las características del producto..."></textarea>
+      </div>
+
+      <!-- Checkboxes de flags -->
+      <div class="form-group span-2 flags-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="envioGratis" name="envioGratis" />
+          <span>Envío Gratis</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="masComprado" name="masComprado" />
+          <span>Marcar como "Más Comprado"</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="ultimoAgregado" name="ultimoAgregado" />
+          <span>Etiquetar como "Nuevo / Último Agregado"</span>
+        </label>
+      </div>
+
+      <!-- Imagen -->
+      <div class="form-group span-2">
+        <label>Imagen del Producto</label>
+        <div class="file-upload-wrapper">
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" id="fileInput" />
+        </div>
+        @if (vistaPrevia) {
+          <div class="preview-container">
+            <img [src]="vistaPrevia" alt="Vista previa" class="img-preview" />
+          </div>
+        }
+      </div>
+
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-submit" [disabled]="cargando">
+        @if (cargando) { Guardando en Base de Datos... } @else { 💾 Guardar Producto }
+      </button>
+    </div>
+  </form>
+</div>
