@@ -90,7 +90,7 @@ export class CarritoComponent implements OnInit, OnDestroy {
     'Zacatecas'
   ];
 
-  // FORMULARIO DE DIRECCIÓN
+
   direccionForm = this.fb.group({
     correo: ['', [
       Validators.required,
@@ -172,7 +172,7 @@ export class CarritoComponent implements OnInit, OnDestroy {
     );
   }
 
-  // CALCULAR TOTAL DEL PEDIDO
+
   calcularTotal(): void {
 
     this.total = this.carrito.reduce(

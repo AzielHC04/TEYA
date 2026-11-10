@@ -8,7 +8,7 @@ async function main() {
   await prisma.producto.deleteMany();
 
   // Creamos tu cuenta de Administrador personalizada
-  const emailAdmin = 'Aziel@admin';
+  const emailAdmin = 'aziel@admin'; 
   const adminExistente = await prisma.user.findUnique({
     where: { email: emailAdmin },
   });

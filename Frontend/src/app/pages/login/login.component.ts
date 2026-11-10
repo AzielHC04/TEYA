@@ -80,9 +80,9 @@ export class LoginComponent {
       encodeURIComponent(correo.trim().toLowerCase());
   }
 
-  // VALIDACIÓN DE CORREO
+// VALIDACIÓN DE CORREO (Flexible para permitir correos de administración locales)
   private correoValido(correo: string): boolean {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
+    return correo.includes('@') && correo.trim().length > 3;
   }
 
   // RECUPERAR INFORMACIÓN LOCAL
