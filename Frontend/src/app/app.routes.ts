@@ -6,6 +6,7 @@ import { ProductsComponent } from './pages/products/products.component';
 import { CarritoComponent } from './pages/carrito/carrito.component';
 import { NosotrosComponent } from './pages/nosotros/nosotros.component';
 import { MiperfilComponent } from './pages/miperfil/miperfil.component';
+import { PedidosComponent } from './pages/pedidos/pedidos.component'; // <-- 1. Importar componente de pedidos
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 
@@ -29,6 +30,9 @@ export const routes: Routes = [
   
   // Página de mi perfil
   { path: 'miperfil', component: MiperfilComponent },
+
+  // Ruta para mis pedidos
+  { path: 'orders', component: PedidosComponent }, // <-- 2. Registrar la ruta orders
 
   // Ruta principal del Panel de Administración (Protegida con AdminGuard)
   {

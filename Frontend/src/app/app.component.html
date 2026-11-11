@@ -1,10 +1,8 @@
-<!-- El navbar solo se muestra si NO estás en el panel de administrador -->
-@if (!isAdminRoute) {
-  <!-- Navbar fijo en la parte superior -->
+<!-- El navbar se oculta en admin, login y register -->
+@if (!isAdminRoute && !isAuthRoute) {
   <app-navbar></app-navbar>
 }
 
-<!-- Contenido dinámico según las rutas de TEYA -->
 <main class="main-content">
   <router-outlet></router-outlet>
 </main>

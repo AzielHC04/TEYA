@@ -1,0 +1,59 @@
+<div class="profile-content-area">
+  <div class="section-header">
+    <span class="cuenta-label">MI CUENTA</span>
+    <h2>Mis Pedidos</h2>
+    <p>Consulta el estatus de tus compras actuales y el historial de tus adquisiciones en KABNIA.</p>
+  </div>
+
+  @if (cargando) {
+    <div class="loading-card">Cargando tus pedidos...</div>
+  } @else if (mensajeError) {
+    <div class="alert alert-danger">{{ mensajeError }}</div>
+  } @else {
+    <div class="pedidos-grid">
+      @for (pedido of pedidos; track pedido.id) {
+        <div class="profile-card pedido-card-compacto">
+          
+          <!-- Encabezado del pedido -->
+          <div class="card-header-row">
+            <div>
+              <span class="pedido-id">Pedido #{{ pedido.id.slice(0, 8) }}</span>
+              <span class="pedido-fecha">{{ pedido.createdAt | date:'short' }}</span>
+            </div>
+            <span class="badge-status" [ngClass]="'status-' + pedido.status.toLowerCase()">
+              {{ obtenerTextoEstado(pedido.status) }}
+            </span>
+          </div>
+
+          <!-- Contenedor con scroll interno para los productos -->
+          <div class="card-body-content">
+            <h4 class="titulo-prods">Productos adquiridos:</h4>
+            <div class="productos-scroll-container">
+              @for (item of pedido.items; track item.id) {
+                <div class="producto-item">
+                  <img [src]="item.product?.imagen || item.product?.image || 'assets/placeholder.png'" [alt]="item.product?.nombre || 'Producto'" class="producto-img" />
+                  <div class="producto-info">
+                    <strong>{{ item.product?.nombre || 'Producto KABNIA' }}</strong>
+                    <span>Cantidad: {{ item.quantity }}</span>
+                  </div>
+                  <span class="producto-precio">${{ (item.price * item.quantity).toFixed(2) }}</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Pie del pedido -->
+          <div class="card-footer-row">
+            <span>Total del pedido:</span>
+            <strong class="total-monto">${{ pedido.total.toFixed(2) }}</strong>
+          </div>
+
+        </div>
+      } @empty {
+        <div class="profile-card empty-card">
+          <p>Aún no tienes ningún pedido registrado en la plataforma.</p>
+        </div>
+      }
+    </div>
+  }
+</div>

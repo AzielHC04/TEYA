@@ -1,4 +1,3 @@
-
 import {
   Component,
   OnInit,
@@ -20,8 +19,11 @@ import {
 import {
   FormBuilder,
   ReactiveFormsModule,
+  FormsModule,
   Validators
 } from '@angular/forms';
+
+import { HttpClient } from '@angular/common/http';
 
 import {
   CartService,
@@ -36,7 +38,8 @@ import { Subscription } from 'rxjs';
   imports: [
     CommonModule,
     RouterLink,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
   templateUrl: './carrito.component.html',
   styleUrls: ['./carrito.component.css']
@@ -47,6 +50,7 @@ export class CarritoComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private cartService = inject(CartService);
   private platformId = inject(PLATFORM_ID);
+  private http = inject(HttpClient);
 
   private cartSub?: Subscription;
   private formSub?: Subscription;
@@ -55,377 +59,284 @@ export class CarritoComponent implements OnInit, OnDestroy {
   total: number = 0;
   direccionGuardada: boolean = false;
 
+  // Direcciones guardadas del perfil del usuario
+  direccionesGuardadasUsuario: any[] = [];
+  direccionSeleccionadaId: string = '';
+
   estados: string[] = [
-    'Aguascalientes',
-    'Baja California',
-    'Baja California Sur',
-    'Campeche',
-    'Chiapas',
-    'Chihuahua',
-    'Ciudad de México',
-    'Coahuila',
-    'Colima',
-    'Durango',
-    'Estado de México',
-    'Guanajuato',
-    'Guerrero',
-    'Hidalgo',
-    'Jalisco',
-    'Michoacán',
-    'Morelos',
-    'Nayarit',
-    'Nuevo León',
-    'Oaxaca',
-    'Puebla',
-    'Querétaro',
-    'Quintana Roo',
-    'San Luis Potosí',
-    'Sinaloa',
-    'Sonora',
-    'Tabasco',
-    'Tamaulipas',
-    'Tlaxcala',
-    'Veracruz',
-    'Yucatán',
-    'Zacatecas'
+    'Aguascalientes', 'Baja California', 'Baja California Sur', 'Campeche', 'Chiapas',
+    'Chihuahua', 'Ciudad de México', 'Coahuila', 'Colima', 'Durango', 'Estado de México',
+    'Guanajuato', 'Guerrero', 'Hidalgo', 'Jalisco', 'Michoacán', 'Morelos', 'Nayarit',
+    'Nuevo León', 'Oaxaca', 'Puebla', 'Querétaro', 'Quintana Roo', 'San Luis Potosí',
+    'Sinaloa', 'Sonora', 'Tabasco', 'Tamaulipas', 'Tlaxcala', 'Veracruz', 'Yucatán', 'Zacatecas'
   ];
 
-
   direccionForm = this.fb.group({
-    correo: ['', [
-      Validators.required,
-      Validators.email
-    ]],
-
-    nombre: ['', [
-      Validators.required,
-      Validators.minLength(3)
-    ]],
-
-    telefono: ['', [
-      Validators.required,
-      Validators.pattern(/^[0-9]{10}$/)
-    ]],
-
+    correo: ['', [Validators.required, Validators.email]],
+    nombre: ['', [Validators.required, Validators.minLength(3)]],
+    telefono: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
     calle: ['', Validators.required],
-    numero: ['', Validators.required],
+    numero: ['S/N'],
     interior: [''],
     colonia: ['', Validators.required],
     ciudad: ['', Validators.required],
     estado: ['', Validators.required],
-
-    codigoPostal: ['', [
-      Validators.required,
-      Validators.pattern(/^[0-9]{5}$/)
-    ]],
-
+    codigoPostal: ['', [Validators.required, Validators.pattern(/^[0-9]{5}$/)]],
     referencias: ['']
   });
 
-  // INICIALIZACIÓN
   ngOnInit(): void {
-
-    // Escuchamos los productos del carrito real.
     this.cartSub = this.cartService.cartItems$.subscribe({
       next: (items: CartItem[]) => {
-
         this.carrito = [...items];
-
         this.calcularTotal();
-
-        console.log(
-          'Carrito KABNIA actualizado:',
-          this.carrito
-        );
       },
-
-      error: (error) => {
-        console.error(
-          'Error al recibir el carrito:',
-          error
-        );
-      }
+      error: (error) => console.error('Error al recibir el carrito:', error)
     });
 
-    // Recuperar dirección guardada.
     if (isPlatformBrowser(this.platformId)) {
-      this.cargarDireccion();
+      this.cargarDatosUsuarioLogueado();
+      this.cargarDireccionesGuardadas();
     }
 
-    // Detectar modificaciones en el formulario.
     this.formSub = this.direccionForm.valueChanges.subscribe(() => {
-      this.direccionGuardada = false;
+      // Si el usuario edita el formulario manualmente, desmarcamos la selección previa
+      if (!this.direccionSeleccionadaId) {
+        this.direccionGuardada = false;
+      }
     });
   }
 
-  // LIBERAR SUSCRIPCIONES
   ngOnDestroy(): void {
     this.cartSub?.unsubscribe();
     this.formSub?.unsubscribe();
   }
 
-  // CANTIDAD TOTAL DE PRODUCTOS
   get cantidadProductos(): number {
-    return this.carrito.reduce(
-      (total, item) => total + item.cantidad,
-      0
-    );
+    return this.carrito.reduce((total, item) => total + item.cantidad, 0);
   }
-
 
   calcularTotal(): void {
-
-    this.total = this.carrito.reduce(
-      (acumulado, item) => {
-
-        const precio = Number(item.producto.precio) || 0;
-        const cantidad = Number(item.cantidad) || 0;
-
-        return acumulado + (precio * cantidad);
-      },
-      0
-    );
+    this.total = this.carrito.reduce((acumulado, item) => {
+      const precio = Number(item.producto.precio) || 0;
+      const cantidad = Number(item.cantidad) || 0;
+      return acumulado + (precio * cantidad);
+    }, 0);
   }
 
-  // AUMENTAR CANTIDAD
   aumentarCantidad(item: CartItem): void {
-
-    const nuevaCantidad = item.cantidad + 1;
-
-    const stockMaximo = item.producto.stock;
-
-    const resultado = this.cartService.actualizarCantidad(
-      item.producto.id,
-      nuevaCantidad,
-      stockMaximo
-    );
-
-    if (!resultado.exito) {
-      alert(resultado.mensaje);
-    }
+    const res = this.cartService.actualizarCantidad(item.producto.id, item.cantidad + 1, item.producto.stock);
+    if (!res.exito) alert(res.mensaje);
   }
 
-  // DISMINUIR CANTIDAD
   disminuirCantidad(item: CartItem): void {
-
-    if (item.cantidad <= 1) {
-      return;
-    }
-
-    const nuevaCantidad = item.cantidad - 1;
-    const stockMaximo = item.producto.stock;
-
-    const resultado = this.cartService.actualizarCantidad(
-      item.producto.id,
-      nuevaCantidad,
-      stockMaximo
-    );
-
-    if (!resultado.exito) {
-      alert(resultado.mensaje);
-    }
+    if (item.cantidad <= 1) return;
+    const res = this.cartService.actualizarCantidad(item.producto.id, item.cantidad - 1, item.producto.stock);
+    if (!res.exito) alert(res.mensaje);
   }
 
-  // ELIMINAR UN PRODUCTO
   eliminarItem(item: CartItem): void {
-
-    const confirmar = confirm(
-      `¿Deseas eliminar "${item.producto.nombre}" del carrito?`
-    );
-
-    if (!confirmar) {
-      return;
-    }
-
-    const resultado = this.cartService.removerItem(
-      item.producto.id
-    );
-
-    if (!resultado.exito) {
-      alert(resultado.mensaje);
+    if (confirm(`¿Deseas eliminar "${item.producto.nombre}" del carrito?`)) {
+      const res = this.cartService.removerItem(item.producto.id);
+      if (!res.exito) alert(res.mensaje);
     }
   }
 
-  // VACIAR TODO EL CARRITO
   vaciarCarrito(): void {
-
-    if (this.carrito.length === 0) {
-      return;
+    if (this.carrito.length === 0) return;
+    if (confirm('¿Estás seguro de que deseas vaciar tu carrito?')) {
+      this.cartService.limpiarCarrito();
     }
-
-    const confirmar = confirm(
-      '¿Estás seguro de que deseas vaciar tu carrito?'
-    );
-
-    if (!confirmar) {
-      return;
-    }
-
-    this.cartService.limpiarCarrito();
   }
 
-  // VALIDAR CAMPOS DEL FORMULARIO
   campoInvalido(nombre: string): boolean {
-
     const campo = this.direccionForm.get(nombre);
-
-    return !!(
-      campo &&
-      campo.invalid &&
-      (campo.touched || campo.dirty)
-    );
+    return !!(campo && campo.invalid && (campo.touched || campo.dirty));
   }
 
-  // GUARDAR DIRECCIÓN DE ENTREGA
-  guardarDireccion(): void {
-
-    if (this.direccionForm.invalid) {
-
-      this.direccionForm.markAllAsTouched();
-
-      alert(
-        'Por favor, completa correctamente todos los campos obligatorios.'
-      );
-
-      return;
-    }
-
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    const direccion = this.direccionForm.getRawValue();
-
-    const correo = (direccion.correo || '')
-      .trim()
-      .toLowerCase();
-
-    const datosDireccion = {
-      ...direccion,
-      correo
-    };
-
-    localStorage.setItem(
-      'direccion_kabnia',
-      JSON.stringify(datosDireccion)
-    );
-
-    this.direccionForm.patchValue(
-      { correo },
-      { emitEvent: false }
-    );
-
-    this.direccionGuardada = true;
-
-    alert(
-      '¡Tus datos de entrega se guardaron correctamente!'
-    );
-  }
-
-  // CARGAR DIRECCIÓN GUARDADA
-  cargarDireccion(): void {
-
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    const guardado = localStorage.getItem(
-      'direccion_kabnia'
-    );
-
-    if (!guardado) {
-      return;
-    }
-
-    try {
-
-      const datos = JSON.parse(guardado);
-
-      if (!datos || typeof datos !== 'object' || Array.isArray(datos)) {
-        return;
-      }
-
-      this.direccionForm.patchValue(
-        datos,
-        { emitEvent: false }
-      );
-
-      this.direccionGuardada = this.direccionForm.valid;
-
-    } catch (error) {
-
-      console.error(
-        'Error al recuperar la dirección:',
-        error
-      );
-
-      this.direccionGuardada = false;
-    }
-  }
-
-  // PROCEDER AL PAGO
-  procederAlPago(): void {
-
-    // Validar que existan productos.
-    if (this.carrito.length === 0) {
-
-      alert(
-        'Tu carrito está vacío. Agrega productos para continuar.'
-      );
-
-      return;
-    }
-
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    // Comprobar sesión.
+  // Pre-llenar correo y nombre si el usuario inició sesión
+  cargarDatosUsuarioLogueado(): void {
     const usuarioGuardado = localStorage.getItem('usuario');
+    if (!usuarioGuardado) return;
+    try {
+      const u = JSON.parse(usuarioGuardado);
+      const datos = u.usuario || u.user || u;
+      this.direccionForm.patchValue({
+        correo: datos.correo || datos.email || '',
+        nombre: [datos.nombre, datos.apellidos].filter(Boolean).join(' ') || datos.nombreCompleto || '',
+        telefono: datos.telefono || datos.phone || ''
+      }, { emitEvent: false });
+    } catch {}
+  }
 
-    let usuarioValido = false;
+  // Cargar lista de direcciones guardadas del backend
+  cargarDireccionesGuardadas(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
 
+    const usuarioGuardado = localStorage.getItem('usuario');
+    let userId = '';
     if (usuarioGuardado) {
       try {
-        const usuario = JSON.parse(usuarioGuardado);
-
-        usuarioValido = (
-          usuario !== null &&
-          typeof usuario === 'object' &&
-          !Array.isArray(usuario)
-        );
-      } catch {
-        usuarioValido = false;
-      }
+        const u = JSON.parse(usuarioGuardado);
+        userId = u.id || u.usuario?.id || u.user?.id || '';
+      } catch {}
     }
 
-    if (!usuarioValido) {
+    if (!userId) return;
 
-      alert(
-        'Para realizar tu compra, primero debes iniciar sesión o registrarte.'
-      );
+    this.http.get<any[]>(`http://localhost:3000/api/addresses/user/${userId}`).subscribe({
+      next: (direcciones) => {
+        this.direccionesGuardadasUsuario = direcciones || [];
+        // Autoseleccionar la dirección principal si existe
+        if (this.direccionesGuardadasUsuario.length > 0) {
+          const principal = this.direccionesGuardadasUsuario.find(d => d.esPrincipal) || this.direccionesGuardadasUsuario[0];
+          this.aplicarDireccionGuardada(principal);
+        }
+      },
+      error: (err) => console.error('Error al cargar direcciones desde el servidor:', err)
+    });
+  }
 
-      this.router.navigate(['/login']);
+  // Selección manual en el menú desplegable
+  seleccionarDireccionGuardada(event: any): void {
+    const direccionId = event.target.value;
+    this.direccionSeleccionadaId = direccionId;
 
+    if (!direccionId) {
+      this.direccionGuardada = false;
       return;
     }
 
-    // Comprobar dirección.
-    if (
-      !this.direccionGuardada ||
-      this.direccionForm.invalid
-    ) {
+    const encontrada = this.direccionesGuardadasUsuario.find(d => d.id === direccionId);
+    if (encontrada) {
+      this.aplicarDireccionGuardada(encontrada);
+    }
+  }
 
+  private aplicarDireccionGuardada(dir: any): void {
+    this.direccionSeleccionadaId = dir.id;
+    this.direccionForm.patchValue({
+      calle: dir.calle || '',
+      numero: dir.numero || 'S/N',
+      colonia: dir.colonia || '',
+      ciudad: dir.ciudad || '',
+      estado: dir.estado || '',
+      codigoPostal: dir.codigoPostal || ''
+    }, { emitEvent: false });
+
+    this.direccionGuardada = true;
+  }
+
+  // Guardar una nueva dirección introducida en el formulario
+  guardarDireccion(): void {
+    if (this.direccionForm.invalid) {
       this.direccionForm.markAllAsTouched();
-
-      alert(
-        'Debes completar y guardar una dirección válida antes de pagar.'
-      );
-
+      alert('Por favor, completa todos los campos obligatorios del formulario.');
       return;
     }
 
-    // Navegar al checkout.
-    this.router.navigate(['/checkout']);
+    const usuarioGuardado = localStorage.getItem('usuario');
+    let userId = '';
+    if (usuarioGuardado) {
+      try {
+        const u = JSON.parse(usuarioGuardado);
+        userId = u.id || u.usuario?.id || u.user?.id || '';
+      } catch {}
+    }
+
+    if (!userId) {
+      alert('Debes iniciar sesión para guardar tu dirección.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const formValues = this.direccionForm.getRawValue();
+    const payload = {
+      userId,
+      calle: formValues.calle,
+      colonia: formValues.colonia,
+      ciudad: formValues.ciudad,
+      estado: formValues.estado,
+      codigoPostal: formValues.codigoPostal,
+      esPrincipal: false
+    };
+
+    this.http.post('http://localhost:3000/api/addresses', payload).subscribe({
+      next: () => {
+        this.direccionGuardada = true;
+        alert('¡Dirección guardada correctamente en tu cuenta!');
+        this.cargarDireccionesGuardadas();
+      },
+      error: (err) => {
+        console.error('Error al guardar dirección:', err);
+        alert('No se pudo guardar la dirección en el servidor.');
+      }
+    });
+  }
+
+  // PROCEDER AL PAGO Y REDIRIGIR A MIS PEDIDOS (/orders) O A CLIP
+  procederAlPago(): void {
+    if (this.carrito.length === 0) {
+      alert('Tu carrito está vacío. Agrega productos para continuar.');
+      return;
+    }
+
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const usuarioGuardado = localStorage.getItem('usuario');
+    let userId = '';
+    if (usuarioGuardado) {
+      try {
+        const u = JSON.parse(usuarioGuardado);
+        userId = u.id || u.usuario?.id || u.user?.id || '';
+      } catch {}
+    }
+
+    if (!userId) {
+      alert('Para realizar tu compra, primero debes iniciar sesión.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const tieneDireccionValida = this.direccionGuardada || (this.direccionSeleccionadaId !== '') || this.direccionForm.valid;
+
+    if (!tieneDireccionValida) {
+      this.direccionForm.markAllAsTouched();
+      alert('Por favor selecciona una dirección guardada o completa los datos del formulario de entrega.');
+      return;
+    }
+
+    const payload = {
+      userId: userId,
+      items: this.carrito.map(item => ({
+        productId: item.producto.id,
+        quantity: item.cantidad,
+        price: Number(item.producto.precio)
+      })),
+      total: this.total
+    };
+
+    // Petición al backend NestJS para registrar la orden e iniciar cobro
+    this.http.post('http://localhost:3000/api/orders', payload).subscribe({
+      next: (respuesta: any) => {
+        console.log('Respuesta del servidor de órdenes:', respuesta);
+
+        // Limpiar el carrito local
+        this.cartService.limpiarCarrito();
+
+        // 1. Redirigir a Clip si existe enlace oficial de pago
+        if (respuesta.paymentUrl && typeof respuesta.paymentUrl === 'string' && respuesta.paymentUrl.startsWith('http')) {
+          window.location.href = respuesta.paymentUrl;
+        } else {
+          // 2. Si no hay redirección externa de Clip, notificar y llevar directamente a /orders
+          alert('¡Pedido registrado correctamente! Redirigiendo a tus pedidos...');
+          this.router.navigate(['/orders']);
+        }
+      },
+      error: (err) => {
+        console.error('Error al procesar la orden:', err);
+        alert(err.error?.message || 'Ocurrió un error al procesar tu pedido. Por favor intenta de nuevo.');
+      }
+    });
   }
 }

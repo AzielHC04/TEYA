@@ -26,14 +26,18 @@ import { NosotrosComponent } from './pages/nosotros/nosotros.component';
 export class AppComponent {
   title = 'TEYA';
   private router = inject(Router);
+  
   isAdminRoute: boolean = false;
+  isAuthRoute: boolean = false;
 
   constructor() {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      // Cada vez que cambie de ruta, verificamos si incluye '/admin'
-      this.isAdminRoute = event.url.includes('/admin');
+      // Usamos urlAfterRedirects para capturar la URL final tras cualquier redirección
+      const url = event.urlAfterRedirects || event.url;
+      this.isAdminRoute = url.includes('/admin');
+      this.isAuthRoute = url.includes('/login') || url.includes('/register');
     });
   }
 }

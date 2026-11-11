@@ -1,4 +1,3 @@
-
 import {
   Component,
   OnInit,
@@ -18,6 +17,8 @@ import {
   RouterModule
 } from '@angular/router';
 
+import { HttpClient } from '@angular/common/http';
+
 interface UsuarioPerfil {
   nombre: string;
   apellidos: string;
@@ -25,15 +26,14 @@ interface UsuarioPerfil {
   telefono: string;
 }
 
-interface DireccionPerfil {
+interface DireccionBackend {
+  id: string;
   calle: string;
-  numero: string;
-  interior: string;
   colonia: string;
   ciudad: string;
   estado: string;
   codigoPostal: string;
-  referencias: string;
+  esPrincipal: boolean;
 }
 
 interface EstadisticasPerfil {
@@ -57,11 +57,17 @@ export class MiperfilComponent implements OnInit {
 
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
+  private http = inject(HttpClient);
 
   private correoCuenta = '';
+  private userId = '';
 
   usuario: UsuarioPerfil = this.usuarioVacio();
-  direccion: DireccionPerfil = this.direccionVacia();
+  
+  direcciones: DireccionBackend[] = [];
+
+  direccionEditando: any = null;
+  editandoDireccion = false;
 
   estadisticas: EstadisticasPerfil = {
     pedidos: 0,
@@ -70,19 +76,15 @@ export class MiperfilComponent implements OnInit {
   };
 
   editandoPerfil = false;
-  editandoDireccion = false;
 
   mensaje = '';
   tipoMensaje: 'exito' | 'error' = 'exito';
 
   private respaldoUsuario: UsuarioPerfil = this.usuarioVacio();
-  private respaldoDireccion: DireccionPerfil = this.direccionVacia();
 
   ngOnInit(): void {
     this.cargarPerfil();
   }
-
-  // OBJETOS INICIALES
 
   private usuarioVacio(): UsuarioPerfil {
     return {
@@ -93,30 +95,13 @@ export class MiperfilComponent implements OnInit {
     };
   }
 
-  private direccionVacia(): DireccionPerfil {
-    return {
-      calle: '',
-      numero: '',
-      interior: '',
-      colonia: '',
-      ciudad: '',
-      estado: '',
-      codigoPostal: '',
-      referencias: ''
-    };
-  }
-
-  // CONVERSIÓN SEGURA DE VALORES
-
   private texto(valor: unknown): string {
     if (typeof valor === 'string') {
       return valor.trim();
     }
-
     if (typeof valor === 'number') {
       return String(valor);
     }
-
     return '';
   }
 
@@ -124,265 +109,142 @@ export class MiperfilComponent implements OnInit {
     if (!valor) {
       return null;
     }
-
     try {
       const datos = JSON.parse(valor);
-
-      if (
-        datos &&
-        typeof datos === 'object' &&
-        !Array.isArray(datos)
-      ) {
+      if (datos && typeof datos === 'object' && !Array.isArray(datos)) {
         return datos;
       }
     } catch (error) {
-      console.error(
-        'No se pudieron leer los datos guardados:',
-        error
-      );
+      console.error('No se pudieron leer los datos guardados:', error);
     }
-
     return null;
   }
 
-  // CLAVES DE ALMACENAMIENTO POR USUARIO
-
   private clavePerfil(): string {
-    return 'kabnia_perfil_' +
-      encodeURIComponent(this.correoCuenta);
+    return 'kabnia_perfil_' + encodeURIComponent(this.correoCuenta);
   }
-
-  private claveDireccion(): string {
-    return 'kabnia_direccion_' +
-      encodeURIComponent(this.correoCuenta);
-  }
-
-  // RECUPERAR USUARIO QUE INICIÓ SESIÓN
 
   cargarPerfil(): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
 
-    const sesion = this.leerObjeto(
-      localStorage.getItem('usuario')
-    );
+    const sesion = this.leerObjeto(localStorage.getItem('usuario'));
 
     if (!sesion) {
       this.router.navigate(['/login']);
       return;
     }
 
-    // Admite distintos formatos frecuentes de login.
-    const datos = (
-      sesion.usuario &&
-      typeof sesion.usuario === 'object'
-    )
+    const datos = (sesion.usuario && typeof sesion.usuario === 'object')
       ? sesion.usuario
-      : (
-          sesion.user &&
-          typeof sesion.user === 'object'
-        )
-          ? sesion.user
-          : sesion;
+      : (sesion.user && typeof sesion.user === 'object')
+        ? sesion.user
+        : sesion;
 
     const correo = this.texto(
-      datos.correo ||
-      datos.email ||
-      sesion.correo ||
-      sesion.email
+      datos.correo || datos.email || sesion.correo || sesion.email
     ).toLowerCase();
 
-    // Es necesario un identificador de cuenta.
+    const idUser = this.texto(datos.id || sesion.id);
+
     if (!correo) {
       this.usuario = this.usuarioVacio();
-
-      this.mostrarMensaje(
-        'La sesión no contiene un correo electrónico. ' +
-        'Revisa los datos que guarda tu login.',
-        'error'
-      );
-
+      this.mostrarMensaje('La sesión no contiene un correo electrónico.', 'error');
       return;
     }
 
     this.correoCuenta = correo;
+    this.userId = idUser;
 
-    const nombreCompleto = this.texto(
-      datos.nombreCompleto ||
-      datos.name ||
-      ''
-    );
-
-    const nombreSesion = this.texto(
-      datos.nombre ||
-      datos.nombres ||
-      ''
-    );
-
-    const apellidosSesion = this.texto(
-      datos.apellidos ||
-      datos.apellido ||
-      datos.lastName ||
-      ''
-    );
-
+    const nombreCompleto = this.texto(datos.nombreCompleto || datos.name || '');
+    const nombreSesion = this.texto(datos.nombre || datos.nombres || '');
+    const apellidosSesion = this.texto(datos.apellidos || datos.apellido || datos.lastName || '');
     const partesNombre = nombreCompleto.split(/\s+/);
 
-    // Datos reales proporcionados por la sesión.
     this.usuario = {
-      nombre: nombreSesion ||
-        (nombreCompleto ? partesNombre[0] : ''),
-
-      apellidos: apellidosSesion ||
-        (
-          nombreCompleto
-            ? partesNombre.slice(1).join(' ')
-            : ''
-        ),
-
+      nombre: nombreSesion || (nombreCompleto ? partesNombre[0] : ''),
+      apellidos: apellidosSesion || (nombreCompleto ? partesNombre.slice(1).join(' ') : ''),
       correo: correo,
-
-      telefono: this.texto(
-        datos.telefono ||
-        datos.phone ||
-        datos.celular ||
-        ''
-      )
+      telefono: this.texto(datos.telefono || datos.phone || datos.celular || '')
     };
 
-    // Recuperar cambios locales del mismo usuario.
-    const perfilGuardado = this.leerObjeto(
-      localStorage.getItem(this.clavePerfil())
-    );
-
+    const perfilGuardado = this.leerObjeto(localStorage.getItem(this.clavePerfil()));
     if (perfilGuardado) {
       this.usuario = {
-        nombre: this.texto(
-          perfilGuardado.nombre ?? this.usuario.nombre
-        ),
-
-        apellidos: this.texto(
-          perfilGuardado.apellidos ?? this.usuario.apellidos
-        ),
-
+        nombre: this.texto(perfilGuardado.nombre ?? this.usuario.nombre),
+        apellidos: this.texto(perfilGuardado.apellidos ?? this.usuario.apellidos),
         correo: this.correoCuenta,
-
-        telefono: this.texto(
-          perfilGuardado.telefono ?? this.usuario.telefono
-        )
+        telefono: this.texto(perfilGuardado.telefono ?? this.usuario.telefono)
       };
     }
 
     this.respaldoUsuario = { ...this.usuario };
 
-    this.cargarDireccion();
-    this.cargarEstadisticas(datos);
+    this.cargarDireccionesBackend();
+    this.cargarEstadisticasYPedidos(datos);
   }
 
-  // RECUPERAR DIRECCIÓN
-
-  cargarDireccion(): void {
-    if (
-      !isPlatformBrowser(this.platformId) ||
-      !this.correoCuenta
-    ) {
+  cargarDireccionesBackend(): void {
+    if (!isPlatformBrowser(this.platformId) || !this.userId) {
       return;
     }
 
-    let datos = this.leerObjeto(
-      localStorage.getItem(this.claveDireccion())
-    );
-
-    // Compatibilidad con dirección del carrito.
-    if (!datos) {
-      const direccionCarrito = this.leerObjeto(
-        localStorage.getItem('direccion_kabnia')
-      );
-
-      const correoDireccion = this.texto(
-        direccionCarrito?.correo
-      ).toLowerCase();
-
-      // Nunca cargar la dirección de otro correo.
-      if (correoDireccion === this.correoCuenta) {
-        datos = direccionCarrito;
+    this.http.get<DireccionBackend[]>(`http://localhost:3000/api/addresses/user/${this.userId}`).subscribe({
+      next: (direccionesDb) => {
+        this.direcciones = direccionesDb || [];
+      },
+      error: (err) => {
+        console.error('Error al cargar direcciones desde el servidor:', err);
+        this.direcciones = [];
       }
-    }
-
-    if (!datos) {
-      this.direccion = this.direccionVacia();
-      return;
-    }
-
-    this.direccion = {
-      calle: this.texto(datos.calle),
-      numero: this.texto(datos.numero),
-      interior: this.texto(datos.interior),
-      colonia: this.texto(datos.colonia),
-      ciudad: this.texto(datos.ciudad),
-      estado: this.texto(datos.estado),
-      codigoPostal: this.texto(datos.codigoPostal),
-      referencias: this.texto(datos.referencias)
-    };
-
-    this.respaldoDireccion = { ...this.direccion };
+    });
   }
 
-  // ESTADÍSTICAS DISPONIBLES EN SESIÓN
+  // CONSULTAR PEDIDOS Y CALCULAR ESTADÍSTICAS REALES
+  cargarEstadisticasYPedidos(datos: any): void {
+    const fechaRegistro = this.texto(datos.fechaRegistro || datos.createdAt || datos.created_at || '');
+    const fecha = fechaRegistro ? new Date(fechaRegistro) : null;
 
-  private cargarEstadisticas(datos: any): void {
-    const actividad = datos.estadisticas || {};
-
-    const pedidos = Number(
-      actividad.pedidos ?? datos.totalPedidos
-    );
-
-    const productos = Number(
-      actividad.productos ?? datos.totalProductos
-    );
-
-    const fechaRegistro = this.texto(
-      datos.fechaRegistro ||
-      datos.createdAt ||
-      datos.created_at ||
-      ''
-    );
-
-    const fecha = fechaRegistro
-      ? new Date(fechaRegistro)
-      : null;
-
-    let clienteDesde: number | string =
-      'No disponible';
-
+    let clienteDesde: number | string = 'No disponible';
     if (fecha && !Number.isNaN(fecha.getTime())) {
       clienteDesde = fecha.getFullYear();
     } else {
-      const anio = Number(
-        datos.clienteDesde ??
-        actividad.clienteDesde
-      );
-
+      const anio = Number(datos.clienteDesde || datos.estadisticas?.clienteDesde);
       if (Number.isInteger(anio) && anio >= 2000) {
         clienteDesde = anio;
       }
     }
 
-    this.estadisticas = {
-      pedidos: Number.isFinite(pedidos) && pedidos >= 0
-        ? pedidos
-        : 0,
+    this.estadisticas.clienteDesde = clienteDesde;
 
-      productos: Number.isFinite(productos) && productos >= 0
-        ? productos
-        : 0,
+    if (!this.userId) return;
 
-      clienteDesde
-    };
+    // Llamada al endpoint para calcular el total de pedidos y sumar las cantidades de productos
+    this.http.get<any[]>(`http://localhost:3000/api/orders/user/${this.userId}`).subscribe({
+      next: (pedidos) => {
+        const totalPedidos = pedidos.length;
+        
+        let totalProductos = 0;
+        pedidos.forEach(pedido => {
+          if (pedido.items && Array.isArray(pedido.items)) {
+            pedido.items.forEach((item: any) => {
+              totalProductos += Number(item.quantity) || 0;
+            });
+          }
+        });
+
+        this.estadisticas = {
+          pedidos: totalPedidos,
+          productos: totalProductos,
+          clienteDesde: clienteDesde
+        };
+      },
+      error: (err) => {
+        console.error('Error al calcular estadísticas de pedidos:', err);
+      }
+    });
   }
-
-  // EDITAR INFORMACIÓN PERSONAL
 
   editarPerfil(): void {
     this.respaldoUsuario = { ...this.usuario };
@@ -396,39 +258,26 @@ export class MiperfilComponent implements OnInit {
   }
 
   guardarPerfil(): void {
-    if (
-      !isPlatformBrowser(this.platformId) ||
-      !this.correoCuenta
-    ) {
+    if (!isPlatformBrowser(this.platformId) || !this.correoCuenta) {
       return;
     }
 
     const nombre = this.usuario.nombre.trim();
     const apellidos = this.usuario.apellidos.trim();
-    const telefono = this.usuario.telefono
-      .replace(/\D/g, '');
+    const telefono = this.usuario.telefono.replace(/\D/g, '');
 
     if (nombre.length < 2) {
-      this.mostrarMensaje(
-        'Introduce un nombre válido.',
-        'error'
-      );
+      this.mostrarMensaje('Introduce un nombre válido.', 'error');
       return;
     }
 
     if (apellidos.length < 2) {
-      this.mostrarMensaje(
-        'Introduce tus apellidos.',
-        'error'
-      );
+      this.mostrarMensaje('Introduce tus apellidos.', 'error');
       return;
     }
 
     if (telefono && !/^\d{10}$/.test(telefono)) {
-      this.mostrarMensaje(
-        'El teléfono debe tener 10 dígitos.',
-        'error'
-      );
+      this.mostrarMensaje('El teléfono debe tener 10 dígitos.', 'error');
       return;
     }
 
@@ -439,185 +288,124 @@ export class MiperfilComponent implements OnInit {
       telefono
     };
 
-    // Almacenar únicamente datos de presentación.
-    localStorage.setItem(
-      this.clavePerfil(),
-      JSON.stringify(this.usuario)
-    );
-
+    localStorage.setItem(this.clavePerfil(), JSON.stringify(this.usuario));
     this.respaldoUsuario = { ...this.usuario };
     this.editandoPerfil = false;
 
-    this.mostrarMensaje(
-      'Datos personales guardados correctamente.',
-      'exito'
-    );
+    this.mostrarMensaje('Datos personales guardados correctamente.', 'exito');
   }
 
-  // EDITAR DIRECCIÓN
-
-  editarDireccion(): void {
-    this.respaldoDireccion = { ...this.direccion };
+  iniciarEdicionDireccion(dir: DireccionBackend): void {
+    this.direccionEditando = { ...dir };
     this.editandoDireccion = true;
     this.mensaje = '';
   }
 
-  cancelarDireccion(): void {
-    this.direccion = { ...this.respaldoDireccion };
+  cancelarEdicionDireccion(): void {
+    this.direccionEditando = null;
     this.editandoDireccion = false;
   }
 
-  guardarDireccion(): void {
-    if (
-      !isPlatformBrowser(this.platformId) ||
-      !this.correoCuenta
-    ) {
+  guardarDireccionEditada(): void {
+    if (!this.direccionEditando || !this.direccionEditando.id) {
       return;
     }
 
-    const direccion: DireccionPerfil = {
-      calle: this.direccion.calle.trim(),
-      numero: this.direccion.numero.trim(),
-      interior: this.direccion.interior.trim(),
-      colonia: this.direccion.colonia.trim(),
-      ciudad: this.direccion.ciudad.trim(),
-      estado: this.direccion.estado.trim(),
-      codigoPostal: this.direccion.codigoPostal.trim(),
-      referencias: this.direccion.referencias.trim()
+    const payload = {
+      calle: this.direccionEditando.calle.trim(),
+      colonia: this.direccionEditando.colonia.trim(),
+      ciudad: this.direccionEditando.ciudad.trim(),
+      estado: this.direccionEditando.estado.trim(),
+      codigoPostal: this.direccionEditando.codigoPostal.trim()
     };
 
-    if (
-      !direccion.calle ||
-      !direccion.numero ||
-      !direccion.colonia ||
-      !direccion.ciudad ||
-      !direccion.estado
-    ) {
-      this.mostrarMensaje(
-        'Completa todos los campos obligatorios ' +
-        'de la dirección.',
-        'error'
-      );
+    if (!payload.calle || !payload.colonia || !payload.ciudad || !payload.estado || !payload.codigoPostal) {
+      this.mostrarMensaje('Todos los campos de la dirección son obligatorios.', 'error');
       return;
     }
 
-    if (!/^\d{5}$/.test(direccion.codigoPostal)) {
-      this.mostrarMensaje(
-        'El código postal debe tener 5 dígitos.',
-        'error'
-      );
+    if (!/^\d{5}$/.test(payload.codigoPostal)) {
+      this.mostrarMensaje('El código postal debe tener 5 dígitos.', 'error');
       return;
     }
 
-    this.direccion = direccion;
-
-    // Dirección exclusiva del perfil actual.
-    localStorage.setItem(
-      this.claveDireccion(),
-      JSON.stringify(direccion)
-    );
-
-    // Mantener compatibilidad con el carrito actual.
-    localStorage.setItem(
-      'direccion_kabnia',
-      JSON.stringify({
-        ...direccion,
-        nombre: this.nombreCompleto,
-        telefono: this.usuario.telefono,
-        correo: this.correoCuenta
-      })
-    );
-
-    this.respaldoDireccion = { ...direccion };
-    this.editandoDireccion = false;
-
-    this.mostrarMensaje(
-      'Dirección principal guardada correctamente.',
-      'exito'
-    );
+    this.http.put(`http://localhost:3000/api/addresses/${this.direccionEditando.id}`, payload).subscribe({
+      next: () => {
+        this.mostrarMensaje('Dirección actualizada correctamente.', 'exito');
+        this.editandoDireccion = false;
+        this.direccionEditando = null;
+        this.cargarDireccionesBackend();
+      },
+      error: (err) => {
+        console.error('Error al actualizar dirección:', err);
+        this.mostrarMensaje('No se pudo actualizar la dirección en el servidor.', 'error');
+      }
+    });
   }
 
-  // CERRAR SESIÓN
+  eliminarDireccion(id: string): void {
+    const confirmar = window.confirm('¿Estás seguro de que deseas eliminar esta dirección?');
+    if (!confirmar) {
+      return;
+    }
+
+    this.http.delete(`http://localhost:3000/api/addresses/${id}`).subscribe({
+      next: () => {
+        this.mostrarMensaje('Dirección eliminada correctamente.', 'exito');
+        this.cargarDireccionesBackend();
+      },
+      error: (err) => {
+        console.error('Error al eliminar dirección:', err);
+        this.mostrarMensaje('No se pudo eliminar la dirección.', 'error');
+      }
+    });
+  }
 
   cerrarSesion(): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
 
-    const confirmar = window.confirm(
-      '¿Deseas cerrar tu sesión de KABNIA?'
-    );
-
+    const confirmar = window.confirm('¿Deseas cerrar tu sesión de KABNIA?');
     if (!confirmar) {
       return;
     }
 
     localStorage.removeItem('usuario');
-
-    // Evita dejar visible una dirección del usuario
-    // anterior en el formulario general del carrito.
     localStorage.removeItem('direccion_kabnia');
 
-    // Los perfiles guardados por cuenta permanecen
-    // disponibles para un siguiente inicio de sesión.
     this.usuario = this.usuarioVacio();
-    this.direccion = this.direccionVacia();
+    this.direcciones = [];
     this.correoCuenta = '';
+    this.userId = '';
 
     this.router.navigate(['/login']).then(() => {
       window.location.reload();
     });
   }
 
-  // CAMBIAR CONTRASEÑA
-
   cambiarContrasena(): void {
-    this.mostrarMensaje(
-      'Para cambiar tu contraseña es necesario ' +
-      'conectar esta función con el sistema de autenticación.',
-      'error'
-    );
+    this.mostrarMensaje('Para cambiar tu contraseña es necesario conectar esta función con el sistema de autenticación.', 'error');
   }
 
-  // MENSAJES
-
-  private mostrarMensaje(
-    texto: string,
-    tipo: 'exito' | 'error'
-  ): void {
+  private mostrarMensaje(texto: string, tipo: 'exito' | 'error'): void {
     this.mensaje = texto;
     this.tipoMensaje = tipo;
   }
 
-  // NOMBRE COMPLETO
-
   get nombreCompleto(): string {
-    const nombre = [
-      this.usuario.nombre,
-      this.usuario.apellidos
-    ].filter(Boolean).join(' ');
-
+    const nombre = [this.usuario.nombre, this.usuario.apellidos].filter(Boolean).join(' ');
     return nombre || 'Usuario KABNIA';
   }
-
-  // INICIALES
 
   get iniciales(): string {
     const nombre = this.usuario.nombre.charAt(0);
     const apellido = this.usuario.apellidos.charAt(0);
-
     const resultado = (nombre + apellido).toUpperCase();
-
     return resultado || 'K';
   }
 
-  // DIRECCIÓN DISPONIBLE
-
-  get tieneDireccion(): boolean {
-    return !!(
-      this.direccion.calle &&
-      this.direccion.colonia &&
-      this.direccion.ciudad
-    );
+  get tieneDirecciones(): boolean {
+    return this.direcciones.length > 0;
   }
 }

@@ -1,38 +1,66 @@
 <div class="auth-container">
   <div class="auth-card">
     <div class="auth-header">
-      <h2>🌱 Únete a KABNIA</h2>
-      <p>Crea tu cuenta para comenzar a comprar</p>
+      <span class="auth-subtitle">TEYA E-COMMERCE</span>
+      <h2>Crear Cuenta</h2>
+      <p>Regístrate para comenzar a realizar tus compras.</p>
     </div>
 
-    @if (mensajeError) {
-      <div class="alert alert-danger">{{ mensajeError }}</div>
-    }
     @if (mensajeExito) {
       <div class="alert alert-success">{{ mensajeExito }}</div>
+    }
+    @if (mensajeError) {
+      <div class="alert alert-danger">{{ mensajeError }}</div>
     }
 
     <form (ngSubmit)="registrarUsuario()">
       <div class="form-group">
-        <label>Nombre Completo</label>
-        <input type="text" [(ngModel)]="name" name="name" required placeholder="Tu nombre..." />
+        <label for="name">Nombre completo *</label>
+        <input 
+          type="text" 
+          id="name" 
+          [(ngModel)]="name" 
+          name="name" 
+          placeholder="Tu nombre" 
+          required 
+        />
       </div>
 
       <div class="form-group">
-        <label>Correo Electrónico</label>
-        <input type="email" [(ngModel)]="email" name="email" required placeholder="correo@ejemplo.com" />
+        <label for="email">Correo electrónico *</label>
+        <input 
+          type="email" 
+          id="email" 
+          [(ngModel)]="email" 
+          name="email" 
+          placeholder="correo@ejemplo.com" 
+          required 
+        />
       </div>
 
       <div class="form-group">
-        <label>Contraseña</label>
-        <input type="password" [(ngModel)]="password" name="password" required placeholder="••••••••" />
+        <label for="password">Contraseña *</label>
+        <input 
+          type="password" 
+          id="password" 
+          [(ngModel)]="password" 
+          name="password" 
+          placeholder="••••••••" 
+          required 
+        />
       </div>
 
-      <button type="submit" class="btn-submit">Registrarse</button>
+      <button type="submit" class="btn-submit" [disabled]="cargando">
+        @if (cargando) {
+          Registrando cuenta...
+        } @else {
+          Registrarse
+        }
+      </button>
     </form>
 
     <div class="auth-footer">
-      <p>¿Ya tienes una cuenta? <a routerLink="/login">Inicia sesión aquí</a></p>
+      <p>¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión aquí</a></p>
     </div>
   </div>
 </div>

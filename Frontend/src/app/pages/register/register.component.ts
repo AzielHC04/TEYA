@@ -19,10 +19,15 @@ export class RegisterComponent {
   email: string = '';
   password: string = '';
   
+  cargando: boolean = false;
   mensajeError: string = '';
   mensajeExito: string = '';
 
   registrarUsuario(): void {
+    this.cargando = true;
+    this.mensajeError = '';
+    this.mensajeExito = '';
+
     const payload = {
       name: this.name,
       email: this.email,
@@ -32,6 +37,7 @@ export class RegisterComponent {
 
     this.http.post('http://localhost:3000/api/users/register', payload).subscribe({
       next: () => {
+        this.cargando = false;
         this.mensajeExito = '¡Registro exitoso! Redirigiendo al login...';
         setTimeout(() => {
           this.router.navigate(['/login']);
@@ -39,6 +45,7 @@ export class RegisterComponent {
       },
       error: (err) => {
         console.error(err);
+        this.cargando = false;
         this.mensajeError = err.error?.message || 'Error al registrar el usuario.';
       }
     });

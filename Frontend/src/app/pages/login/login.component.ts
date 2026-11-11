@@ -1,4 +1,3 @@
-
 import {
   Component,
   inject,
@@ -53,8 +52,7 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private platformId = inject(PLATFORM_ID);
 
-  private readonly API_URL =
-    'http://localhost:3000/api/users/login';
+  private readonly API_URL = 'http://localhost:3000/api/users/login';
 
   email = '';
   password = '';
@@ -74,61 +72,35 @@ export class LoginComponent {
     telefono: ''
   };
 
-  // CLAVE LOCAL DE PERFIL
   private clavePerfil(correo: string): string {
-    return 'kabnia_perfil_' +
-      encodeURIComponent(correo.trim().toLowerCase());
+    return 'kabnia_perfil_' + encodeURIComponent(correo.trim().toLowerCase());
   }
 
-// VALIDACIÓN DE CORREO (Flexible para permitir correos de administración locales)
   private correoValido(correo: string): boolean {
     return correo.includes('@') && correo.trim().length > 3;
   }
 
-  // RECUPERAR INFORMACIÓN LOCAL
-  private leerPerfilLocal(
-    correo: string
-  ): Partial<PerfilUsuario> | null {
-
+  private leerPerfilLocal(correo: string): Partial<PerfilUsuario> | null {
     if (!isPlatformBrowser(this.platformId)) {
       return null;
     }
 
-    const guardado = localStorage.getItem(
-      this.clavePerfil(correo)
-    );
-
-    if (!guardado) {
-      return null;
-    }
+    const guardado = localStorage.getItem(this.clavePerfil(correo));
+    if (!guardado) return null;
 
     try {
       const datos = JSON.parse(guardado);
-
-      if (
-        datos &&
-        typeof datos === 'object' &&
-        !Array.isArray(datos)
-      ) {
+      if (datos && typeof datos === 'object' && !Array.isArray(datos)) {
         return datos as Partial<PerfilUsuario>;
       }
-
     } catch (error) {
-      console.error(
-        'Error al recuperar perfil:',
-        error
-      );
+      console.error('Error al recuperar perfil:', error);
     }
-
     return null;
   }
 
-  // INICIAR SESIÓN
   iniciarSesion(): void {
-
-    if (this.cargando) {
-      return;
-    }
+    if (this.cargando) return;
 
     this.mensajeError = '';
     this.mensajeExito = '';
@@ -136,14 +108,12 @@ export class LoginComponent {
     const correo = this.email.trim().toLowerCase();
 
     if (!this.correoValido(correo)) {
-      this.mensajeError =
-        'Introduce un correo electrónico válido.';
+      this.mensajeError = 'Introduce un correo electrónico válido.';
       return;
     }
 
     if (!this.password.trim()) {
-      this.mensajeError =
-        'Introduce tu contraseña.';
+      this.mensajeError = 'Introduce tu contraseña.';
       return;
     }
 
@@ -156,118 +126,60 @@ export class LoginComponent {
         password: this.password
       }
     ).subscribe({
-
       next: (respuesta) => {
-
         this.cargando = false;
-
         const usuario = respuesta?.usuario;
 
-        if (
-          !usuario ||
-          !usuario.id ||
-          !usuario.email
-        ) {
-          this.mensajeError =
-            'El servidor no devolvió los datos de la cuenta.';
+        if (!usuario || !usuario.id || !usuario.email) {
+          this.mensajeError = 'El servidor no devolvió los datos de la cuenta.';
           return;
         }
 
         this.usuarioValidado = usuario;
 
-        // ADMINISTRADORES
         if (usuario.role === 'ADMIN') {
-
           this.authService.login(usuario);
-
           this.password = '';
-
           this.router.navigateByUrl('/admin/tablas');
           return;
         }
 
-        // CLIENTES
         this.prepararPerfil(usuario);
       },
-
       error: (error) => {
-
         this.cargando = false;
-
-        console.error(
-          'Error al iniciar sesión:',
-          error
-        );
-
-        this.mensajeError =
-          error.error?.mensaje ||
-          error.error?.message ||
-          'Correo o contraseña incorrectos.';
+        console.error('Error al iniciar sesión:', error);
+        this.mensajeError = error.error?.mensaje || error.error?.message || 'Correo o contraseña incorrectos.';
       }
     });
   }
 
-  // PREPARAR DATOS PARA MI PERFIL
-  private prepararPerfil(
-    usuario: UsuarioAutenticado
-  ): void {
-
-    const correo = usuario.email
-      .trim()
-      .toLowerCase();
-
+  private prepararPerfil(usuario: UsuarioAutenticado): void {
+    const correo = usuario.email.trim().toLowerCase();
     const datosLocales = this.leerPerfilLocal(correo);
 
-    // Primero utilizar cambios realizados
-    // previamente desde Mi Perfil.
     this.perfil = {
-
-      nombre:
-        datosLocales?.nombre?.trim() ||
-        usuario.name?.trim() ||
-        '',
-
-      apellidos:
-        datosLocales?.apellidos?.trim() ||
-        usuario.apellidos?.trim() ||
-        '',
-
+      nombre: datosLocales?.nombre?.trim() || usuario.name?.trim() || '',
+      apellidos: datosLocales?.apellidos?.trim() || usuario.apellidos?.trim() || '',
       correo,
-
-      telefono:
-        datosLocales?.telefono?.trim() ||
-        usuario.telefono?.trim() ||
-        ''
+      telefono: datosLocales?.telefono?.trim() || usuario.telefono?.trim() || ''
     };
 
     this.password = '';
 
-    // Usuario con información completa.
     if (this.perfilCompleto()) {
-
       this.finalizarInicioSesion();
       return;
     }
 
-    // Faltan datos: mostrar segundo formulario.
     this.completandoPerfil = true;
-
-    this.mensajeExito =
-      'Inicio de sesión exitoso. ' +
-      'Completa tu información personal.';
+    this.mensajeExito = 'Inicio de sesión exitoso. Completa tu información personal.';
   }
 
-  // COMPROBAR DATOS OBLIGATORIOS
   private perfilCompleto(): boolean {
-
     const nombre = this.perfil.nombre.trim();
-
     const apellidos = this.perfil.apellidos.trim();
-
-    const telefono = this.perfil.telefono.replace(
-      /\D/g,
-      ''
-    );
+    const telefono = this.perfil.telefono.replace(/\D/g, '');
 
     return (
       nombre.length >= 2 &&
@@ -277,12 +189,8 @@ export class LoginComponent {
     );
   }
 
-  // GUARDAR PERFIL
   private guardarPerfil(): boolean {
-
-    if (!isPlatformBrowser(this.platformId)) {
-      return false;
-    }
+    if (!isPlatformBrowser(this.platformId)) return false;
 
     try {
       this.perfil = {
@@ -292,85 +200,45 @@ export class LoginComponent {
         telefono: this.perfil.telefono.replace(/\D/g, '')
       };
 
-      localStorage.setItem(
-        this.clavePerfil(this.perfil.correo),
-        JSON.stringify(this.perfil)
-      );
-
+      localStorage.setItem(this.clavePerfil(this.perfil.correo), JSON.stringify(this.perfil));
       return true;
-
     } catch (error) {
-
-      console.error(
-        'Error al guardar información:',
-        error
-      );
-
-      this.mensajeError =
-        'No se pudo guardar tu información personal.';
-
+      console.error('Error al guardar información:', error);
+      this.mensajeError = 'No se pudo guardar tu información personal.';
       return false;
     }
   }
 
-  // GUARDAR Y CONTINUAR
   guardarYContinuar(): void {
-
     this.mensajeError = '';
 
     if (!this.perfilCompleto()) {
-
-      this.mensajeError =
-        'Completa el nombre, apellidos y un teléfono ' +
-        'válido de 10 dígitos.';
-
+      this.mensajeError = 'Completa el nombre, apellidos y un teléfono válido de 10 dígitos.';
       return;
     }
 
     this.finalizarInicioSesion();
   }
 
-  // FINALIZAR INICIO DE SESIÓN
   private finalizarInicioSesion(): void {
-
     if (!this.usuarioValidado) {
-
-      this.mensajeError =
-        'No se encontró la información de la cuenta.';
-
+      this.mensajeError = 'No se encontró la información de la cuenta.';
       return;
     }
 
-    if (!this.guardarPerfil()) {
-      return;
-    }
+    if (!this.guardarPerfil()) return;
 
-    // ESTE ES EL CAMBIO PRINCIPAL:
-    // Registrar al usuario en AuthService
-    // y actualizar la señal reactiva del navbar.
     this.authService.login(this.usuarioValidado);
-
     this.completandoPerfil = false;
     this.password = '';
 
-    this.router.navigateByUrl('/miperfil').then(
-      (resultado) => {
-
-        if (!resultado) {
-          this.mensajeError =
-            'No se pudo abrir Mi Perfil. ' +
-            'Comprueba la configuración de rutas.';
-        }
+    this.router.navigateByUrl('/miperfil').then((resultado) => {
+      if (!resultado) {
+        this.mensajeError = 'No se pudo abrir Mi Perfil.';
       }
-    ).catch((error) => {
-
-      console.error(
-        'Error de navegación:',
-        error
-      );
-
-      this.mensajeError =
-        'Ocurrió un problema al abrir Mi Perfil.';
+    }).catch((error) => {
+      console.error('Error de navegación:', error);
+      this.mensajeError = 'Ocurrió un problema al abrir Mi Perfil.';
     });
   }
 }
