@@ -57,6 +57,9 @@ export class MiperfilComponent implements OnInit {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
 
+  private readonly API_URL =
+    'http://localhost:3000/api/users';
+
   private correoCuenta = '';
   private userId = '';
 
@@ -82,7 +85,7 @@ export class MiperfilComponent implements OnInit {
   private respaldoUsuario: UsuarioPerfil =
     this.usuarioVacio();
 
-  // DATOS DE SEGURIDAD
+  // SEGURIDAD
   contrasenaActual = '';
   nuevaContrasena = '';
   confirmarContrasena = '';
@@ -92,12 +95,18 @@ export class MiperfilComponent implements OnInit {
   mostrarConfirmacion = false;
 
   mensajeSeguridad = '';
+  tipoMensajeSeguridad: 'exito' | 'error' = 'error';
+
+  actualizandoContrasena = false;
 
   ngOnInit(): void {
     this.cargarPerfil();
   }
 
+  // ==========================================
   // NAVEGACIÓN
+  // ==========================================
+
   irASeccion(
     seccion: 'informacion-personal' |
       'direcciones' |
@@ -116,7 +125,10 @@ export class MiperfilComponent implements OnInit {
     });
   }
 
+  // ==========================================
   // UTILIDADES
+  // ==========================================
+
   private usuarioVacio(): UsuarioPerfil {
     return {
       nombre: '',
@@ -152,7 +164,7 @@ export class MiperfilComponent implements OnInit {
         return datos;
       }
     } catch (error) {
-      console.error('Error al leer datos:', error);
+      console.error('Error al leer los datos:', error);
     }
 
     return null;
@@ -163,7 +175,10 @@ export class MiperfilComponent implements OnInit {
       encodeURIComponent(this.correoCuenta);
   }
 
+  // ==========================================
   // CARGAR PERFIL
+  // ==========================================
+
   cargarPerfil(): void {
 
     if (!isPlatformBrowser(this.platformId)) return;
@@ -236,9 +251,11 @@ export class MiperfilComponent implements OnInit {
         (nombreCompleto ? partesNombre[0] : ''),
 
       apellidos: apellidosSesion ||
-        (nombreCompleto
-          ? partesNombre.slice(1).join(' ')
-          : ''),
+        (
+          nombreCompleto
+            ? partesNombre.slice(1).join(' ')
+            : ''
+        ),
 
       correo,
 
@@ -278,7 +295,10 @@ export class MiperfilComponent implements OnInit {
     this.cargarEstadisticasYPedidos(datos);
   }
 
+  // ==========================================
   // DIRECCIONES
+  // ==========================================
+
   cargarDireccionesBackend(): void {
 
     if (
@@ -294,6 +314,7 @@ export class MiperfilComponent implements OnInit {
           ? direccionesDb
           : [];
       },
+
       error: (err) => {
         console.error('Error al cargar direcciones:', err);
         this.direcciones = [];
@@ -301,7 +322,10 @@ export class MiperfilComponent implements OnInit {
     });
   }
 
+  // ==========================================
   // ESTADÍSTICAS
+  // ==========================================
+
   cargarEstadisticasYPedidos(datos: any): void {
 
     const fechaRegistro = this.texto(
@@ -367,7 +391,10 @@ export class MiperfilComponent implements OnInit {
     });
   }
 
+  // ==========================================
   // EDITAR PERFIL
+  // ==========================================
+
   editarPerfil(): void {
     this.respaldoUsuario = { ...this.usuario };
     this.editandoPerfil = true;
@@ -450,7 +477,10 @@ export class MiperfilComponent implements OnInit {
     );
   }
 
+  // ==========================================
   // EDITAR DIRECCIONES
+  // ==========================================
+
   iniciarEdicionDireccion(dir: DireccionBackend): void {
     this.direccionEditando = { ...dir };
     this.editandoDireccion = true;
@@ -545,6 +575,7 @@ export class MiperfilComponent implements OnInit {
 
         this.cargarDireccionesBackend();
       },
+
       error: (err) => {
         console.error('Error al eliminar dirección:', err);
 
@@ -557,39 +588,36 @@ export class MiperfilComponent implements OnInit {
   }
 
   // ==========================================
-  // EVALUACIÓN DE SEGURIDAD DE CONTRASEÑA
+  // NIVEL ESTIMADO DE SEGURIDAD
   // ==========================================
 
   private evaluarContrasena(): number {
 
     const clave = this.nuevaContrasena;
 
-    if (!clave) {
-      return 0;
-    }
+    if (!clave) return 0;
 
     let puntos = 0;
 
-    // La longitud aumenta la seguridad estimada.
-    if (clave.length >= 8) puntos += 1;
-    if (clave.length >= 12) puntos += 1;
-    if (clave.length >= 16) puntos += 1;
+    if (clave.length >= 8) puntos++;
+    if (clave.length >= 12) puntos++;
+    if (clave.length >= 16) puntos++;
 
-    // La variedad de caracteres aporta puntos,
-    // pero no es obligatoria.
     let tipos = 0;
 
     if (/[a-záéíóúüñ]/.test(clave)) tipos++;
     if (/[A-ZÁÉÍÓÚÜÑ]/.test(clave)) tipos++;
     if (/[0-9]/.test(clave)) tipos++;
-    if (/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9]/.test(clave)) {
+
+    if (
+      /[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9]/.test(clave)
+    ) {
       tipos++;
     }
 
     if (tipos >= 2) puntos++;
     if (tipos >= 3) puntos++;
 
-    // Penalizar contraseñas demasiado previsibles.
     const comun =
       /password|contraseña|123456|qwerty|admin|abcdef/i;
 
@@ -600,9 +628,7 @@ export class MiperfilComponent implements OnInit {
       puntos = Math.min(puntos, 1);
     }
 
-    if (clave.length < 8) {
-      return 1;
-    }
+    if (clave.length < 8) return 1;
 
     return Math.max(1, Math.min(5, puntos));
   }
@@ -627,33 +653,24 @@ export class MiperfilComponent implements OnInit {
 
   get fortalezaPorcentaje(): number {
 
-    if (!this.nuevaContrasena) {
-      return 0;
-    }
+    if (!this.nuevaContrasena) return 0;
 
     return this.evaluarContrasena() * 20;
   }
 
   get colorFortaleza(): string {
 
-    const nivel = this.evaluarContrasena();
-
-    switch (nivel) {
+    switch (this.evaluarContrasena()) {
       case 1:
         return '#dc2626';
-
       case 2:
         return '#ea580c';
-
       case 3:
         return '#ca8a04';
-
       case 4:
         return '#65a30d';
-
       case 5:
         return '#15803d';
-
       default:
         return '#94a3b8';
     }
@@ -661,19 +678,16 @@ export class MiperfilComponent implements OnInit {
 
   get sugerenciaSeguridad(): string {
 
-    if (!this.nuevaContrasena) {
-      return '';
-    }
+    if (!this.nuevaContrasena) return '';
 
     if (this.nuevaContrasena.length < 8) {
       return 'Agrega más caracteres para alcanzar el mínimo.';
     }
 
     switch (this.evaluarContrasena()) {
-
       case 1:
         return 'Esta contraseña es fácil de adivinar. ' +
-          'Prueba una frase más larga y menos previsible.';
+          'Prueba una frase más larga.';
 
       case 2:
         return 'Puedes mejorarla utilizando una ' +
@@ -684,12 +698,11 @@ export class MiperfilComponent implements OnInit {
           'más larga puede mejorarla.';
 
       case 4:
-        return 'Buena combinación. Procura no ' +
-          'utilizarla en otras cuentas.';
+        return 'Buena combinación. Evita utilizarla ' +
+          'en otras cuentas.';
 
       case 5:
-        return 'La contraseña tiene buenas características, ' +
-          'aunque ninguna contraseña es invulnerable.';
+        return 'La contraseña presenta buenas características.';
 
       default:
         return '';
@@ -697,7 +710,7 @@ export class MiperfilComponent implements OnInit {
   }
 
   // ==========================================
-  // VALIDAR CAMBIO DE CONTRASEÑA
+  // VALIDACIÓN DE CONTRASEÑA
   // ==========================================
 
   get contrasenaLista(): boolean {
@@ -705,43 +718,115 @@ export class MiperfilComponent implements OnInit {
     return (
       this.contrasenaActual.length > 0 &&
       this.nuevaContrasena.length >= 8 &&
+      this.nuevaContrasena.length <= 128 &&
       this.nuevaContrasena !== this.contrasenaActual &&
       this.confirmarContrasena === this.nuevaContrasena
     );
   }
 
   // ==========================================
-  // GUARDAR NUEVA CONTRASEÑA
+  // CAMBIAR CONTRASEÑA EN EL BACKEND
   // ==========================================
 
   guardarNuevaContrasena(): void {
 
+    if (this.actualizandoContrasena) return;
+
     this.mensajeSeguridad = '';
 
-    if (!this.contrasenaLista) {
+    if (!this.correoCuenta) {
+
+      this.tipoMensajeSeguridad = 'error';
       this.mensajeSeguridad =
-        'Comprueba que la nueva contraseña tenga ' +
-        'al menos 8 caracteres, sea diferente ' +
-        'de la actual y coincida con su confirmación.';
+        'No se encontró el correo de tu cuenta.';
+
       return;
     }
 
-    // PENDIENTE DE INTEGRACIÓN:
-    // No se dispone del endpoint real para cambiar
-    // contraseñas en el backend.
-    // Nunca almacenar contraseñas en localStorage.
+    if (!this.contrasenaLista) {
 
-    this.mensajeSeguridad =
-      'El formulario es válido, pero la contraseña ' +
-      'no ha sido actualizada. Falta conectar esta ' +
-      'operación con el backend de KABNIA.';
+      this.tipoMensajeSeguridad = 'error';
+      this.mensajeSeguridad =
+        'Revisa los campos. La nueva contraseña debe ' +
+        'tener al menos 8 caracteres, ser diferente ' +
+        'de la actual y coincidir con la confirmación.';
 
-    this.cancelarCambioContrasena(false);
+      return;
+    }
+
+    this.actualizandoContrasena = true;
+
+    const payload = {
+      email: this.correoCuenta,
+      currentPassword: this.contrasenaActual,
+      newPassword: this.nuevaContrasena
+    };
+
+    this.http.post<{ mensaje: string }>(
+      `${this.API_URL}/change-password`,
+      payload
+    ).subscribe({
+
+      next: (respuesta) => {
+
+        this.actualizandoContrasena = false;
+
+        // Limpiar datos sensibles solo después
+        // de recibir respuesta de éxito.
+        this.cancelarCambioContrasena(false);
+
+        this.tipoMensajeSeguridad = 'exito';
+
+        this.mensajeSeguridad =
+          respuesta.mensaje ||
+          'Contraseña actualizada correctamente.';
+      },
+
+      error: (error) => {
+
+        this.actualizandoContrasena = false;
+
+        // No imprimir contraseñas ni payloads.
+        console.error(
+          'No se pudo cambiar la contraseña. Estado HTTP:',
+          error.status
+        );
+
+        this.tipoMensajeSeguridad = 'error';
+
+        if (error.status === 401) {
+
+          this.mensajeSeguridad =
+            'No se pudo verificar la contraseña actual.';
+
+        } else if (error.status === 400) {
+
+          const mensaje = error.error?.message;
+
+          this.mensajeSeguridad =
+            typeof mensaje === 'string'
+              ? mensaje
+              : 'La nueva contraseña no cumple los requisitos.';
+
+        } else {
+
+          this.mensajeSeguridad =
+            'No fue posible actualizar la contraseña. ' +
+            'Inténtalo nuevamente.';
+        }
+      }
+    });
   }
+
+  // ==========================================
+  // LIMPIAR CONTRASEÑAS
+  // ==========================================
 
   cancelarCambioContrasena(
     limpiarMensaje: boolean = true
   ): void {
+
+    if (this.actualizandoContrasena) return;
 
     this.contrasenaActual = '';
     this.nuevaContrasena = '';
@@ -760,7 +845,10 @@ export class MiperfilComponent implements OnInit {
     this.irASeccion('seguridad');
   }
 
+  // ==========================================
   // CERRAR SESIÓN
+  // ==========================================
+
   cerrarSesion(): void {
 
     if (!isPlatformBrowser(this.platformId)) return;
@@ -770,6 +858,7 @@ export class MiperfilComponent implements OnInit {
     )) return;
 
     this.cancelarCambioContrasena();
+
     this.authService.logout();
 
     this.usuario = this.usuarioVacio();
@@ -780,6 +869,10 @@ export class MiperfilComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  // ==========================================
+  // MENSAJES
+  // ==========================================
+
   private mostrarMensaje(
     texto: string,
     tipo: 'exito' | 'error'
@@ -788,7 +881,12 @@ export class MiperfilComponent implements OnInit {
     this.tipoMensaje = tipo;
   }
 
+  // ==========================================
+  // NOMBRE COMPLETO
+  // ==========================================
+
   get nombreCompleto(): string {
+
     const nombre = [
       this.usuario.nombre,
       this.usuario.apellidos
@@ -797,7 +895,12 @@ export class MiperfilComponent implements OnInit {
     return nombre || 'Usuario KABNIA';
   }
 
+  // ==========================================
+  // INICIALES
+  // ==========================================
+
   get iniciales(): string {
+
     const resultado = (
       this.usuario.nombre.charAt(0) +
       this.usuario.apellidos.charAt(0)
@@ -805,6 +908,10 @@ export class MiperfilComponent implements OnInit {
 
     return resultado || 'K';
   }
+
+  // ==========================================
+  // DIRECCIONES
+  // ==========================================
 
   get tieneDirecciones(): boolean {
     return this.direcciones.length > 0;

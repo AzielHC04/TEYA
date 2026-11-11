@@ -588,7 +588,9 @@
 
           @if (mensajeSeguridad) {
             <div
-              class="mensaje mensaje-error"
+              class="mensaje"
+              [class.mensaje-exito]="tipoMensajeSeguridad === 'exito'"
+              [class.mensaje-error]="tipoMensajeSeguridad === 'error'"
               role="status"
             >
               {{ mensajeSeguridad }}

@@ -1,3 +1,4 @@
+
 export class RegisterDto {
   name!: string;
   email!: string;
@@ -8,4 +9,10 @@ export class RegisterDto {
 export class LoginDto {
   email!: string;
   password!: string;
+}
+
+export class ChangePasswordDto {
+  email!: string;
+  currentPassword!: string;
+  newPassword!: string;
 }
