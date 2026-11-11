@@ -2,6 +2,8 @@
 import {
   Component,
   OnInit,
+  ViewChild,
+  ElementRef,
   inject,
   PLATFORM_ID
 } from '@angular/core';
@@ -60,6 +62,10 @@ export class MiperfilComponent implements OnInit {
   private readonly API_URL =
     'http://localhost:3000/api/users';
 
+  // REFERENCIA AL PANEL DERECHO
+  @ViewChild('contenidoPerfil')
+  contenidoPerfil?: ElementRef<HTMLElement>;
+
   private correoCuenta = '';
   private userId = '';
 
@@ -96,7 +102,6 @@ export class MiperfilComponent implements OnInit {
 
   mensajeSeguridad = '';
   tipoMensajeSeguridad: 'exito' | 'error' = 'error';
-
   actualizandoContrasena = false;
 
   ngOnInit(): void {
@@ -104,24 +109,57 @@ export class MiperfilComponent implements OnInit {
   }
 
   // ==========================================
-  // NAVEGACIÓN
+  // NAVEGACIÓN DEL PANEL DERECHO
   // ==========================================
 
   irASeccion(
-    seccion: 'informacion-personal' |
-      'direcciones' |
-      'seguridad'
+    seccion:
+      | 'informacion-personal'
+      | 'direcciones'
+      | 'seguridad'
   ): void {
 
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
 
+    const contenedor =
+      this.contenidoPerfil?.nativeElement;
+
+    if (!contenedor) {
+      return;
+    }
+
+    const destino =
+      contenedor.querySelector<HTMLElement>(
+        `#${seccion}`
+      );
+
+    if (!destino) {
+      return;
+    }
+
     this.seccionActiva = seccion;
 
-    document.getElementById(seccion)?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
+    // Posición de la tarjeta dentro del panel,
+    // no dentro de toda la ventana.
+    const posicion =
+      destino.getBoundingClientRect().top -
+      contenedor.getBoundingClientRect().top +
+      contenedor.scrollTop -
+      contenedor.clientTop;
+
+    const desplazamientoMaximo = Math.max(
+      0,
+      contenedor.scrollHeight - contenedor.clientHeight
+    );
+
+    contenedor.scrollTo({
+      top: Math.min(
+        desplazamientoMaximo,
+        Math.max(0, posicion)
+      ),
+      behavior: 'smooth'
     });
   }
 
@@ -163,8 +201,8 @@ export class MiperfilComponent implements OnInit {
       ) {
         return datos;
       }
-    } catch (error) {
-      console.error('Error al leer los datos:', error);
+    } catch {
+      return null;
     }
 
     return null;
@@ -181,7 +219,9 @@ export class MiperfilComponent implements OnInit {
 
   cargarPerfil(): void {
 
-    if (!isPlatformBrowser(this.platformId)) return;
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
 
     const sesion = this.leerObjeto(
       localStorage.getItem('usuario')
@@ -244,7 +284,8 @@ export class MiperfilComponent implements OnInit {
       ''
     );
 
-    const partesNombre = nombreCompleto.split(/\s+/);
+    const partesNombre =
+      nombreCompleto.split(/\s+/);
 
     this.usuario = {
       nombre: nombreSesion ||
@@ -274,17 +315,17 @@ export class MiperfilComponent implements OnInit {
     if (perfilGuardado) {
       this.usuario = {
         nombre: this.texto(
-          perfilGuardado.nombre ?? this.usuario.nombre
+          perfilGuardado.nombre ??
+          this.usuario.nombre
         ),
-
         apellidos: this.texto(
-          perfilGuardado.apellidos ?? this.usuario.apellidos
+          perfilGuardado.apellidos ??
+          this.usuario.apellidos
         ),
-
         correo: this.correoCuenta,
-
         telefono: this.texto(
-          perfilGuardado.telefono ?? this.usuario.telefono
+          perfilGuardado.telefono ??
+          this.usuario.telefono
         )
       };
     }
@@ -296,7 +337,7 @@ export class MiperfilComponent implements OnInit {
   }
 
   // ==========================================
-  // DIRECCIONES
+  // CARGAR DIRECCIONES
   // ==========================================
 
   cargarDireccionesBackend(): void {
@@ -304,26 +345,30 @@ export class MiperfilComponent implements OnInit {
     if (
       !isPlatformBrowser(this.platformId) ||
       !this.userId
-    ) return;
+    ) {
+      return;
+    }
 
     this.http.get<DireccionBackend[]>(
       `http://localhost:3000/api/addresses/user/${this.userId}`
     ).subscribe({
-      next: (direccionesDb) => {
-        this.direcciones = Array.isArray(direccionesDb)
-          ? direccionesDb
+      next: (datos) => {
+        this.direcciones = Array.isArray(datos)
+          ? datos
           : [];
       },
-
-      error: (err) => {
-        console.error('Error al cargar direcciones:', err);
+      error: (error) => {
+        console.error(
+          'Error al cargar direcciones:',
+          error
+        );
         this.direcciones = [];
       }
     });
   }
 
   // ==========================================
-  // ESTADÍSTICAS
+  // ESTADÍSTICAS Y PEDIDOS
   // ==========================================
 
   cargarEstadisticasYPedidos(datos: any): void {
@@ -342,7 +387,10 @@ export class MiperfilComponent implements OnInit {
     let clienteDesde: number | string =
       'No disponible';
 
-    if (fecha && !Number.isNaN(fecha.getTime())) {
+    if (
+      fecha &&
+      !Number.isNaN(fecha.getTime())
+    ) {
       clienteDesde = fecha.getFullYear();
     } else {
       const anio = Number(
@@ -350,7 +398,10 @@ export class MiperfilComponent implements OnInit {
         datos.estadisticas?.clienteDesde
       );
 
-      if (Number.isInteger(anio) && anio >= 2000) {
+      if (
+        Number.isInteger(anio) &&
+        anio >= 2000
+      ) {
         clienteDesde = anio;
       }
     }
@@ -373,7 +424,8 @@ export class MiperfilComponent implements OnInit {
         lista.forEach(pedido => {
           if (Array.isArray(pedido.items)) {
             pedido.items.forEach((item: any) => {
-              productos += Number(item.quantity) || 0;
+              productos +=
+                Number(item.quantity) || 0;
             });
           }
         });
@@ -384,15 +436,17 @@ export class MiperfilComponent implements OnInit {
           clienteDesde
         };
       },
-
-      error: (err) => {
-        console.error('Error al cargar pedidos:', err);
+      error: (error) => {
+        console.error(
+          'Error al cargar pedidos:',
+          error
+        );
       }
     });
   }
 
   // ==========================================
-  // EDITAR PERFIL
+  // EDITAR INFORMACIÓN PERSONAL
   // ==========================================
 
   editarPerfil(): void {
@@ -411,7 +465,9 @@ export class MiperfilComponent implements OnInit {
     if (
       !isPlatformBrowser(this.platformId) ||
       !this.correoCuenta
-    ) return;
+    ) {
+      return;
+    }
 
     const nombre = this.usuario.nombre
       .trim()
@@ -448,9 +504,12 @@ export class MiperfilComponent implements OnInit {
       return;
     }
 
-    if (telefono && !/^\d{10}$/.test(telefono)) {
+    if (
+      telefono &&
+      !/^\d{10}$/.test(telefono)
+    ) {
       this.mostrarMensaje(
-        'El teléfono debe contener 10 dígitos.',
+        'El teléfono debe tener 10 dígitos.',
         'error'
       );
       return;
@@ -478,13 +537,16 @@ export class MiperfilComponent implements OnInit {
   }
 
   // ==========================================
-  // EDITAR DIRECCIONES
+  // EDITAR DIRECCIÓN
   // ==========================================
 
-  iniciarEdicionDireccion(dir: DireccionBackend): void {
+  iniciarEdicionDireccion(
+    dir: DireccionBackend
+  ): void {
     this.direccionEditando = { ...dir };
     this.editandoDireccion = true;
     this.mensaje = '';
+
     this.irASeccion('direcciones');
   }
 
@@ -495,7 +557,9 @@ export class MiperfilComponent implements OnInit {
 
   guardarDireccionEditada(): void {
 
-    if (!this.direccionEditando?.id) return;
+    if (!this.direccionEditando?.id) {
+      return;
+    }
 
     const payload = {
       calle: this.direccionEditando.calle.trim(),
@@ -542,11 +606,14 @@ export class MiperfilComponent implements OnInit {
 
         this.direccionEditando = null;
         this.editandoDireccion = false;
+
         this.cargarDireccionesBackend();
       },
-
-      error: (err) => {
-        console.error('Error al actualizar dirección:', err);
+      error: (error) => {
+        console.error(
+          'Error al actualizar dirección:',
+          error
+        );
 
         this.mostrarMensaje(
           'No se pudo actualizar la dirección.',
@@ -558,11 +625,15 @@ export class MiperfilComponent implements OnInit {
 
   eliminarDireccion(id: string): void {
 
-    if (!isPlatformBrowser(this.platformId)) return;
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
 
-    if (!window.confirm(
+    const confirmar = window.confirm(
       '¿Deseas eliminar esta dirección?'
-    )) return;
+    );
+
+    if (!confirmar) return;
 
     this.http.delete(
       `http://localhost:3000/api/addresses/${id}`
@@ -575,9 +646,11 @@ export class MiperfilComponent implements OnInit {
 
         this.cargarDireccionesBackend();
       },
-
-      error: (err) => {
-        console.error('Error al eliminar dirección:', err);
+      error: (error) => {
+        console.error(
+          'Error al eliminar dirección:',
+          error
+        );
 
         this.mostrarMensaje(
           'No se pudo eliminar la dirección.',
@@ -588,7 +661,7 @@ export class MiperfilComponent implements OnInit {
   }
 
   // ==========================================
-  // NIVEL ESTIMADO DE SEGURIDAD
+  // EVALUAR SEGURIDAD DE CONTRASEÑA
   // ==========================================
 
   private evaluarContrasena(): number {
@@ -630,7 +703,10 @@ export class MiperfilComponent implements OnInit {
 
     if (clave.length < 8) return 1;
 
-    return Math.max(1, Math.min(5, puntos));
+    return Math.max(
+      1,
+      Math.min(5, puntos)
+    );
   }
 
   get nivelSeguridad(): string {
@@ -653,7 +729,9 @@ export class MiperfilComponent implements OnInit {
 
   get fortalezaPorcentaje(): number {
 
-    if (!this.nuevaContrasena) return 0;
+    if (!this.nuevaContrasena) {
+      return 0;
+    }
 
     return this.evaluarContrasena() * 20;
   }
@@ -661,18 +739,12 @@ export class MiperfilComponent implements OnInit {
   get colorFortaleza(): string {
 
     switch (this.evaluarContrasena()) {
-      case 1:
-        return '#dc2626';
-      case 2:
-        return '#ea580c';
-      case 3:
-        return '#ca8a04';
-      case 4:
-        return '#65a30d';
-      case 5:
-        return '#15803d';
-      default:
-        return '#94a3b8';
+      case 1: return '#dc2626';
+      case 2: return '#ea580c';
+      case 3: return '#ca8a04';
+      case 4: return '#65a30d';
+      case 5: return '#15803d';
+      default: return '#94a3b8';
     }
   }
 
@@ -710,11 +782,10 @@ export class MiperfilComponent implements OnInit {
   }
 
   // ==========================================
-  // VALIDACIÓN DE CONTRASEÑA
+  // VALIDACIÓN DE NUEVA CONTRASEÑA
   // ==========================================
 
   get contrasenaLista(): boolean {
-
     return (
       this.contrasenaActual.length > 0 &&
       this.nuevaContrasena.length >= 8 &&
@@ -725,7 +796,7 @@ export class MiperfilComponent implements OnInit {
   }
 
   // ==========================================
-  // CAMBIAR CONTRASEÑA EN EL BACKEND
+  // CAMBIAR CONTRASEÑA CON EL BACKEND
   // ==========================================
 
   guardarNuevaContrasena(): void {
@@ -735,21 +806,19 @@ export class MiperfilComponent implements OnInit {
     this.mensajeSeguridad = '';
 
     if (!this.correoCuenta) {
-
       this.tipoMensajeSeguridad = 'error';
       this.mensajeSeguridad =
         'No se encontró el correo de tu cuenta.';
-
       return;
     }
 
     if (!this.contrasenaLista) {
-
       this.tipoMensajeSeguridad = 'error';
+
       this.mensajeSeguridad =
-        'Revisa los campos. La nueva contraseña debe ' +
-        'tener al menos 8 caracteres, ser diferente ' +
-        'de la actual y coincidir con la confirmación.';
+        'Comprueba que la nueva contraseña tenga ' +
+        'al menos 8 caracteres, sea diferente de ' +
+        'la actual y coincida con la confirmación.';
 
       return;
     }
@@ -766,50 +835,36 @@ export class MiperfilComponent implements OnInit {
       `${this.API_URL}/change-password`,
       payload
     ).subscribe({
-
       next: (respuesta) => {
 
         this.actualizandoContrasena = false;
-
-        // Limpiar datos sensibles solo después
-        // de recibir respuesta de éxito.
         this.cancelarCambioContrasena(false);
 
         this.tipoMensajeSeguridad = 'exito';
 
         this.mensajeSeguridad =
-          respuesta.mensaje ||
+          respuesta?.mensaje ||
           'Contraseña actualizada correctamente.';
       },
 
       error: (error) => {
 
         this.actualizandoContrasena = false;
-
-        // No imprimir contraseñas ni payloads.
-        console.error(
-          'No se pudo cambiar la contraseña. Estado HTTP:',
-          error.status
-        );
-
         this.tipoMensajeSeguridad = 'error';
 
         if (error.status === 401) {
-
           this.mensajeSeguridad =
             'No se pudo verificar la contraseña actual.';
-
         } else if (error.status === 400) {
 
-          const mensaje = error.error?.message;
+          const respuesta = error.error?.message;
 
           this.mensajeSeguridad =
-            typeof mensaje === 'string'
-              ? mensaje
+            typeof respuesta === 'string'
+              ? respuesta
               : 'La nueva contraseña no cumple los requisitos.';
 
         } else {
-
           this.mensajeSeguridad =
             'No fue posible actualizar la contraseña. ' +
             'Inténtalo nuevamente.';
@@ -818,15 +873,13 @@ export class MiperfilComponent implements OnInit {
     });
   }
 
-  // ==========================================
-  // LIMPIAR CONTRASEÑAS
-  // ==========================================
-
   cancelarCambioContrasena(
     limpiarMensaje: boolean = true
   ): void {
 
-    if (this.actualizandoContrasena) return;
+    if (this.actualizandoContrasena) {
+      return;
+    }
 
     this.contrasenaActual = '';
     this.nuevaContrasena = '';
@@ -851,14 +904,17 @@ export class MiperfilComponent implements OnInit {
 
   cerrarSesion(): void {
 
-    if (!isPlatformBrowser(this.platformId)) return;
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
 
     if (!window.confirm(
       '¿Deseas cerrar tu sesión de KABNIA?'
-    )) return;
+    )) {
+      return;
+    }
 
     this.cancelarCambioContrasena();
-
     this.authService.logout();
 
     this.usuario = this.usuarioVacio();
@@ -870,7 +926,7 @@ export class MiperfilComponent implements OnInit {
   }
 
   // ==========================================
-  // MENSAJES
+  // MENSAJES Y PROPIEDADES
   // ==========================================
 
   private mostrarMensaje(
@@ -880,10 +936,6 @@ export class MiperfilComponent implements OnInit {
     this.mensaje = texto;
     this.tipoMensaje = tipo;
   }
-
-  // ==========================================
-  // NOMBRE COMPLETO
-  // ==========================================
 
   get nombreCompleto(): string {
 
@@ -895,10 +947,6 @@ export class MiperfilComponent implements OnInit {
     return nombre || 'Usuario KABNIA';
   }
 
-  // ==========================================
-  // INICIALES
-  // ==========================================
-
   get iniciales(): string {
 
     const resultado = (
@@ -908,10 +956,6 @@ export class MiperfilComponent implements OnInit {
 
     return resultado || 'K';
   }
-
-  // ==========================================
-  // DIRECCIONES
-  // ==========================================
 
   get tieneDirecciones(): boolean {
     return this.direcciones.length > 0;

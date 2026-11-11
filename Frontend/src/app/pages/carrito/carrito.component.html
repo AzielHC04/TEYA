@@ -33,9 +33,7 @@
         <section class="productos-seccion">
           <div class="seccion-titulo">
             <h2>Productos seleccionados</h2>
-            <button type="button" class="btn-vaciar" (click)="vaciarCarrito()">
-              Vaciar carrito
-            </button>
+            
           </div>
 
           @for (item of carrito; track item.producto.id) {

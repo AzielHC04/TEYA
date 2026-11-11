@@ -142,12 +142,6 @@ export class CarritoComponent implements OnInit, OnDestroy {
     }
   }
 
-  vaciarCarrito(): void {
-    if (this.carrito.length === 0) return;
-    if (confirm('¿Estás seguro de que deseas vaciar tu carrito?')) {
-      this.cartService.limpiarCarrito();
-    }
-  }
 
   campoInvalido(nombre: string): boolean {
     const campo = this.direccionForm.get(nombre);

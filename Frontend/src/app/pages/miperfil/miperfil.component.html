@@ -23,57 +23,10 @@
 
   <div class="perfil-grid">
 
-    <!-- NAVEGACIÓN LATERAL -->
+    <!-- PANEL IZQUIERDO -->
     <aside class="perfil-sidebar">
 
-      <nav class="perfil-menu">
-        <span class="menu-titulo">NAVEGACIÓN</span>
-
-        <button
-          type="button"
-          class="menu-item"
-          [class.activo]="seccionActiva === 'informacion-personal'"
-          (click)="irASeccion('informacion-personal')"
-        >
-          <span class="menu-icon">◉</span>
-          Información personal
-        </button>
-
-        <a routerLink="/orders" class="menu-item">
-          <span class="menu-icon">▣</span>
-          Mis pedidos
-        </a>
-
-        <button
-          type="button"
-          class="menu-item"
-          [class.activo]="seccionActiva === 'direcciones'"
-          (click)="irASeccion('direcciones')"
-        >
-          <span class="menu-icon">⌂</span>
-          Direcciones
-        </button>
-
-        <button
-          type="button"
-          class="menu-item"
-          [class.activo]="seccionActiva === 'seguridad'"
-          (click)="irASeccion('seguridad')"
-        >
-          <span class="menu-icon">⚙</span>
-          Seguridad
-        </button>
-
-        <button
-          type="button"
-          class="menu-item cerrar-sesion"
-          (click)="cerrarSesion()"
-        >
-          <span class="menu-icon">↪</span>
-          Cerrar sesión
-        </button>
-      </nav>
-
+      <!-- INFORMACIÓN DEL USUARIO -->
       <div class="usuario-card">
         <div class="avatar">
           {{ iniciales }}
@@ -89,10 +42,71 @@
           Cliente KABNIA
         </span>
       </div>
+
+      <!-- MENÚ DE NAVEGACIÓN -->
+      <nav
+        class="perfil-menu"
+        aria-label="Navegación de mi perfil"
+      >
+        <span class="menu-titulo">NAVEGACIÓN</span>
+
+        <button
+          type="button"
+          class="menu-item"
+          [class.activo]="seccionActiva === 'informacion-personal'"
+          (click)="irASeccion('informacion-personal')"
+        >
+          <span class="menu-icon">◉</span>
+          <span>Información personal</span>
+        </button>
+
+        <a
+          routerLink="/orders"
+          class="menu-item"
+        >
+          <span class="menu-icon">▣</span>
+          <span>Mis pedidos</span>
+        </a>
+
+        <button
+          type="button"
+          class="menu-item"
+          [class.activo]="seccionActiva === 'direcciones'"
+          (click)="irASeccion('direcciones')"
+        >
+          <span class="menu-icon">⌂</span>
+          <span>Direcciones</span>
+        </button>
+
+        <button
+          type="button"
+          class="menu-item"
+          [class.activo]="seccionActiva === 'seguridad'"
+          (click)="irASeccion('seguridad')"
+        >
+          <span class="menu-icon">⚙</span>
+          <span>Seguridad</span>
+        </button>
+
+        <button
+          type="button"
+          class="menu-item cerrar-sesion"
+          (click)="cerrarSesion()"
+        >
+          <span class="menu-icon">↪</span>
+          <span>Cerrar sesión</span>
+        </button>
+      </nav>
+
     </aside>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="perfil-content">
+    <!-- PANEL DERECHO CON SCROLL -->
+    <main
+      #contenidoPerfil
+      class="perfil-content"
+      aria-label="Contenido de mi perfil"
+      tabindex="-1"
+    >
 
       <!-- INFORMACIÓN PERSONAL -->
       <section
@@ -206,8 +220,10 @@
       </section>
 
       <!-- DIRECCIONES -->
-      <section id="direcciones" class="perfil-card">
-
+      <section
+        id="direcciones"
+        class="perfil-card"
+      >
         <div class="card-header">
           <div>
             <span class="card-label">ENVÍOS</span>
@@ -240,7 +256,6 @@
             />
 
             <div class="direccion-row">
-
               <div>
                 <label for="ciudadEdit">Ciudad *</label>
                 <input
@@ -260,7 +275,6 @@
                   class="direccion-input"
                 />
               </div>
-
             </div>
 
             <label for="cpEdit">Código postal *</label>
@@ -269,6 +283,7 @@
               type="text"
               [(ngModel)]="direccionEditando.codigoPostal"
               maxlength="5"
+              inputmode="numeric"
               class="direccion-input"
             />
 
@@ -332,13 +347,13 @@
                     ✕ Eliminar
                   </button>
                 </div>
-
               </div>
             }
           </div>
         } @else {
           <div class="direccion-box">
             <div class="direccion-icon">⌂</div>
+
             <div class="direccion-info">
               <p>Aún no tienes direcciones registradas.</p>
               <p>
@@ -348,12 +363,13 @@
             </div>
           </div>
         }
-
       </section>
 
       <!-- ESTADÍSTICAS -->
-      <section id="actividad" class="perfil-card">
-
+      <section
+        id="actividad"
+        class="perfil-card"
+      >
         <div class="card-header">
           <div>
             <span class="card-label">ACTIVIDAD</span>
@@ -363,7 +379,6 @@
         </div>
 
         <div class="estadisticas">
-
           <div class="estadistica">
             <div class="estadistica-icon pedidos">▣</div>
             <div>
@@ -387,7 +402,6 @@
               <span>Cliente desde</span>
             </div>
           </div>
-
         </div>
       </section>
 
@@ -396,15 +410,12 @@
         id="seguridad"
         class="perfil-card seguridad-card"
       >
-
         <div class="card-header">
           <div>
             <span class="card-label">
               SEGURIDAD DE LA CUENTA
             </span>
-
             <h2>Cambiar contraseña</h2>
-
             <p>
               Utiliza una contraseña segura y fácil de recordar.
             </p>
@@ -478,6 +489,7 @@
                 #nuevaCtrl="ngModel"
                 required
                 minlength="8"
+                maxlength="128"
                 autocomplete="new-password"
                 placeholder="Mínimo 8 caracteres"
               />
@@ -501,9 +513,7 @@
               </small>
             }
 
-            <!-- NIVEL DE SEGURIDAD -->
             <div class="fortaleza-contrasena">
-
               <div class="fortaleza-barra">
                 <div
                   class="fortaleza-progreso"
@@ -512,19 +522,11 @@
                 ></div>
               </div>
 
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  gap: 10px;
-                "
-              >
+              <div class="fortaleza-informacion">
                 <small>Seguridad estimada</small>
 
                 <strong
                   [style.color]="colorFortaleza"
-                  style="font-size: 0.85rem;"
                   aria-live="polite"
                 >
                   {{ nivelSeguridad }}
@@ -536,7 +538,6 @@
                   {{ sugerenciaSeguridad }}
                 </small>
               }
-
             </div>
           </div>
 
@@ -598,11 +599,11 @@
           }
 
           <div class="seguridad-footer">
-
             <button
               type="button"
               class="btn-cancelar"
               (click)="cancelarCambioContrasena()"
+              [disabled]="actualizandoContrasena"
             >
               Limpiar campos
             </button>
@@ -610,12 +611,16 @@
             <button
               type="submit"
               class="btn-guardar"
-              [disabled]="passwordForm.invalid || !contrasenaLista"
+              [disabled]="passwordForm.invalid || !contrasenaLista || actualizandoContrasena"
             >
-              🔒 Actualizar contraseña
+              {{
+                actualizandoContrasena
+                  ? 'Actualizando...'
+                  : '🔒 Actualizar contraseña'
+              }}
             </button>
-
           </div>
+
         </form>
       </section>
 
