@@ -1,18 +1,15 @@
+
 <div class="perfil-container">
 
-  <!-- ENCABEZADO -->
   <header class="perfil-header">
     <span class="seccion-label">MI CUENTA</span>
-
     <h1>Mi Perfil</h1>
-
     <p>
-      Administra tu información personal,
-      dirección de entrega y preferencias de compra.
+      Administra tu información personal, direcciones
+      de entrega y seguridad de tu cuenta.
     </p>
   </header>
 
-  <!-- MENSAJES -->
   @if (mensaje) {
     <div
       class="mensaje"
@@ -26,59 +23,42 @@
 
   <div class="perfil-grid">
 
-    <!-- BARRA LATERAL -->
+    <!-- NAVEGACIÓN LATERAL -->
     <aside class="perfil-sidebar">
 
-      <!-- USUARIO -->
-      <div class="usuario-card">
-
-        <div class="avatar">
-          {{ iniciales }}
-        </div>
-
-        <h2>{{ nombreCompleto }}</h2>
-
-        <p class="usuario-correo">
-          {{ usuario.correo || 'Correo no disponible' }}
-        </p>
-
-        <span class="cliente-badge">
-          Cliente KABNIA
-        </span>
-
-      </div>
-
-      <!-- MENÚ -->
       <nav class="perfil-menu">
+        <span class="menu-titulo">NAVEGACIÓN</span>
 
-        <a
-          routerLink="/miperfil"
-          class="menu-item activo"
+        <button
+          type="button"
+          class="menu-item"
+          [class.activo]="seccionActiva === 'informacion-personal'"
+          (click)="irASeccion('informacion-personal')"
         >
           <span class="menu-icon">◉</span>
           Información personal
-        </a>
+        </button>
 
-        <a
-          routerLink="/orders"
-          class="menu-item"
-        >
+        <a routerLink="/orders" class="menu-item">
           <span class="menu-icon">▣</span>
           Mis pedidos
-        </a>
-
-        <a
-          routerLink="/addresses"
-          class="menu-item"
-        >
-          <span class="menu-icon">⌂</span>
-          Direcciones
         </a>
 
         <button
           type="button"
           class="menu-item"
-          (click)="cambiarContrasena()"
+          [class.activo]="seccionActiva === 'direcciones'"
+          (click)="irASeccion('direcciones')"
+        >
+          <span class="menu-icon">⌂</span>
+          Direcciones
+        </button>
+
+        <button
+          type="button"
+          class="menu-item"
+          [class.activo]="seccionActiva === 'seguridad'"
+          (click)="irASeccion('seguridad')"
         >
           <span class="menu-icon">⚙</span>
           Seguridad
@@ -92,33 +72,41 @@
           <span class="menu-icon">↪</span>
           Cerrar sesión
         </button>
-
       </nav>
 
+      <div class="usuario-card">
+        <div class="avatar">
+          {{ iniciales }}
+        </div>
+
+        <h2>{{ nombreCompleto }}</h2>
+
+        <p class="usuario-correo">
+          {{ usuario.correo || 'Correo no disponible' }}
+        </p>
+
+        <span class="cliente-badge">
+          Cliente KABNIA
+        </span>
+      </div>
     </aside>
 
-    <!-- CONTENIDO -->
+    <!-- CONTENIDO PRINCIPAL -->
     <main class="perfil-content">
 
       <!-- INFORMACIÓN PERSONAL -->
-      <section class="perfil-card">
-
+      <section
+        id="informacion-personal"
+        class="perfil-card"
+      >
         <div class="card-header">
-
           <div>
-            <span class="card-label">
-              DATOS DE CUENTA
-            </span>
-
+            <span class="card-label">DATOS DE CUENTA</span>
             <h2>Información personal</h2>
-
-            <p>
-              Datos asociados con tu cuenta KABNIA.
-            </p>
+            <p>Datos asociados con tu cuenta KABNIA.</p>
           </div>
 
           <div class="acciones-header">
-
             @if (!editandoPerfil) {
               <button
                 type="button"
@@ -128,7 +116,6 @@
                 ✎ Editar
               </button>
             } @else {
-
               <button
                 type="button"
                 class="btn-cancelar"
@@ -145,14 +132,11 @@
                 ✓ Guardar
               </button>
             }
-
           </div>
-
         </div>
 
         <div class="datos-grid">
 
-          <!-- NOMBRE -->
           <div class="campo">
             <label for="nombre">Nombre</label>
 
@@ -162,7 +146,7 @@
                 type="text"
                 [(ngModel)]="usuario.nombre"
                 class="campo-input"
-                placeholder="Tu nombre"
+                maxlength="60"
                 autocomplete="given-name"
               />
             } @else {
@@ -172,7 +156,6 @@
             }
           </div>
 
-          <!-- APELLIDOS -->
           <div class="campo">
             <label for="apellidos">Apellidos</label>
 
@@ -182,7 +165,7 @@
                 type="text"
                 [(ngModel)]="usuario.apellidos"
                 class="campo-input"
-                placeholder="Tus apellidos"
+                maxlength="100"
                 autocomplete="family-name"
               />
             } @else {
@@ -192,23 +175,13 @@
             }
           </div>
 
-          <!-- CORREO -->
           <div class="campo">
             <label>Correo electrónico</label>
-
             <div class="campo-valor">
               {{ usuario.correo || 'No registrado' }}
             </div>
-
-            @if (editandoPerfil) {
-              <small class="campo-ayuda">
-                El correo de la cuenta no se modifica
-                desde esta pantalla.
-              </small>
-            }
           </div>
 
-          <!-- TELÉFONO -->
           <div class="campo">
             <label for="telefono">Teléfono</label>
 
@@ -218,8 +191,8 @@
                 type="tel"
                 [(ngModel)]="usuario.telefono"
                 class="campo-input"
-                maxlength="15"
-                placeholder="10 dígitos"
+                maxlength="10"
+                inputmode="numeric"
                 autocomplete="tel"
               />
             } @else {
@@ -230,32 +203,25 @@
           </div>
 
         </div>
-
       </section>
 
-      <!-- DIRECCIONES DE ENVÍO -->
-      <section class="perfil-card">
+      <!-- DIRECCIONES -->
+      <section id="direcciones" class="perfil-card">
 
         <div class="card-header">
-
           <div>
-            <span class="card-label">
-              ENVÍOS
-            </span>
-
+            <span class="card-label">ENVÍOS</span>
             <h2>Mis direcciones</h2>
-
             <p>
               Direcciones guardadas para recibir tus productos.
             </p>
           </div>
-
         </div>
 
-        <!-- FORMULARIO DE EDICIÓN DE DIRECCIÓN -->
-        @if (editandoDireccion) {
-          <div class="direccion-form" style="margin-bottom: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
-            <h3>Editar Dirección</h3>
+        @if (editandoDireccion && direccionEditando) {
+          <div class="direccion-form panel-edicion-direccion">
+
+            <h3>Editar dirección</h3>
 
             <label for="calleEdit">Calle *</label>
             <input
@@ -263,7 +229,6 @@
               type="text"
               [(ngModel)]="direccionEditando.calle"
               class="direccion-input"
-              placeholder="Nombre de la calle"
             />
 
             <label for="coloniaEdit">Colonia *</label>
@@ -272,18 +237,17 @@
               type="text"
               [(ngModel)]="direccionEditando.colonia"
               class="direccion-input"
-              placeholder="Colonia"
             />
 
             <div class="direccion-row">
+
               <div>
-                <label for="ciudadEdit">Ciudad o municipio *</label>
+                <label for="ciudadEdit">Ciudad *</label>
                 <input
                   id="ciudadEdit"
                   type="text"
                   [(ngModel)]="direccionEditando.ciudad"
                   class="direccion-input"
-                  placeholder="Ciudad"
                 />
               </div>
 
@@ -294,9 +258,9 @@
                   type="text"
                   [(ngModel)]="direccionEditando.estado"
                   class="direccion-input"
-                  placeholder="Estado"
                 />
               </div>
+
             </div>
 
             <label for="cpEdit">Código postal *</label>
@@ -304,40 +268,71 @@
               id="cpEdit"
               type="text"
               [(ngModel)]="direccionEditando.codigoPostal"
-              class="direccion-input"
               maxlength="5"
-              placeholder="5 dígitos"
+              class="direccion-input"
             />
 
-            <div style="margin-top: 15px; display: flex; gap: 10px;">
-              <button type="button" class="btn-cancelar" (click)="cancelarEdicionDireccion()">Cancelar</button>
-              <button type="button" class="btn-guardar" (click)="guardarDireccionEditada()">✓ Guardar cambios</button>
+            <div class="acciones-header">
+              <button
+                type="button"
+                class="btn-cancelar"
+                (click)="cancelarEdicionDireccion()"
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="button"
+                class="btn-guardar"
+                (click)="guardarDireccionEditada()"
+              >
+                ✓ Guardar cambios
+              </button>
             </div>
           </div>
         }
 
-        <!-- LISTADO DE DIRECCIONES -->
         @if (tieneDirecciones) {
-          <div style="display: flex; flex-direction: column; gap: 15px;">
+          <div class="lista-direcciones">
+
             @for (dir of direcciones; track dir.id) {
-              <div class="direccion-box" style="display: flex; justify-content: space-between; align-items: center; border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px;">
-                <div style="display: flex; gap: 15px; align-items: flex-start;">
-                  <div class="direccion-icon" style="font-size: 24px;">⌂</div>
+              <div class="direccion-box direccion-listada">
+
+                <div class="direccion-contenido">
+                  <div class="direccion-icon">⌂</div>
+
                   <div class="direccion-info">
                     <p><strong>{{ dir.calle }}</strong></p>
                     <p>{{ dir.colonia }}</p>
                     <p>{{ dir.ciudad }}, {{ dir.estado }}</p>
                     <p>C.P. {{ dir.codigoPostal }}</p>
+
                     @if (dir.esPrincipal) {
-                      <span class="direccion-tag" style="background: #e6f4ea; color: #137333; padding: 2px 8px; border-radius: 4px; font-size: 12px;">Dirección principal</span>
+                      <span class="direccion-tag">
+                        Dirección principal
+                      </span>
                     }
                   </div>
                 </div>
 
-                <div style="display: flex; gap: 10px;">
-                  <button type="button" class="btn-editar" (click)="iniciarEdicionDireccion(dir)">✎ Editar</button>
-                  <button type="button" class="btn-cancelar" style="background: #d93025; color: white;" (click)="eliminarDireccion(dir.id)">✕ Eliminar</button>
+                <div class="acciones-header">
+                  <button
+                    type="button"
+                    class="btn-editar"
+                    (click)="iniciarEdicionDireccion(dir)"
+                  >
+                    ✎ Editar
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn-eliminar"
+                    (click)="eliminarDireccion(dir.id)"
+                  >
+                    ✕ Eliminar
+                  </button>
                 </div>
+
               </div>
             }
           </div>
@@ -345,16 +340,19 @@
           <div class="direccion-box">
             <div class="direccion-icon">⌂</div>
             <div class="direccion-info">
-              <p>Aún no tienes ninguna dirección registrada.</p>
-              <p>Agrega una dirección desde el carrito al realizar tu próxima compra para facilitar tus pedidos.</p>
+              <p>Aún no tienes direcciones registradas.</p>
+              <p>
+                Puedes agregar una dirección desde el carrito
+                al realizar tu próxima compra.
+              </p>
             </div>
           </div>
         }
 
       </section>
 
-      <!-- RESUMEN DE CUENTA -->
-      <section class="perfil-card">
+      <!-- ESTADÍSTICAS -->
+      <section id="actividad" class="perfil-card">
 
         <div class="card-header">
           <div>
@@ -391,46 +389,234 @@
           </div>
 
         </div>
-
-        <p class="campo-ayuda estadisticas-aviso">
-          Las estadísticas dependen de la información
-          disponible en la sesión. Para consultar el
-          historial real de compras se requiere
-          conectar el sistema de pedidos.
-        </p>
-
       </section>
 
       <!-- SEGURIDAD -->
-      <section class="perfil-card seguridad-card">
+      <section
+        id="seguridad"
+        class="perfil-card seguridad-card"
+      >
 
-        <div class="card-header seguridad-header">
-
+        <div class="card-header">
           <div>
-            <span class="card-label">SEGURIDAD</span>
+            <span class="card-label">
+              SEGURIDAD DE LA CUENTA
+            </span>
 
-            <h2>Contraseña</h2>
+            <h2>Cambiar contraseña</h2>
 
             <p>
-              Protege tu cuenta manteniendo
-              actualizada tu contraseña.
+              Utiliza una contraseña segura y fácil de recordar.
             </p>
           </div>
 
-          <button
-            type="button"
-            class="btn-secundario"
-            (click)="cambiarContrasena()"
-          >
-            Cambiar contraseña
-          </button>
-
+          <div class="seguridad-icono">🔐</div>
         </div>
 
+        <div class="seguridad-aviso">
+          <span>🛡️</span>
+          <p>
+            Tu nueva contraseña debe contener al menos
+            8 caracteres. Puedes utilizar letras, números,
+            espacios y símbolos para mejorar su seguridad.
+          </p>
+        </div>
+
+        <form
+          #passwordForm="ngForm"
+          (ngSubmit)="guardarNuevaContrasena()"
+          class="password-form"
+          novalidate
+        >
+
+          <!-- CONTRASEÑA ACTUAL -->
+          <div class="campo-password">
+            <label for="contrasenaActual">
+              Contraseña actual *
+            </label>
+
+            <div class="password-input-container">
+              <input
+                id="contrasenaActual"
+                name="contrasenaActual"
+                [type]="mostrarActual ? 'text' : 'password'"
+                [(ngModel)]="contrasenaActual"
+                #actualCtrl="ngModel"
+                required
+                autocomplete="current-password"
+                placeholder="Introduce tu contraseña actual"
+              />
+
+              <button
+                type="button"
+                class="btn-mostrar"
+                (click)="mostrarActual = !mostrarActual"
+              >
+                {{ mostrarActual ? 'Ocultar' : 'Mostrar' }}
+              </button>
+            </div>
+
+            @if (actualCtrl.invalid && actualCtrl.touched) {
+              <small class="input-error">
+                Introduce tu contraseña actual.
+              </small>
+            }
+          </div>
+
+          <!-- NUEVA CONTRASEÑA -->
+          <div class="campo-password">
+            <label for="nuevaContrasena">
+              Nueva contraseña *
+            </label>
+
+            <div class="password-input-container">
+              <input
+                id="nuevaContrasena"
+                name="nuevaContrasena"
+                [type]="mostrarNueva ? 'text' : 'password'"
+                [(ngModel)]="nuevaContrasena"
+                #nuevaCtrl="ngModel"
+                required
+                minlength="8"
+                autocomplete="new-password"
+                placeholder="Mínimo 8 caracteres"
+              />
+
+              <button
+                type="button"
+                class="btn-mostrar"
+                (click)="mostrarNueva = !mostrarNueva"
+              >
+                {{ mostrarNueva ? 'Ocultar' : 'Mostrar' }}
+              </button>
+            </div>
+
+            @if (
+              nuevaCtrl.touched &&
+              nuevaContrasena.length > 0 &&
+              nuevaContrasena.length < 8
+            ) {
+              <small class="input-error">
+                La contraseña debe contener mínimo 8 caracteres.
+              </small>
+            }
+
+            <!-- NIVEL DE SEGURIDAD -->
+            <div class="fortaleza-contrasena">
+
+              <div class="fortaleza-barra">
+                <div
+                  class="fortaleza-progreso"
+                  [style.width.%]="fortalezaPorcentaje"
+                  [style.background-color]="colorFortaleza"
+                ></div>
+              </div>
+
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  gap: 10px;
+                "
+              >
+                <small>Seguridad estimada</small>
+
+                <strong
+                  [style.color]="colorFortaleza"
+                  style="font-size: 0.85rem;"
+                  aria-live="polite"
+                >
+                  {{ nivelSeguridad }}
+                </strong>
+              </div>
+
+              @if (nuevaContrasena) {
+                <small>
+                  {{ sugerenciaSeguridad }}
+                </small>
+              }
+
+            </div>
+          </div>
+
+          <!-- CONFIRMAR CONTRASEÑA -->
+          <div class="campo-password">
+            <label for="confirmarContrasena">
+              Confirmar nueva contraseña *
+            </label>
+
+            <div class="password-input-container">
+              <input
+                id="confirmarContrasena"
+                name="confirmarContrasena"
+                [type]="mostrarConfirmacion ? 'text' : 'password'"
+                [(ngModel)]="confirmarContrasena"
+                #confirmacionCtrl="ngModel"
+                required
+                autocomplete="new-password"
+                placeholder="Repite la nueva contraseña"
+              />
+
+              <button
+                type="button"
+                class="btn-mostrar"
+                (click)="mostrarConfirmacion = !mostrarConfirmacion"
+              >
+                {{ mostrarConfirmacion ? 'Ocultar' : 'Mostrar' }}
+              </button>
+            </div>
+
+            @if (
+              confirmarContrasena &&
+              nuevaContrasena !== confirmarContrasena
+            ) {
+              <small class="input-error">
+                Las contraseñas no coinciden.
+              </small>
+            }
+
+            @if (
+              confirmarContrasena &&
+              nuevaContrasena === confirmarContrasena
+            ) {
+              <small class="input-correcto">
+                ✓ Las contraseñas coinciden.
+              </small>
+            }
+          </div>
+
+          @if (mensajeSeguridad) {
+            <div
+              class="mensaje mensaje-error"
+              role="status"
+            >
+              {{ mensajeSeguridad }}
+            </div>
+          }
+
+          <div class="seguridad-footer">
+
+            <button
+              type="button"
+              class="btn-cancelar"
+              (click)="cancelarCambioContrasena()"
+            >
+              Limpiar campos
+            </button>
+
+            <button
+              type="submit"
+              class="btn-guardar"
+              [disabled]="passwordForm.invalid || !contrasenaLista"
+            >
+              🔒 Actualizar contraseña
+            </button>
+
+          </div>
+        </form>
       </section>
 
     </main>
-
   </div>
-
 </div>
