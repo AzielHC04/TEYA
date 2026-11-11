@@ -16,18 +16,18 @@
   justify-content: center;
   align-items: center;
   min-height: 80vh;
-  background-color: #f8fafc;
   padding: 24px 16px;
+  background: #f8fafc;
 }
 
 .auth-card {
-  background: white;
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   width: 100%;
   max-width: 450px;
+  padding: 40px;
+  background: white;
   border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 .auth-header {
@@ -37,43 +37,41 @@
 
 .auth-icon {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   width: 62px;
   height: 62px;
   margin: 0 auto 18px;
-  background: #ecfdf5;
   border-radius: 50%;
+  background: #ecfdf5;
   font-size: 1.8rem;
 }
 
 .auth-header h2 {
-  font-size: 1.5rem;
-  color: #0f172a;
   margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 1.5rem;
   font-weight: 700;
 }
 
 .auth-header p {
+  margin: 0;
   color: #64748b;
   font-size: 0.9rem;
-  margin: 0;
   line-height: 1.6;
 }
-
-/* FORMULARIO */
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 7px;
-  margin-bottom: 17px;
+  margin-bottom: 18px;
 }
 
 .form-group label {
+  color: #475569;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #475569;
 }
 
 .form-group input {
@@ -81,14 +79,15 @@
   padding: 12px 14px;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
-  font-size: 0.95rem;
-  font-family: inherit;
-  color: #0f172a;
   background: white;
+  color: #0f172a;
+  font-family: inherit;
+  font-size: 0.95rem;
   outline: none;
   transition:
     border-color 0.2s,
-    box-shadow 0.2s;
+    box-shadow 0.2s,
+    background-color 0.2s;
 }
 
 .form-group input::placeholder {
@@ -108,76 +107,57 @@
 
 .form-group input.ng-invalid.ng-touched:not(:focus) {
   border-color: #ef4444;
+  background: #fff7f7;
+}
+
+.form-group input.ng-valid.ng-touched:not([readonly]) {
+  border-color: #10b981;
+}
+
+.input-error {
+  display: block;
+  color: #dc2626;
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .input-ayuda {
+  display: block;
   color: #64748b;
   font-size: 0.76rem;
   line-height: 1.5;
 }
 
-/* BOTÓN PRINCIPAL */
-
 .btn-submit {
   width: 100%;
-  background-color: #10b981;
-  color: white;
-  border: none;
+  margin-top: 12px;
   padding: 13px;
+  border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  background: #10b981;
+  color: white;
   font-family: inherit;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition:
-    background-color 0.2s,
-    transform 0.2s;
-  margin-top: 12px;
+  transition: background-color 0.2s;
 }
 
 .btn-submit:hover:not(:disabled) {
-  background-color: #059669;
-}
-
-.btn-submit:active:not(:disabled) {
-  transform: scale(0.99);
+  background: #059669;
 }
 
 .btn-submit:disabled {
-  background-color: #a7b8b1;
-  cursor: not-allowed;
+  background: #a7b8b1;
   opacity: 0.7;
+  cursor: not-allowed;
 }
-
-/* PIE DE PÁGINA */
-
-.auth-footer {
-  text-align: center;
-  margin-top: 24px;
-  font-size: 0.88rem;
-  color: #64748b;
-}
-
-.auth-footer p {
-  margin: 0;
-}
-
-.auth-footer a {
-  color: #059669;
-  text-decoration: none;
-  font-weight: 700;
-}
-
-.auth-footer a:hover {
-  text-decoration: underline;
-}
-
-/* MENSAJES */
 
 .alert {
   padding: 12px 14px;
-  border-radius: 8px;
   margin-bottom: 18px;
+  border-radius: 8px;
   font-size: 0.85rem;
   line-height: 1.5;
 }
@@ -194,17 +174,15 @@
   border: 1px solid #fecaca;
 }
 
-/* INFORMACIÓN ADICIONAL */
-
 .informacion-perfil {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  padding: 12px;
-  border-radius: 8px;
   margin-top: 18px;
+  padding: 12px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  background: #f0fdf4;
 }
 
 .informacion-perfil span {
@@ -213,13 +191,28 @@
 }
 
 .informacion-perfil p {
+  margin: 0;
   color: #166534;
   font-size: 0.8rem;
   line-height: 1.6;
-  margin: 0;
 }
 
-/* RESPONSIVO */
+.auth-footer {
+  margin-top: 24px;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+.auth-footer a {
+  color: #059669;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
 
 @media (max-width: 600px) {
   .auth-container {
