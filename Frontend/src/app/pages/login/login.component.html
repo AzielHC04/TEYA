@@ -24,23 +24,26 @@
       >
 
         <div class="form-group">
-          <label for="email">Correo electrónico *</label>
+          <label for="email">
+            Correo electrónico *
+          </label>
 
           <input
             id="email"
             name="email"
-            type="email"
+            type="text"
             [(ngModel)]="email"
             #emailCtrl="ngModel"
             required
-            email
-            autocomplete="email"
+            [pattern]="patronCorreoLogin"
+            autocomplete="username"
             placeholder="correo@ejemplo.com"
           />
 
           @if (emailCtrl.invalid && emailCtrl.touched) {
             <small class="input-error">
-              Introduce un correo electrónico válido.
+              Introduce un correo válido o una cuenta
+              administrativa autorizada.
             </small>
           }
         </div>

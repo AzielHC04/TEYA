@@ -99,8 +99,17 @@ export class LoginComponent {
   // ==========================================
 
   private correoValido(correo: string): boolean {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-      correo.trim()
+    const valor = correo.trim().toLowerCase();
+
+    const correoConvencional =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const correoAdministrativo =
+      /^[^\s@]+@admin$/;
+
+    return (
+      correoConvencional.test(valor) ||
+      correoAdministrativo.test(valor)
     );
   }
 
@@ -467,6 +476,9 @@ export class LoginComponent {
 
     this.finalizarInicioSesion();
   }
+  
+  readonly patronCorreoLogin =
+  '[^\\s@]+@(?:[^\\s@]+\\.[^\\s@]+|admin)';
 
   // ==========================================
   // FINALIZAR INICIO DE SESIÓN
