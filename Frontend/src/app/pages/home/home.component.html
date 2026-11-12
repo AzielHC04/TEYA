@@ -60,7 +60,8 @@
 
           <!-- Botonera inferior compacta -->
           <div class="card-actions">
-            <a [routerLink]="['/products', producto.id]" class="btn-ficha">
+            <!-- RUTA CORREGIDA: Apunta directamente a /ficha/:id -->
+            <a [routerLink]="['/ficha', producto.id]" class="btn-ficha">
               Ficha Técnica
             </a>
             <button 
@@ -112,7 +113,8 @@
 
           <!-- Botonera inferior compacta -->
           <div class="card-actions">
-            <a [routerLink]="['/products', producto.id]" class="btn-ficha">
+            <!-- RUTA CORREGIDA: Apunta directamente a /ficha/:id -->
+            <a [routerLink]="['/ficha', producto.id]" class="btn-ficha">
               Ficha Técnica
             </a>
             <button 

@@ -15,7 +15,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private cartService = inject(CartService);
 
-  // Lista base de banners con su color temático (máximo 6 visibles)
   private todosLosBanners = [
     {
       imagen: 'assets/descuento 1.png',
@@ -55,17 +54,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   ];
 
-  // Arreglo limitado a máximo 6 imágenes para la vista
   bannersPromocionales = this.todosLosBanners.slice(0, 6);
 
   bannerActual = 0;
   autoSlideTimer: any;
 
-  // Listas de productos
   masComprados: Product[] = [];
   ultimosAgregados: Product[] = [];
 
-  // Paginación de carruseles de productos
   paginaMasComprados = 0;
   paginaUltimosAgregados = 0;
 
@@ -88,22 +84,18 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.timerUltimosAgregados) clearInterval(this.timerUltimosAgregados);
   }
 
-  // --- Carga de datos asíncrona desde NestJS / Supabase ---
   cargarProductosDesdeAPI(): void {
     this.productService.getProductos().subscribe({
       next: (productos: Product[]) => {
-        // Filtrar productos clasificados desde la base de datos
         this.masComprados = productos.filter(p => p.masComprado);
         this.ultimosAgregados = productos.filter(p => p.ultimoAgregado);
 
-        // Iniciamos la rotación solo si hay más de 3 productos
         this.iniciarCarruselesProductosSiEsNecesario(5000);
       },
       error: (err) => console.error('Error al cargar productos en Home:', err)
     });
   }
 
-  // --- Lógica del Banner Principal ---
   iniciarAutoSlideBanners(): void {
     this.ngZone.runOutsideAngular(() => {
       this.autoSlideTimer = setInterval(() => {
@@ -126,45 +118,40 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.bannerActual = index;
   }
 
-  // --- Getters para filtrar productos según la página actual ---
+  // Muestra 4 productos por vista para ocupar el ancho completo
   get masCompradosVisibles(): Product[] {
-    const inicio = this.paginaMasComprados * 3;
-    return this.masComprados.slice(inicio, inicio + 3);
+    const inicio = this.paginaMasComprados * 4;
+    return this.masComprados.slice(inicio, inicio + 4);
   }
 
   get ultimosAgregadosVisibles(): Product[] {
-    const inicio = this.paginaUltimosAgregados * 3;
-    return this.ultimosAgregados.slice(inicio, inicio + 3);
+    const inicio = this.paginaUltimosAgregados * 4;
+    return this.ultimosAgregados.slice(inicio, inicio + 4);
   }
 
-  // --- Lógica inteligente de Carruseles (Estáticos si son pocos) ---
   iniciarCarruselesProductosSiEsNecesario(intervaloMs: number): void {
     this.ngZone.runOutsideAngular(() => {
-      
-      // Solo rotar Más Comprados si hay más de 3 productos
-      if (this.masComprados.length > 3) {
+      // Rotar si hay más de 4 productos
+      if (this.masComprados.length > 4) {
         this.timerMasComprados = setInterval(() => {
           this.ngZone.run(() => {
-            const maxPaginas = Math.ceil(this.masComprados.length / 3);
+            const maxPaginas = Math.ceil(this.masComprados.length / 4);
             this.paginaMasComprados = (this.paginaMasComprados + 1) % maxPaginas;
           });
         }, intervaloMs);
       }
 
-      // Solo rotar Últimos Agregados si hay más de 3 productos
-      if (this.ultimosAgregados.length > 3) {
+      if (this.ultimosAgregados.length > 4) {
         this.timerUltimosAgregados = setInterval(() => {
           this.ngZone.run(() => {
-            const maxPaginas = Math.ceil(this.ultimosAgregados.length / 3);
+            const maxPaginas = Math.ceil(this.ultimosAgregados.length / 4);
             this.paginaUltimosAgregados = (this.paginaUltimosAgregados + 1) % maxPaginas;
           });
         }, intervaloMs);
       }
-
     });
   }
 
-  // --- Función para agregar al carrito desde el Home ---
   agregarAlCarrito(producto: Product): void {
     const resultado = this.cartService.agregarProducto(producto, 1);
     if (!resultado.exito) {

@@ -1,0 +1,75 @@
+<div class="ficha-container">
+  <div class="breadcrumb">
+    <a routerLink="/products">← Volver a productos</a>
+  </div>
+
+  @if (cargando) {
+    <div class="estado-cargas">
+      <div class="spinner"></div>
+      <p>Cargando ficha técnica...</p>
+    </div>
+  } @else if (errorCarga || !producto) {
+    <div class="estado-cargas error">
+      <h2>⚠️ Producto no encontrado</h2>
+      <p>No se pudo cargar la información del producto solicitado.</p>
+      <a routerLink="/products" class="btn-regresar">Ver catálogo</a>
+    </div>
+  } @else {
+    <div class="ficha-card">
+      <!-- COLUMNA IZQUIERDA: FOTO GRANDE -->
+      <div class="columna-imagen">
+        <img [src]="producto.imagen || 'assets/placeholder.png'" [alt]="producto.nombre" class="imagen-principal" />
+      </div>
+
+      <!-- COLUMNA DERECHA: INFORMACIÓN Y ACCIONES -->
+      <div class="columna-info">
+        <h1 class="producto-titulo">{{ producto.nombre }}</h1>
+
+        <div class="precio-contenedor">
+          <span class="etiqueta-precio">Precio unitario:</span>
+          <span class="precio-monto">{{ producto.precio | currency:'MXN':'symbol':'1.2-2' }}</span>
+        </div>
+
+        <div class="stock-badge" [class.agotado]="producto.stock <= 0">
+          @if (producto.stock > 0) {
+            ✓ {{ producto.stock }} unidades disponibles en inventario
+          } @else {
+            ✖ Agotado
+          }
+        </div>
+
+        <div class="separador"></div>
+
+        <div class="descripcion-seccion">
+          <h3>Descripción del producto</h3>
+          <p class="descripcion-texto">
+            {{ producto.descripcion || 'Este producto no cuenta con una descripción detallada por el momento.' }}
+          </p>
+        </div>
+
+        <div class="separador"></div>
+
+        <!-- CONTROLES DE CANTIDAD Y BOTÓN -->
+        <div class="compra-acciones">
+          <div class="cantidad-selector">
+            <label for="cantidad">Cantidad:</label>
+            <div class="controles-num">
+              <button type="button" (click)="disminuirCantidad()" [disabled]="cantidadSeleccionada <= 1">−</button>
+              <span>{{ cantidadSeleccionada }}</span>
+              <button type="button" (click)="aumentarCantidad()" [disabled]="cantidadSeleccionada >= producto.stock">+</button>
+            </div>
+          </div>
+
+          <button 
+            type="button" 
+            class="btn-agregar" 
+            (click)="agregarAlCarrito()"
+            [disabled]="producto.stock <= 0"
+          >
+            🛒 Agregar al carrito
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

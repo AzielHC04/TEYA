@@ -9,6 +9,7 @@ import { MiperfilComponent } from './pages/miperfil/miperfil.component';
 import { PedidosComponent } from './pages/pedidos/pedidos.component'; // <-- 1. Importar componente de pedidos
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
+import { FichaComponent } from './pages/ficha/ficha.component'; // <-- Importar el componente de ficha técnica
 
 export const routes: Routes = [
 
@@ -18,6 +19,11 @@ export const routes: Routes = [
 
   // Página de inicio
   { path: '', component: HomeComponent },
+// Página de ficha técnica del producto
+  {
+    path: 'ficha/:id',
+    loadComponent: () => import('./pages/ficha/ficha.component').then(m => m.FichaComponent)
+  },
 
   // Página de productos
   { path: 'products', component: ProductsComponent },
