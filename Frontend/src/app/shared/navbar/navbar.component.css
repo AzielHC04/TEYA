@@ -1,35 +1,61 @@
+
 :host {
   display: block;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Reserva el espacio del navbar en la página */
+  height: 70px;
+
+  font-family: system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
 }
 
+/* =========================================
+   NAVBAR FIJO EN LA PARTE SUPERIOR
+========================================= */
+
 .navbar-header {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
   width: 100%;
+  height: 70px;
+
   background: #ffffff;
   border-bottom: 1px solid #eaeaea;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-  position: relative;
+
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+
+  z-index: 9999;
 }
+
+/* CONTENEDOR PRINCIPAL */
 
 .navbar-container {
   max-width: 1300px;
   height: 70px;
+
   margin: 0 auto;
   padding: 0 32px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 20px;
 }
 
-/* LOGO */
+/* =========================================
+   LOGO
+========================================= */
+
 .navbar-brand {
   display: flex;
   align-items: center;
-  text-decoration: none;
   flex-shrink: 0;
+  text-decoration: none;
 }
 
 .navbar-logo {
@@ -38,7 +64,10 @@
   object-fit: contain;
 }
 
-/* CONTROLES MÓVILES (OCULTOS EN LAPTOP) */
+/* =========================================
+   CONTROLES MÓVILES
+========================================= */
+
 .mobile-controls {
   display: none;
 }
@@ -47,11 +76,15 @@
   display: none;
 }
 
-/* NAVEGACIÓN CENTRAL (LAPTOP) */
+/* =========================================
+   NAVEGACIÓN ESCRITORIO
+========================================= */
+
 .navbar-nav > ul {
   display: flex;
   align-items: center;
   gap: 28px;
+
   list-style: none;
   margin: 0;
   padding: 0;
@@ -59,17 +92,23 @@
 
 .nav-link {
   position: relative;
+
   display: inline-flex;
   align-items: center;
+
   color: #4a4a4a;
   font-size: 1rem;
   font-weight: 500;
+
   text-decoration: none;
   background: transparent;
   border: none;
+
   cursor: pointer;
+
   padding: 6px 0;
   line-height: 1.2;
+
   transition: color 0.2s ease;
 }
 
@@ -77,14 +116,21 @@
   color: #1a1a1a;
 }
 
+/* SUBRAYADO ANIMADO */
+
 .nav-link::after {
   content: '';
+
   position: absolute;
+
   bottom: -2px;
   left: 0;
+
   width: 0;
   height: 2px;
-  background-color: #23302C;
+
+  background-color: #23302c;
+
   transition: width 0.25s ease;
 }
 
@@ -98,9 +144,13 @@
   font-weight: 600;
 }
 
-/* DROPDOWN */
+/* =========================================
+   DROPDOWN PRODUCTOS
+========================================= */
+
 .dropdown {
   position: relative;
+
   padding-bottom: 12px;
   margin-bottom: -12px;
 }
@@ -112,10 +162,14 @@
 .arrow {
   width: 5px;
   height: 5px;
+
   border-right: 1.5px solid #666;
   border-bottom: 1.5px solid #666;
+
   transform: rotate(45deg);
+
   transition: transform 0.2s ease;
+
   margin-top: -1px;
 }
 
@@ -124,19 +178,27 @@
   margin-top: 3px;
 }
 
+/* MENÚ DESPLEGABLE */
+
 .dropdown-menu {
   display: none;
+
   position: absolute;
   top: 100%;
   left: -15px;
+
   min-width: 200px;
+
   background: #ffffff;
   border: 1px solid #eaeaea;
   border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+
   list-style: none;
   padding: 8px 0;
-  z-index: 99;
+
+  z-index: 10000;
 }
 
 .dropdown-menu.show {
@@ -145,11 +207,17 @@
 
 .dropdown-menu li a {
   display: block;
+
   padding: 9px 18px;
+
   color: #555555;
   font-size: 0.85rem;
+
   text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 
 .dropdown-menu li a:hover {
@@ -157,43 +225,28 @@
   color: #1a1a1a;
 }
 
-/* CARRITO */
+/* =========================================
+   CARRITO
+========================================= */
+
 .cart-link {
   gap: 6px;
 }
 
 .cart-badge {
-  background: #23302C;
+  background: #23302c;
   color: #ffffff;
+
   font-size: 0.65rem;
   font-weight: 600;
+
   padding: 2px 6px;
   border-radius: 10px;
 }
 
-/* BOTÓN DE ACCIÓN DERECHA */
-.navbar-actions {
-  display: flex;
-  align-items: center;
-}
-
-.btn-profile {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 18px;
-  background: #23302C;
-  color: #ffffff;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background 0.2s ease;
-}
-
-.btn-profile:hover {
-  background: #1b2623;
-}
+/* =========================================
+   ACCIONES DE AUTENTICACIÓN
+========================================= */
 
 .navbar-actions {
   display: flex;
@@ -201,19 +254,56 @@
   gap: 10px;
 }
 
+.btn-profile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px 18px;
+
+  background: #23302c;
+  color: #ffffff;
+
+  border-radius: 6px;
+
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition: background 0.2s ease;
+}
+
+.btn-profile:hover {
+  background: #1b2623;
+}
+
+/* =========================================
+   PANEL ADMINISTRADOR
+========================================= */
+
 .btn-admin-panel {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   gap: 6px;
+
   padding: 8px 14px;
+
   background: #ecfdf5;
   color: #065f46;
+
   border: 1px solid #a7f3d0;
   border-radius: 6px;
+
   font-size: 0.85rem;
   font-weight: 700;
+
   text-decoration: none;
+  white-space: nowrap;
+
   transition: all 0.2s ease;
 }
 
@@ -226,27 +316,44 @@
 .btn-admin-panel.mobile-full {
   width: 100%;
   padding: 12px;
+
   font-size: 0.95rem;
   border-radius: 50px;
 }
 
 /* =========================================
-   RESPONSIVE (TABLET Y CELULAR < 860px)
+   RESPONSIVE TABLET Y CELULAR
+   MENOR A 860px
 ========================================= */
+
 @media (max-width: 860px) {
+
+  :host {
+    height: 64px;
+  }
+
+  .navbar-header {
+    height: 64px;
+  }
+
   .navbar-container {
     height: 64px;
     padding: 0 16px;
+    gap: 12px;
   }
 
   .navbar-logo {
     width: 78px;
   }
 
+  /* OCULTAR ELEMENTOS DE ESCRITORIO */
+
   .desktop-only,
   .desktop-cart-item {
     display: none !important;
   }
+
+  /* CONTROLES MÓVILES */
 
   .mobile-controls {
     display: flex;
@@ -254,43 +361,65 @@
     gap: 14px;
   }
 
+  /* CARRITO MÓVIL */
+
   .mobile-cart-btn {
     display: inline-flex;
     align-items: center;
     gap: 5px;
+
     text-decoration: none;
-    color: #23302C;
+
+    color: #23302c;
     font-size: 0.9rem;
     font-weight: 600;
+
     padding: 6px 10px;
+
     border-radius: 8px;
     background: #f4f6f5;
   }
 
-  /* BOTÓN HAMBURGUESA */
+  /* =========================================
+     BOTÓN HAMBURGUESA
+  ========================================= */
+
   .hamburger-btn {
     width: 38px;
     height: 38px;
+
     background: transparent;
+
     border: 1px solid #e2e8f0;
     border-radius: 8px;
+
     display: flex;
     flex-direction: column;
+
     justify-content: center;
     align-items: center;
+
     gap: 5px;
+
     cursor: pointer;
     padding: 0;
   }
 
   .hamburger-btn span {
     display: block;
+
     width: 20px;
     height: 2px;
-    background-color: #23302C;
+
+    background-color: #23302c;
     border-radius: 2px;
-    transition: transform 0.25s ease, opacity 0.25s ease;
+
+    transition:
+      transform 0.25s ease,
+      opacity 0.25s ease;
   }
+
+  /* ANIMACIÓN AL ABRIR */
 
   .hamburger-btn.open span:nth-child(1) {
     transform: translateY(7px) rotate(45deg);
@@ -304,22 +433,44 @@
     transform: translateY(-7px) rotate(-45deg);
   }
 
-  /* MENÚ DESPLEGABLE MÓVIL */
+  /* =========================================
+     MENÚ DESPLEGABLE MÓVIL
+  ========================================= */
+
   .navbar-nav {
     display: none;
+
     position: absolute;
+
     top: 64px;
     left: 0;
+
     width: 100%;
+
     background: #ffffff;
+
     border-bottom: 1px solid #e2e8f0;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-    padding: 16px 20px 24px 20px;
+
+    box-shadow: 0 12px 24px
+      rgba(0, 0, 0, 0.08);
+
+    padding: 16px 20px 24px;
+
+    /* EVITA QUE EL MENÚ SALGA DE LA PANTALLA */
+    max-height: calc(100vh - 64px);
+    max-height: calc(100dvh - 64px);
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    z-index: 10001;
   }
 
   .navbar-nav.mobile-open {
     display: block;
   }
+
+  /* ELEMENTOS EN VERTICAL */
 
   .navbar-nav > ul {
     flex-direction: column;
@@ -337,8 +488,11 @@
 
   .nav-link {
     width: 100%;
+
     justify-content: space-between;
+
     padding: 12px 4px;
+
     font-size: 1rem;
   }
 
@@ -346,7 +500,10 @@
     display: none;
   }
 
-  /* SUBMENÚ DE CATEGORÍAS EN ACORDEÓN MÓVIL */
+  /* =========================================
+     SUBMENÚ PRODUCTOS EN MÓVIL
+  ========================================= */
+
   .dropdown {
     padding-bottom: 0;
     margin-bottom: 0;
@@ -354,10 +511,14 @@
 
   .dropdown-menu {
     position: static;
+
     box-shadow: none;
     border: none;
+
     background: #f8fafc;
+
     border-radius: 8px;
+
     margin-bottom: 10px;
     padding: 6px 0;
   }
@@ -367,7 +528,10 @@
     font-size: 0.9rem;
   }
 
-  /* BOTÓN DE CUENTA EN MÓVIL */
+  /* =========================================
+     BOTONES DE CUENTA EN MÓVIL
+  ========================================= */
+
   .mobile-auth-item {
     display: block;
     margin-top: 14px;
@@ -375,7 +539,18 @@
 
   .btn-profile.mobile-full {
     width: 100%;
+
     padding: 12px;
+
+    font-size: 0.95rem;
+    border-radius: 50px;
+  }
+
+  .btn-admin-panel.mobile-full {
+    width: 100%;
+
+    padding: 12px;
+
     font-size: 0.95rem;
     border-radius: 50px;
   }
