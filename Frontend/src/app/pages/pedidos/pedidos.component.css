@@ -246,3 +246,119 @@
   border: 1px solid #e2e8f0;
   color: #64748b;
 }
+
+/* Rastreador de seguimiento paso a paso */
+.tracking-stepper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 1rem 0 1.25rem;
+  padding: 0.75rem 0.5rem;
+  background: #f8faf9;
+  border-radius: 10px;
+  position: relative;
+}
+
+.step-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.step-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 13px;
+  left: 50%;
+  width: 100%;
+  height: 3px;
+  background: #dce4df;
+  z-index: -1;
+}
+
+.step-item.completed:not(:last-child)::after {
+  background: #2e7d32;
+}
+
+.step-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #dce4df;
+  color: #5c6b62;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.35rem;
+  transition: all 0.25s ease;
+}
+
+.step-item.completed .step-circle {
+  background: #2e7d32;
+  color: #ffffff;
+}
+
+.step-item.active .step-circle {
+  box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.22);
+  transform: scale(1.08);
+}
+
+.step-label {
+  font-size: 0.72rem;
+  color: #6b7280;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.step-item.completed .step-label {
+  color: #1b4332;
+  font-weight: 600;
+}
+
+.tracking-cancelled {
+  margin: 0.85rem 0 1.15rem;
+  padding: 0.75rem 1rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Colores de etiquetas por estado */
+.status-pending, .status-pendiente {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-paid, .status-pagado {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.status-preparing, .status-preparando {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.status-shipped, .status-enviado {
+  background-color: #ede9fe;
+  color: #5b21b6;
+}
+
+.status-delivered, .status-entregado {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.status-cancelled, .status-cancelado {
+  background-color: #fee2e2;
+  color: #991b1b;
+}

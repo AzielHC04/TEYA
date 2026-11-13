@@ -14,7 +14,6 @@ export class OrdersService {
       throw new BadRequestException('El carrito está vacío.');
     }
 
-    // 1. Guardar la orden localmente en PostgreSQL
     const nuevaOrden = await this.prisma.order.create({
       data: {
         userId: dto.userId,
@@ -39,13 +38,12 @@ export class OrdersService {
 
     let paymentUrl = '';
 
-    const clipApiKey = process.env.CLIP_API_KEY || '84c4b73e-744d-42fe-9de9-0bfe5a5b8397';
-    const clipApiSecret = process.env.CLIP_API_SECRET || '2ccb37d1-9c38-4e7b-b159-983a62402711';
+    const clipApiKey = process.env.CLIP_API_KEY;
+    const clipApiSecret = process.env.CLIP_API_SECRET;
 
     try {
       const authHeader = `Basic ${Buffer.from(`${clipApiKey}:${clipApiSecret}`).toString('base64')}`;
 
-      // Petición a la API Checkout de Clip
       const response = await fetch('https://api.payclip.com/v2/checkout', {
         method: 'POST',
         headers: {
@@ -58,9 +56,10 @@ export class OrdersService {
           currency: 'MXN',
           purchase_description: `Pedido KABNIA #${nuevaOrden.id.slice(0, 8)}`,
           redirection_url: {
-            success: 'http://localhost:4200/orders',
-            error: 'http://localhost:4200/carrito'
+            success: 'https://kabnia.com/orders',
+            error: 'https://kabnia.com/carrito'
           },
+          webhook_url: 'https://teya-d5iz.onrender.com/api/orders/webhook/clip',
           metadata: {
             order_id: nuevaOrden.id,
             user_id: dto.userId
@@ -69,16 +68,12 @@ export class OrdersService {
       });
 
       const responseText = await response.text();
-      let data: any = {};
-
       try {
-        data = JSON.parse(responseText);
-        // Mapeo con payment_request_url
+        const data = JSON.parse(responseText);
         paymentUrl = data?.payment_request_url || data?.payment_url || data?.url || data?.checkout_url || '';
       } catch (e) {
         console.log('Error parseando JSON de Clip');
       }
-
     } catch (error: any) {
       console.error('Error en la llamada HTTP a Clip:', error?.message);
     }
@@ -88,6 +83,32 @@ export class OrdersService {
       orden: nuevaOrden,
       paymentUrl: paymentUrl
     };
+  }
+
+  // Nuevo: Para el panel de administrador (trae cliente, dirección y productos)
+  async obtenerTodasLasOrdenes() {
+    return this.prisma.order.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            apellidos: true,
+            email: true,
+            telefono: true,
+            direcciones: true,
+          },
+        },
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 
   async obtenerOrdenesPorUsuario(userId: string) {
@@ -106,11 +127,10 @@ export class OrdersService {
     });
   }
 
-  // Método para actualizar el estado del pedido tras recibir la confirmación de Clip
   async actualizarEstadoOrden(orderId: string, status: string) {
     return this.prisma.order.update({
       where: { id: orderId },
-      data: { status: status },
+      data: { status },
     });
   }
 }

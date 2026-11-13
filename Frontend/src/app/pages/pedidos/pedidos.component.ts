@@ -30,6 +30,14 @@ export class PedidosComponent implements OnInit {
   cargando: boolean = true;
   mensajeError: string = '';
 
+  readonly pasosSeguimiento = [
+    { paso: 1, label: 'Pedido recibido' },
+    { paso: 2, label: 'Pagado' },
+    { paso: 3, label: 'Preparando' },
+    { paso: 4, label: 'En camino' },
+    { paso: 5, label: 'Entregado' }
+  ];
+
   ngOnInit(): void {
     this.cargarHistorialPedidos();
   }
@@ -40,14 +48,12 @@ export class PedidosComponent implements OnInit {
       return;
     }
 
-    // 1. Obtener el usuario logueado desde el localStorage
     const usuarioGuardado = localStorage.getItem('usuario');
     let userId = '';
 
     if (usuarioGuardado) {
       try {
         const sesion = JSON.parse(usuarioGuardado);
-        // Extraer el ID soportando distintos formatos posibles de tu login
         const datos = (sesion.usuario && typeof sesion.usuario === 'object')
           ? sesion.usuario
           : (sesion.user && typeof sesion.user === 'object')
@@ -67,7 +73,6 @@ export class PedidosComponent implements OnInit {
       return;
     }
 
-    // 2. Consumir el endpoint de NestJS
     this.http.get<any[]>(`https://teya-d5iz.onrender.com/api/orders/user/${userId}`).subscribe({
       next: (data) => {
         this.pedidos = data || [];
@@ -81,7 +86,6 @@ export class PedidosComponent implements OnInit {
     });
   }
 
-  // Traducir estados técnicos a texto amigable para el cliente
   obtenerTextoEstado(status: string): string {
     switch (status?.toUpperCase()) {
       case 'PENDING':
@@ -89,15 +93,46 @@ export class PedidosComponent implements OnInit {
         return 'Pendiente de pago';
       case 'PAID':
       case 'PAGADO':
-        return 'Pagado / En proceso';
+        return 'Pagado';
+      case 'PREPARING':
+      case 'PREPARANDO':
+        return 'Preparando envío';
       case 'SHIPPED':
       case 'ENVIADO':
         return 'En camino';
       case 'DELIVERED':
       case 'ENTREGADO':
         return 'Entregado';
+      case 'CANCELLED':
+      case 'CANCELADO':
+        return 'Cancelado';
       default:
         return status || 'Procesando';
+    }
+  }
+
+  obtenerPasoActual(status: string): number {
+    switch (status?.toUpperCase()) {
+      case 'PENDING':
+      case 'PENDIENTE':
+        return 1;
+      case 'PAID':
+      case 'PAGADO':
+        return 2;
+      case 'PREPARING':
+      case 'PREPARANDO':
+        return 3;
+      case 'SHIPPED':
+      case 'ENVIADO':
+        return 4;
+      case 'DELIVERED':
+      case 'ENTREGADO':
+        return 5;
+      case 'CANCELLED':
+      case 'CANCELADO':
+        return -1;
+      default:
+        return 1;
     }
   }
 }

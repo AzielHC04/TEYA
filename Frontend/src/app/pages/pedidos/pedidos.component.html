@@ -24,7 +24,7 @@
     <div class="pedidos-grid">
       @for (pedido of pedidos; track pedido.id) {
         <div class="profile-card pedido-card-compacto">
-          
+
           <!-- Encabezado del pedido -->
           <div class="card-header-row">
             <div>
@@ -35,6 +35,25 @@
               {{ obtenerTextoEstado(pedido.status) }}
             </span>
           </div>
+
+          <!-- Línea de seguimiento visual -->
+          @if (obtenerPasoActual(pedido.status) === -1) {
+            <div class="tracking-cancelled">
+              Este pedido fue cancelado. Si tienes dudas, contáctanos.
+            </div>
+          } @else {
+            <div class="tracking-stepper">
+              @for (item of pasosSeguimiento; track item.paso) {
+                <div
+                  class="step-item"
+                  [class.completed]="obtenerPasoActual(pedido.status) >= item.paso"
+                  [class.active]="obtenerPasoActual(pedido.status) === item.paso">
+                  <div class="step-circle">{{ item.paso }}</div>
+                  <span class="step-label">{{ item.label }}</span>
+                </div>
+              }
+            </div>
+          }
 
           <!-- Contenedor con scroll interno para los productos -->
           <div class="card-body-content">
