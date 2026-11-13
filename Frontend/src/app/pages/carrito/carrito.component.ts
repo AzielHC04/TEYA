@@ -189,7 +189,7 @@ eliminarItem(item: CartItem): void {
 
     if (!userId) return;
 
-    this.http.get<any[]>(`http://localhost:3000/api/addresses/user/${userId}`).subscribe({
+    this.http.get<any[]>(`https://teya-d5iz.onrender.com/api/addresses/user/${userId}`).subscribe({
       next: (direcciones) => {
         this.direccionesGuardadasUsuario = direcciones || [];
         if (this.direccionesGuardadasUsuario.length > 0) {
@@ -271,7 +271,7 @@ eliminarItem(item: CartItem): void {
       esPrincipal: false
     };
 
-    this.http.post('http://localhost:3000/api/addresses', payload).subscribe({
+    this.http.post('https://teya-d5iz.onrender.com/api/addresses', payload).subscribe({
       next: () => {
         this.direccionGuardada = true;
         this.notificacion.mostrarExito(
@@ -342,7 +342,7 @@ eliminarItem(item: CartItem): void {
     };
 
     // Petición al backend NestJS para registrar la orden e iniciar cobro
-    this.http.post('http://localhost:3000/api/orders', payload).subscribe({
+    this.http.post('https://teya-d5iz.onrender.com/api/orders', payload).subscribe({
       next: (respuesta: any) => {
         console.log('Respuesta del servidor de órdenes:', respuesta);
 

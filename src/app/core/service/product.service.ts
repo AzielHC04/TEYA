@@ -21,7 +21,7 @@ export interface Product {
   providedIn: 'root',
 })
 export class ProductService {
-  private apiUrl = 'http://localhost:3000/productos';
+  private apiUrl = 'https://teya-d5iz.onrender.com/productos';
 
   constructor(private http: HttpClient) {}
 

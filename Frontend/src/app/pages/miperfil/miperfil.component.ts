@@ -58,7 +58,7 @@ export class MiperfilComponent implements OnInit {
   public authService = inject(AuthService);
 
   private readonly API_URL =
-    'http://localhost:3000/api/users';
+    'https://teya-d5iz.onrender.com/api/users';
 
   @ViewChild('contenidoPerfil')
   contenidoPerfil?: ElementRef<HTMLElement>;
@@ -432,7 +432,7 @@ export class MiperfilComponent implements OnInit {
     }
 
     this.http.get<DireccionBackend[]>(
-      `http://localhost:3000/api/addresses/user/${this.userId}`
+      `https://teya-d5iz.onrender.com/api/addresses/user/${this.userId}`
     ).subscribe({
       next: (datos) => {
         this.direcciones = Array.isArray(datos)
@@ -493,7 +493,7 @@ export class MiperfilComponent implements OnInit {
     if (!this.userId) return;
 
     this.http.get<any[]>(
-      `http://localhost:3000/api/orders/user/${this.userId}`
+      `https://teya-d5iz.onrender.com/api/orders/user/${this.userId}`
     ).subscribe({
       next: (pedidos) => {
 
@@ -684,7 +684,7 @@ export class MiperfilComponent implements OnInit {
     const id = this.direccionEditando.id;
 
     this.http.put(
-      `http://localhost:3000/api/addresses/${id}`,
+      `https://teya-d5iz.onrender.com/api/addresses/${id}`,
       payload
     ).subscribe({
       next: () => {
@@ -725,7 +725,7 @@ export class MiperfilComponent implements OnInit {
     if (!confirmar) return;
 
     this.http.delete(
-      `http://localhost:3000/api/addresses/${id}`
+      `https://teya-d5iz.onrender.com/api/addresses/${id}`
     ).subscribe({
       next: () => {
         this.mostrarMensaje(

@@ -35,7 +35,7 @@ export class RegisterComponent {
       role: 'CLIENT' // Por defecto se registran como clientes
     };
 
-    this.http.post('http://localhost:3000/api/users/register', payload).subscribe({
+    this.http.post('https://teya-d5iz.onrender.com/api/users/register', payload).subscribe({
       next: () => {
         this.cargando = false;
         this.mensajeExito = '¡Registro exitoso! Redirigiendo al login...';

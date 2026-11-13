@@ -68,7 +68,7 @@ export class PedidosComponent implements OnInit {
     }
 
     // 2. Consumir el endpoint de NestJS
-    this.http.get<any[]>(`http://localhost:3000/api/orders/user/${userId}`).subscribe({
+    this.http.get<any[]>(`https://teya-d5iz.onrender.com/api/orders/user/${userId}`).subscribe({
       next: (data) => {
         this.pedidos = data || [];
         this.cargando = false;

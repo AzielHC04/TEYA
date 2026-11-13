@@ -36,7 +36,7 @@ export class FichaComponent implements OnInit {
   }
 
   cargarProducto(id: string): void {
-    this.http.get<any>(`http://localhost:3000/productos/${id}`).subscribe({
+    this.http.get<any>(`https://teya-d5iz.onrender.com/productos/${id}`).subscribe({
       next: (data) => {
         this.producto = data;
         this.cargando = false;

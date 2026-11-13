@@ -54,7 +54,7 @@ export class LoginComponent {
   private platformId = inject(PLATFORM_ID);
 
   private readonly API_URL =
-    'http://localhost:3000/api/users/login';
+    'https://teya-d5iz.onrender.com/api/users/login';
 
   // DATOS DE ACCESO
   email = '';

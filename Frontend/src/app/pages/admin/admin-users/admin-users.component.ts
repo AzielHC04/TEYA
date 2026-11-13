@@ -31,7 +31,7 @@ export class UsersComponent implements OnInit {
 
   cargarUsuarios(): void {
     this.cargando = true;
-    this.http.get<User[]>('http://localhost:3000/api/users').subscribe({
+    this.http.get<User[]>('https://teya-d5iz.onrender.com/api/users').subscribe({
       next: (data) => {
         this.usuarios = data;
         this.cargando = false;
@@ -46,7 +46,7 @@ export class UsersComponent implements OnInit {
 
   eliminarUsuario(id: string): void {
     if (confirm('¿Estás seguro de eliminar este usuario de la plataforma?')) {
-      this.http.delete(`http://localhost:3000/api/users/${id}`).subscribe({
+      this.http.delete(`https://teya-d5iz.onrender.com/api/users/${id}`).subscribe({
         next: () => {
           this.mensajeExito = 'Usuario eliminado exitosamente.';
           this.cargarUsuarios();
