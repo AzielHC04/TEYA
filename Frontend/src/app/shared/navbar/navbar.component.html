@@ -2,7 +2,7 @@
   <div class="navbar-container">
 
     <!-- LOGO -->
-    <a routerLink="/" class="navbar-brand">
+    <a routerLink="/" class="navbar-brand" (click)="cerrarTodo()">
       <img
         src="assets/images/L1.png"
         alt="KABNIA"
@@ -10,8 +10,30 @@
       >
     </a>
 
-    <!-- NAVEGACIÓN -->
-    <nav class="navbar-nav">
+    <!-- CONTROLES RÁPIDOS EN MÓVIL (CARRITO + BOTÓN HAMBURGUESA) -->
+    <div class="mobile-controls">
+      <a routerLink="/carrito" class="mobile-cart-btn" (click)="cerrarTodo()">
+        <span>Carrito</span>
+        <span class="cart-badge" *ngIf="totalProductosEnCarrito > 0">
+          {{ totalProductosEnCarrito }}
+        </span>
+      </a>
+
+      <button
+        type="button"
+        class="hamburger-btn"
+        [class.open]="menuMovilAbierto"
+        (click)="toggleMenuMovil()"
+        aria-label="Abrir menú"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- NAVEGACIÓN (HORIZONTAL EN LAPTOP / DESPLEGABLE EN MÓVIL) -->
+    <nav class="navbar-nav" [class.mobile-open]="menuMovilAbierto">
       <ul>
         <li>
           <a
@@ -19,7 +41,7 @@
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
             class="nav-link"
-            (click)="cerrarProductos()"
+            (click)="cerrarTodo()"
           >
             Inicio
           </a>
@@ -37,12 +59,12 @@
           </button>
 
           <ul class="dropdown-menu" [class.show]="productosAbierto">
-            <li><a routerLink="/products" (click)="cerrarProductos()">Todos los productos</a></li>
-            <li><a routerLink="/products" [queryParams]="{ categoria: 'microorganismos' }" (click)="cerrarProductos()">Microorganismos</a></li>
-            <li><a routerLink="/products" [queryParams]="{ categoria: 'fungicidas' }" (click)="cerrarProductos()">Fungicidas</a></li>
-            <li><a routerLink="/products" [queryParams]="{ categoria: 'insecticidas' }" (click)="cerrarProductos()">Insecticidas</a></li>
-            <li><a routerLink="/products" [queryParams]="{ categoria: 'adherentes' }" (click)="cerrarProductos()">Adherentes</a></li>
-            <li><a routerLink="/products" [queryParams]="{ categoria: 'antiestresantes' }" (click)="cerrarProductos()">Antiestresantes</a></li>
+            <li><a routerLink="/products" (click)="cerrarTodo()">Todos los productos</a></li>
+            <li><a routerLink="/products" [queryParams]="{ categoria: 'microorganismos' }" (click)="cerrarTodo()">Microorganismos</a></li>
+            <li><a routerLink="/products" [queryParams]="{ categoria: 'fungicidas' }" (click)="cerrarTodo()">Fungicidas</a></li>
+            <li><a routerLink="/products" [queryParams]="{ categoria: 'insecticidas' }" (click)="cerrarTodo()">Insecticidas</a></li>
+            <li><a routerLink="/products" [queryParams]="{ categoria: 'adherentes' }" (click)="cerrarTodo()">Adherentes</a></li>
+            <li><a routerLink="/products" [queryParams]="{ categoria: 'antiestresantes' }" (click)="cerrarTodo()">Antiestresantes</a></li>
           </ul>
         </li>
 
@@ -51,18 +73,18 @@
             routerLink="/nosotros"
             routerLinkActive="active"
             class="nav-link"
-            (click)="cerrarProductos()"
+            (click)="cerrarTodo()"
           >
             Nosotros
           </a>
         </li>
 
-        <li>
+        <li class="desktop-cart-item">
           <a
             routerLink="/carrito"
             routerLinkActive="active"
             class="nav-link cart-link"
-            (click)="cerrarProductos()"
+            (click)="cerrarTodo()"
           >
             <span>Carrito</span>
             <span class="cart-badge" *ngIf="totalProductosEnCarrito > 0">
@@ -70,25 +92,47 @@
             </span>
           </a>
         </li>
+
+        <!-- BOTÓN EXCLUSIVO PARA ADMIN EN MÓVIL -->
+        @if (authService.esAdministrador()) {
+          <li class="mobile-auth-item">
+            <a routerLink="/admin" class="btn-admin-panel mobile-full" (click)="cerrarTodo()">
+              ⚙️ Panel Admin
+            </a>
+          </li>
+        }
+
+        <!-- BOTÓN DE CUENTA DENTRO DEL MENÚ EN MÓVIL -->
+        <li class="mobile-auth-item">
+          @if (!authService.usuarioActual()) {
+            <a routerLink="/login" class="btn-profile mobile-full" (click)="cerrarTodo()">
+              Iniciar Sesión
+            </a>
+          } @else {
+            <a routerLink="/miperfil" class="btn-profile mobile-full" (click)="cerrarTodo()">
+              Mi cuenta
+            </a>
+          }
+        </li>
       </ul>
     </nav>
 
-    <!-- ACCIÓN DE AUTENTICACIÓN REACTIVA -->
-    <div class="navbar-actions">
+    <!-- ACCIÓN DE AUTENTICACIÓN EN ESCRITORIO -->
+    <div class="navbar-actions desktop-only">
+      @if (authService.esAdministrador()) {
+        <a routerLink="/admin" class="btn-admin-panel" (click)="cerrarTodo()">
+          ⚙️ Panel Admin
+        </a>
+      }
+
       @if (!authService.usuarioActual()) {
-        <!-- 1. Si NO hay sesión: Muestra ÚNICAMENTE el botón de Iniciar Sesión -->
-        <a routerLink="/login" class="btn-profile" (click)="cerrarProductos()">
+        <a routerLink="/login" class="btn-profile" (click)="cerrarTodo()">
           Iniciar Sesión
         </a>
       } @else {
-        <!-- 2. Si SÍ hay sesión iniciada: Desaparece el login y muestra Mi cuenta + Salir -->
-        <a routerLink="/miperfil" class="btn-profile" (click)="cerrarProductos()">
+        <a routerLink="/miperfil" class="btn-profile" (click)="cerrarTodo()">
           Mi cuenta
         </a>
-
-        <button type="button" class="btn-logout-text" (click)="cerrarSesion(); cerrarProductos()">
-          Salir
-        </button>
       }
     </div>
 

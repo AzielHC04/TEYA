@@ -1,0 +1,32 @@
+/* =========================================
+   ESTILOS GLOBALES RESPONSIVOS - KABNIA
+========================================= */
+
+/* 1. Evita que bordes y paddings desborden el ancho de los contenedores */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* 2. Reseteo limpio y bloqueo de scroll horizontal accidental en móviles */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #0f172a;
+  background-color: #fafbfc;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 3. Ninguna imagen puede exceder el ancho de su contenedor */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 4. Mejora la respuesta táctil en botones y enlaces en celular */
+button, a {
+  touch-action: manipulation;
+}

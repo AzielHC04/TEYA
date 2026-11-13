@@ -1,0 +1,31 @@
+<div class="product-card">
+  <div class="product-img-box">
+    <img [src]="producto.imagen || 'assets/placeholder.png'" [alt]="producto.nombre" />
+  </div>
+
+  <div class="product-info">
+    <span class="category-badge" [ngClass]="obtenerClaseCategoria(producto.categoria)">
+      {{ producto.categoria || 'Bioinsumo' }}
+    </span>
+
+    <h3 class="product-title" [title]="producto.nombre">{{ producto.nombre }}</h3>
+
+    <div class="price-container">
+      <span class="price">{{ producto.precio | currency:'MXN':'symbol':'1.2-2' }}</span>
+    </div>
+
+    <div class="card-actions">
+      <a [routerLink]="['/ficha', producto.id]" class="btn-ficha">
+        Ficha Técnica
+      </a>
+      <button 
+        type="button" 
+        class="btn-add-cart"
+        (click)="agregarAlCarrito()"
+        [disabled]="producto.stock === 0"
+      >
+        {{ producto.stock === 0 ? 'Agotado' : 'Agregar' }}
+      </button>
+    </div>
+  </div>
+</div>

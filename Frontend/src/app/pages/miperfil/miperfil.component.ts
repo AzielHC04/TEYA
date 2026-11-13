@@ -1,4 +1,3 @@
-
 import {
   Component,
   OnInit,
@@ -7,12 +6,10 @@ import {
   inject,
   PLATFORM_ID
 } from '@angular/core';
-
 import {
   CommonModule,
   isPlatformBrowser
 } from '@angular/common';
-
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -23,6 +20,7 @@ interface UsuarioPerfil {
   apellidos: string;
   correo: string;
   telefono: string;
+  fotoUrl?: string;
 }
 
 interface DireccionBackend {
@@ -57,12 +55,11 @@ export class MiperfilComponent implements OnInit {
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private http = inject(HttpClient);
-  private authService = inject(AuthService);
+  public authService = inject(AuthService);
 
   private readonly API_URL =
     'http://localhost:3000/api/users';
 
-  // REFERENCIA AL PANEL DERECHO
   @ViewChild('contenidoPerfil')
   contenidoPerfil?: ElementRef<HTMLElement>;
 
@@ -84,6 +81,7 @@ export class MiperfilComponent implements OnInit {
   };
 
   editandoPerfil = false;
+  subiendoFoto = false;
 
   mensaje = '';
   tipoMensaje: 'exito' | 'error' = 'exito';
@@ -141,8 +139,6 @@ export class MiperfilComponent implements OnInit {
 
     this.seccionActiva = seccion;
 
-    // Posición de la tarjeta dentro del panel,
-    // no dentro de toda la ventana.
     const posicion =
       destino.getBoundingClientRect().top -
       contenedor.getBoundingClientRect().top +
@@ -172,7 +168,8 @@ export class MiperfilComponent implements OnInit {
       nombre: '',
       apellidos: '',
       correo: '',
-      telefono: ''
+      telefono: '',
+      fotoUrl: ''
     };
   }
 
@@ -305,6 +302,12 @@ export class MiperfilComponent implements OnInit {
         datos.phone ||
         datos.celular ||
         ''
+      ),
+
+      fotoUrl: this.texto(
+        datos.fotoUrl ||
+        sesion.fotoUrl ||
+        ''
       )
     };
 
@@ -326,14 +329,93 @@ export class MiperfilComponent implements OnInit {
         telefono: this.texto(
           perfilGuardado.telefono ??
           this.usuario.telefono
+        ),
+        fotoUrl: this.texto(
+          perfilGuardado.fotoUrl ??
+          this.usuario.fotoUrl
         )
       };
+    }
+
+    if (this.usuario.fotoUrl) {
+      this.authService.actualizarUsuario({ fotoUrl: this.usuario.fotoUrl });
     }
 
     this.respaldoUsuario = { ...this.usuario };
 
     this.cargarDireccionesBackend();
     this.cargarEstadisticasYPedidos(datos);
+  }
+
+  // ==========================================
+  // SUBIR FOTO DE PERFIL
+  // ==========================================
+
+  onSeleccionarFoto(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const archivo = input.files[0];
+
+    if (!archivo.type.startsWith('image/')) {
+      this.mostrarMensaje(
+        'Por favor selecciona un archivo de imagen válido (JPG, PNG o WebP).',
+        'error'
+      );
+      return;
+    }
+
+    if (archivo.size > 3 * 1024 * 1024) {
+      this.mostrarMensaje(
+        'La imagen no debe pesar más de 3 MB.',
+        'error'
+      );
+      return;
+    }
+
+    this.subiendoFoto = true;
+    this.mensaje = '';
+
+    const lector = new FileReader();
+    lector.onload = () => {
+      const imagenBase64 = lector.result as string;
+
+      this.usuario.fotoUrl = imagenBase64;
+      this.respaldoUsuario.fotoUrl = imagenBase64;
+
+      if (isPlatformBrowser(this.platformId) && this.correoCuenta) {
+        localStorage.setItem(this.clavePerfil(), JSON.stringify(this.usuario));
+      }
+
+      this.authService.actualizarUsuario({ fotoUrl: imagenBase64 });
+
+      if (this.userId) {
+        const formData = new FormData();
+        formData.append('file', archivo);
+
+        this.http.patch<{ fotoUrl?: string }>(
+          `${this.API_URL}/${this.userId}/avatar`,
+          formData
+        ).subscribe({
+          next: (resp) => {
+            if (resp?.fotoUrl) {
+              this.usuario.fotoUrl = resp.fotoUrl;
+              localStorage.setItem(this.clavePerfil(), JSON.stringify(this.usuario));
+              this.authService.actualizarUsuario({ fotoUrl: resp.fotoUrl });
+            }
+          },
+          error: () => {
+            // Se conserva la imagen guardada localmente mientras se habilita el endpoint
+          }
+        });
+      }
+
+      this.subiendoFoto = false;
+      this.mostrarMensaje('Foto de perfil actualizada correctamente.', 'exito');
+      input.value = '';
+    };
+
+    lector.readAsDataURL(archivo);
   }
 
   // ==========================================
@@ -519,13 +601,20 @@ export class MiperfilComponent implements OnInit {
       nombre,
       apellidos,
       correo: this.correoCuenta,
-      telefono
+      telefono,
+      fotoUrl: this.usuario.fotoUrl
     };
 
     localStorage.setItem(
       this.clavePerfil(),
       JSON.stringify(this.usuario)
     );
+
+    this.authService.actualizarUsuario({
+      name: `${nombre} ${apellidos}`.trim(),
+      apellidos,
+      telefono
+    });
 
     this.respaldoUsuario = { ...this.usuario };
     this.editandoPerfil = false;

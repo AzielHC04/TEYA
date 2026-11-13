@@ -5,31 +5,26 @@ import {
   inject,
   PLATFORM_ID
 } from '@angular/core';
-
 import {
   CommonModule,
   isPlatformBrowser
 } from '@angular/common';
-
 import {
   Router,
   RouterLink
 } from '@angular/router';
-
 import {
   FormBuilder,
   ReactiveFormsModule,
   FormsModule,
   Validators
 } from '@angular/forms';
-
 import { HttpClient } from '@angular/common/http';
-
 import {
   CartService,
   CartItem
 } from '../../core/service/cart.service';
-
+import { NotificationService } from '../../core/service/notification.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -51,6 +46,7 @@ export class CarritoComponent implements OnInit, OnDestroy {
   private cartService = inject(CartService);
   private platformId = inject(PLATFORM_ID);
   private http = inject(HttpClient);
+  private notificacion = inject(NotificationService);
 
   private cartSub?: Subscription;
   private formSub?: Subscription;
@@ -100,7 +96,6 @@ export class CarritoComponent implements OnInit, OnDestroy {
     }
 
     this.formSub = this.direccionForm.valueChanges.subscribe(() => {
-      // Si el usuario edita el formulario manualmente, desmarcamos la selección previa
       if (!this.direccionSeleccionadaId) {
         this.direccionGuardada = false;
       }
@@ -126,23 +121,39 @@ export class CarritoComponent implements OnInit, OnDestroy {
 
   aumentarCantidad(item: CartItem): void {
     const res = this.cartService.actualizarCantidad(item.producto.id, item.cantidad + 1, item.producto.stock);
-    if (!res.exito) alert(res.mensaje);
+    if (!res.exito) {
+      this.notificacion.mostrarError('Límite de inventario', res.mensaje);
+    }
   }
 
   disminuirCantidad(item: CartItem): void {
     if (item.cantidad <= 1) return;
     const res = this.cartService.actualizarCantidad(item.producto.id, item.cantidad - 1, item.producto.stock);
-    if (!res.exito) alert(res.mensaje);
-  }
-
-  eliminarItem(item: CartItem): void {
-    if (confirm(`¿Deseas eliminar "${item.producto.nombre}" del carrito?`)) {
-      const res = this.cartService.removerItem(item.producto.id);
-      if (!res.exito) alert(res.mensaje);
+    if (!res.exito) {
+      this.notificacion.mostrarError('No se pudo actualizar', res.mensaje);
     }
   }
 
-
+eliminarItem(item: CartItem): void {
+    this.notificacion.confirmar(
+      '¿Eliminar producto?',
+      `¿Deseas eliminar "${item.producto.nombre}" de tu carrito?`,
+      () => {
+        const res = this.cartService.removerItem(item.producto.id);
+        if (!res.exito) {
+          this.notificacion.mostrarError('No se pudo eliminar', res.mensaje);
+        } else {
+          this.notificacion.mostrarInfo(
+            'Producto eliminado',
+            `"${item.producto.nombre}" fue retirado de tu carrito.`,
+            2000
+          );
+        }
+      },
+      'Sí, eliminar',
+      'Cancelar'
+    );
+  }
   campoInvalido(nombre: string): boolean {
     const campo = this.direccionForm.get(nombre);
     return !!(campo && campo.invalid && (campo.touched || campo.dirty));
@@ -181,7 +192,6 @@ export class CarritoComponent implements OnInit, OnDestroy {
     this.http.get<any[]>(`http://localhost:3000/api/addresses/user/${userId}`).subscribe({
       next: (direcciones) => {
         this.direccionesGuardadasUsuario = direcciones || [];
-        // Autoseleccionar la dirección principal si existe
         if (this.direccionesGuardadasUsuario.length > 0) {
           const principal = this.direccionesGuardadasUsuario.find(d => d.esPrincipal) || this.direccionesGuardadasUsuario[0];
           this.aplicarDireccionGuardada(principal);
@@ -225,7 +235,10 @@ export class CarritoComponent implements OnInit, OnDestroy {
   guardarDireccion(): void {
     if (this.direccionForm.invalid) {
       this.direccionForm.markAllAsTouched();
-      alert('Por favor, completa todos los campos obligatorios del formulario.');
+      this.notificacion.mostrarError(
+        'Campos incompletos',
+        'Por favor, completa todos los campos obligatorios del formulario de envío.'
+      );
       return;
     }
 
@@ -239,7 +252,10 @@ export class CarritoComponent implements OnInit, OnDestroy {
     }
 
     if (!userId) {
-      alert('Debes iniciar sesión para guardar tu dirección.');
+      this.notificacion.mostrarInfo(
+        'Inicia sesión',
+        'Debes iniciar sesión para guardar tu dirección de entrega.'
+      );
       this.router.navigate(['/login']);
       return;
     }
@@ -258,12 +274,18 @@ export class CarritoComponent implements OnInit, OnDestroy {
     this.http.post('http://localhost:3000/api/addresses', payload).subscribe({
       next: () => {
         this.direccionGuardada = true;
-        alert('¡Dirección guardada correctamente en tu cuenta!');
+        this.notificacion.mostrarExito(
+          '¡Dirección guardada!',
+          'Tu dirección de envío se registró correctamente en tu cuenta.'
+        );
         this.cargarDireccionesGuardadas();
       },
       error: (err) => {
         console.error('Error al guardar dirección:', err);
-        alert('No se pudo guardar la dirección en el servidor.');
+        this.notificacion.mostrarError(
+          'Error al guardar',
+          'No se pudo guardar la dirección en el servidor. Inténtalo de nuevo.'
+        );
       }
     });
   }
@@ -271,7 +293,10 @@ export class CarritoComponent implements OnInit, OnDestroy {
   // PROCEDER AL PAGO Y REDIRIGIR A MIS PEDIDOS (/orders) O A CLIP
   procederAlPago(): void {
     if (this.carrito.length === 0) {
-      alert('Tu carrito está vacío. Agrega productos para continuar.');
+      this.notificacion.mostrarInfo(
+        'Carrito vacío',
+        'Agrega al menos un producto a tu carrito para continuar con la compra.'
+      );
       return;
     }
 
@@ -287,7 +312,10 @@ export class CarritoComponent implements OnInit, OnDestroy {
     }
 
     if (!userId) {
-      alert('Para realizar tu compra, primero debes iniciar sesión.');
+      this.notificacion.mostrarInfo(
+        'Inicia sesión',
+        'Para realizar tu compra, primero debes iniciar sesión en tu cuenta.'
+      );
       this.router.navigate(['/login']);
       return;
     }
@@ -296,7 +324,10 @@ export class CarritoComponent implements OnInit, OnDestroy {
 
     if (!tieneDireccionValida) {
       this.direccionForm.markAllAsTouched();
-      alert('Por favor selecciona una dirección guardada o completa los datos del formulario de entrega.');
+      this.notificacion.mostrarError(
+        'Falta dirección de entrega',
+        'Por favor selecciona una dirección guardada o completa los datos del formulario.'
+      );
       return;
     }
 
@@ -322,16 +353,24 @@ export class CarritoComponent implements OnInit, OnDestroy {
         if (respuesta.paymentUrl && typeof respuesta.paymentUrl === 'string' && respuesta.paymentUrl.startsWith('http')) {
           window.location.href = respuesta.paymentUrl;
         } else {
-          // 2. Si no hay redirección externa de Clip, notificar y llevar directamente a /orders
-          alert('¡Pedido registrado correctamente! Redirigiendo a tus pedidos...');
-          this.router.navigate(['/orders']);
+          // 2. Si no hay redirección externa de Clip, mostrar modal bonito y llevar a /orders
+          this.notificacion.mostrarExito(
+            '¡Pago realizado con éxito!',
+            'Tu pedido ha sido registrado correctamente. Redirigiendo a tus pedidos...',
+            2500
+          );
+          setTimeout(() => {
+            this.router.navigate(['/orders']);
+          }, 1200);
         }
       },
       error: (err) => {
         console.error('Error al procesar la orden:', err);
-        alert(err.error?.message || 'Ocurrió un error al procesar tu pedido. Por favor intenta de nuevo.');
+        this.notificacion.mostrarError(
+          'No se pudo procesar el pedido',
+          err.error?.message || 'Ocurrió un error al procesar tu pago. Por favor intenta de nuevo.'
+        );
       }
     });
   }
-  
 }

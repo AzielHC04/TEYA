@@ -33,49 +33,11 @@
       <a routerLink="/products" class="see-more-link">Ver todos &rarr;</a>
     </div>
 
-    <!-- Contenedor horizontal de productos -->
     <div class="horizontal-scroll">
-      <div class="product-card" *ngFor="let producto of masCompradosVisibles">
-        
-        <div class="product-img-box">
-          <img [src]="producto.imagen" [alt]="producto.nombre">
-        </div>
-
-        <div class="product-info">
-          <span class="category-tag">{{ producto.categoria }}</span>
-          <h3 class="product-title">{{ producto.nombre }}</h3>
-          
-          <!-- Stock en tiempo real -->
-          <div class="stock-badge" [class.stock-bajo]="producto.stock <= 5">
-             Stock: <strong>{{ producto.stock }} disp.</strong>
-          </div>
-
-          <p class="product-description">{{ producto.descripcion }}</p>
-
-          <div class="price-container">
-            <div class="current-price-row">
-              <span class="price">{{ producto.precio | currency:'MXN':'symbol':'1.2-2' }}</span>
-            </div>
-          </div>
-
-          <!-- Botonera inferior compacta -->
-          <div class="card-actions">
-            <!-- RUTA CORREGIDA: Apunta directamente a /ficha/:id -->
-            <a [routerLink]="['/ficha', producto.id]" class="btn-ficha">
-              Ficha Técnica
-            </a>
-            <button 
-              type="button" 
-              class="btn-add-cart"
-              (click)="agregarAlCarrito(producto)"
-              [disabled]="producto.stock === 0"
-            >
-              {{ producto.stock === 0 ? 'Agotado' : '🛒 Agregar' }}
-            </button>
-          </div>
-
-        </div>
-      </div>
+      <app-product-card 
+        *ngFor="let producto of masCompradosVisibles" 
+        [producto]="producto">
+      </app-product-card>
     </div>
   </section>
 
@@ -86,49 +48,11 @@
       <a routerLink="/products" class="see-more-link">Ver todos &rarr;</a>
     </div>
 
-    <!-- Contenedor horizontal de productos -->
     <div class="horizontal-scroll">
-      <div class="product-card" *ngFor="let producto of ultimosAgregadosVisibles">
-        
-        <div class="product-img-box">
-          <img [src]="producto.imagen" [alt]="producto.nombre">
-        </div>
-
-        <div class="product-info">
-          <span class="category-tag">{{ producto.categoria }}</span>
-          <h3 class="product-title">{{ producto.nombre }}</h3>
-          
-          <!-- Stock en tiempo real -->
-          <div class="stock-badge" [class.stock-bajo]="producto.stock <= 5">
-           Stock: <strong>{{ producto.stock }} disp.</strong>
-          </div>
-
-          <p class="product-description">{{ producto.descripcion }}</p>
-
-          <div class="price-container">
-            <div class="current-price-row">
-              <span class="price">{{ producto.precio | currency:'MXN':'symbol':'1.2-2' }}</span>
-            </div>
-          </div>
-
-          <!-- Botonera inferior compacta -->
-          <div class="card-actions">
-            <!-- RUTA CORREGIDA: Apunta directamente a /ficha/:id -->
-            <a [routerLink]="['/ficha', producto.id]" class="btn-ficha">
-              Ficha Técnica
-            </a>
-            <button 
-              type="button" 
-              class="btn-add-cart"
-              (click)="agregarAlCarrito(producto)"
-              [disabled]="producto.stock === 0"
-            >
-              {{ producto.stock === 0 ? 'Agotado' : '🛒 Agregar' }}
-            </button>
-          </div>
-
-        </div>
-      </div>
+      <app-product-card 
+        *ngFor="let producto of ultimosAgregadosVisibles" 
+        [producto]="producto">
+      </app-product-card>
     </div>
   </section>
 
@@ -152,4 +76,4 @@
     </div>
   </section>
 
-</div>
+</div>s

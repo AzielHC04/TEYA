@@ -1,4 +1,3 @@
-
 import {
   Component,
   OnInit,
@@ -7,31 +6,16 @@ import {
   inject,
   ChangeDetectorRef
 } from '@angular/core';
-
-import {
-  CommonModule
-} from '@angular/common';
-
+import { CommonModule } from '@angular/common';
 import {
   RouterLink,
   RouterLinkActive,
   Router,
   NavigationEnd
 } from '@angular/router';
-
-import {
-  CartService,
-  CartItem
-} from '../../core/service/cart.service';
-
-import {
-  AuthService
-} from '../../core/service/auth.service';
-
-import {
-  Subscription,
-  filter
-} from 'rxjs';
+import { CartService, CartItem } from '../../core/service/cart.service';
+import { AuthService } from '../../core/service/auth.service';
+import { Subscription, filter } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -47,9 +31,9 @@ import {
 export class NavbarComponent implements OnInit, OnDestroy {
 
   productosAbierto = false;
+  menuMovilAbierto = false;
   totalProductosEnCarrito = 0;
 
-  // Disponible para navbar.component.html:
   public authService = inject(AuthService);
 
   private cartService = inject(CartService);
@@ -59,39 +43,34 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private cartSub?: Subscription;
   private routerSub?: Subscription;
 
-  // Compatibilidad con código anterior.
   get usuarioLogueado() {
     return this.authService.usuarioActual();
   }
 
   ngOnInit(): void {
-
     // CARRITO
     this.cartSub = this.cartService.cartItems$.subscribe(
       (items: CartItem[]) => {
-
         this.totalProductosEnCarrito = items.reduce(
           (total, item) => total + item.cantidad,
           0
         );
-
         this.cdr.markForCheck();
       }
     );
 
-    // NAVEGACIÓN
+    // NAVEGACIÓN: Cierra dropdowns y menú móvil al cambiar de vista
     this.routerSub = this.router.events.pipe(
       filter(
         (evento): evento is NavigationEnd =>
           evento instanceof NavigationEnd
       )
     ).subscribe(() => {
-      this.cerrarProductos();
+      this.cerrarTodo();
       this.cdr.markForCheck();
     });
   }
 
-  // COMPATIBILIDAD CON VERSIONES ANTERIORES
   verificarSesion(): void {
     this.cdr.markForCheck();
   }
@@ -105,7 +84,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.routerSub?.unsubscribe();
   }
 
-  // PRODUCTOS
+  // MENÚ MÓVIL
+  toggleMenuMovil(): void {
+    this.menuMovilAbierto = !this.menuMovilAbierto;
+    if (!this.menuMovilAbierto) {
+      this.productosAbierto = false;
+    }
+  }
+
+  // PRODUCTOS DROPDOWN
   toggleProductos(): void {
     this.productosAbierto = !this.productosAbierto;
   }
@@ -114,23 +101,29 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.productosAbierto = false;
   }
 
+  cerrarTodo(): void {
+    this.productosAbierto = false;
+    this.menuMovilAbierto = false;
+  }
+
   // CERRAR SESIÓN
   cerrarSesion(): void {
-
+    this.cerrarTodo();
     this.authService.logout();
-
     this.cdr.markForCheck();
-
     this.router.navigateByUrl('/login');
   }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-
     const target = event.target as HTMLElement;
 
     if (!target.closest('.dropdown')) {
       this.cerrarProductos();
+    }
+
+    if (!target.closest('.navbar-header')) {
+      this.menuMovilAbierto = false;
     }
   }
 }

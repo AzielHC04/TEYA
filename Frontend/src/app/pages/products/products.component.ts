@@ -1,14 +1,14 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ProductService, Product } from '../../core/service/product.service';
-import { CartService } from '../../core/service/cart.service';
+import { ProductCardComponent } from '../../shared/navbar/product-card/product-card.component';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, ProductCardComponent],
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
@@ -16,7 +16,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
   private routeSub!: Subscription;
   private productSub!: Subscription;
-  private cartService = inject(CartService);
 
   productos: Product[] = [];
   productosFiltrados: Product[] = [];
@@ -45,15 +44,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.routeSub) this.routeSub.unsubscribe();
     if (this.productSub) this.productSub.unsubscribe();
-  }
-
-  agregarAlCarrito(producto: Product): void {
-    const resultado = this.cartService.agregarProducto(producto, 1);
-    if (!resultado.exito) {
-      window.alert(resultado.mensaje);
-    } else {
-      window.alert(`¡"${producto.nombre}" agregado al carrito correctamente!`);
-    }
   }
 
   private obtenerNombreOriginal(catParam: string): string {

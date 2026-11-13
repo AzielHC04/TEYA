@@ -59,7 +59,7 @@
                   {{ (item.producto.precio * item.cantidad) | currency:'MXN':'symbol':'1.2-2' }}
                 </span>
                 <button type="button" class="btn-eliminar" (click)="eliminarItem(item)">
-                  🗑️ Eliminar
+                  Eliminar
                 </button>
               </div>
             </div>
@@ -76,7 +76,7 @@
           @if (direccionesGuardadasUsuario.length > 0) {
             <div class="campo campo-completo" style="margin-bottom: 20px; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 16px; border-radius: 10px;">
               <label for="selectDireccion" style="font-weight: 700; color: #166534; margin-bottom: 8px; display: block; font-size: 14px;">
-                📦 Usar una dirección guardada en tu cuenta:
+               Usar una dirección guardada en tu cuenta:
               </label>
               <select
                 id="selectDireccion"
@@ -161,7 +161,7 @@
             </div>
 
             <button type="submit" class="btn-primary btn-guardar" style="margin-top: 15px;">
-              💾 Guardar esta nueva dirección en mi cuenta
+              Guardar esta nueva dirección en mi cuenta
             </button>
 
             @if (direccionGuardada) {

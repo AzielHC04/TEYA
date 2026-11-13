@@ -11,12 +11,12 @@ import {
 } from '@angular/common';
 
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-pedidos',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './pedidos.component.html',
   styleUrl: './pedidos.component.css'
 })

@@ -1,0 +1,148 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 390px;
+  border-radius: 18px;
+  padding: 28px 24px 24px;
+  text-align: center;
+  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.2);
+  border: 1px solid #f1f5f9;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  animation: popUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-circle svg {
+  width: 32px;
+  height: 32px;
+}
+
+/* Variantes de color KABNIA */
+.modal-card.exito .icon-circle {
+  background: #e8f5e9;
+  color: #2e7d32;
+  box-shadow: 0 0 0 8px rgba(91, 140, 90, 0.12);
+}
+
+.modal-card.error .icon-circle {
+  background: #fdecea;
+  color: #c62828;
+  box-shadow: 0 0 0 8px rgba(184, 92, 74, 0.12);
+}
+
+.modal-card.confirmacion .icon-circle {
+  background: #fef3c7;
+  color: #d97706;
+  box-shadow: 0 0 0 8px rgba(217, 119, 6, 0.12);
+}
+
+.modal-card.info .icon-circle {
+  background: #e0f2fe;
+  color: #0277bd;
+  box-shadow: 0 0 0 8px rgba(63, 119, 117, 0.12);
+}
+
+.modal-title {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1a2e26;
+}
+
+.modal-message {
+  margin: 0 0 22px;
+  font-size: 0.92rem;
+  color: #5c6b65;
+  line-height: 1.45;
+}
+
+.modal-actions-row {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-btn-cancel {
+  flex: 1;
+  padding: 11px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #475569;
+  background: #f8fafc;
+  transition: background 0.2s ease;
+}
+
+.modal-btn-cancel:hover {
+  background: #e2e8f0;
+}
+
+.modal-btn {
+  flex: 1;
+  width: 100%;
+  padding: 11px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #ffffff;
+  background: #23302C;
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.modal-card.exito .modal-btn {
+  background: #2b5d38;
+}
+
+.modal-card.exito .modal-btn:hover {
+  background: #1f4629;
+}
+
+.modal-card.error .modal-btn,
+.modal-btn-danger {
+  background: #dc2626;
+}
+
+.modal-card.error .modal-btn:hover,
+.modal-btn-danger:hover {
+  background: #b91c1c;
+}
+
+.modal-btn:active,
+.modal-btn-cancel:active {
+  transform: scale(0.98);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popUp {
+  from { opacity: 0; transform: scale(0.9) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}

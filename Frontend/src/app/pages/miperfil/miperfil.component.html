@@ -1,4 +1,3 @@
-
 <div class="perfil-container">
 
   <header class="perfil-header">
@@ -28,9 +27,40 @@
 
       <!-- INFORMACIÓN DEL USUARIO -->
       <div class="usuario-card">
-        <div class="avatar">
-          {{ iniciales }}
+        <div class="avatar-contenedor">
+          <div class="avatar">
+            @if (usuario.fotoUrl) {
+              <img [src]="usuario.fotoUrl" [alt]="nombreCompleto" class="avatar-foto" />
+            } @else {
+              {{ iniciales }}
+            }
+          </div>
+
+          <button
+            type="button"
+            class="btn-cambiar-foto"
+            title="Cambiar foto de perfil"
+            (click)="inputFoto.click()"
+          >
+            📷
+          </button>
         </div>
+
+        <button
+          type="button"
+          class="btn-link-foto"
+          (click)="inputFoto.click()"
+        >
+          {{ subiendoFoto ? 'Subiendo foto...' : 'Cambiar foto de perfil' }}
+        </button>
+
+        <input
+          #inputFoto
+          type="file"
+          accept="image/png, image/jpeg, image/webp"
+          class="input-foto-oculto"
+          (change)="onSeleccionarFoto($event)"
+        />
 
         <h2>{{ nombreCompleto }}</h2>
 
@@ -39,7 +69,7 @@
         </p>
 
         <span class="cliente-badge">
-          Cliente KABNIA
+          {{ authService.esAdministrador() ? 'Administrador KABNIA' : 'Cliente KABNIA' }}
         </span>
       </div>
 

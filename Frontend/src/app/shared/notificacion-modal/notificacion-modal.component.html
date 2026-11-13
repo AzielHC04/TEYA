@@ -1,0 +1,65 @@
+@if (notificacionService.estado().visible) {
+  <div class="modal-backdrop" (click)="notificacionService.cerrar()">
+    <div
+      class="modal-card"
+      [ngClass]="notificacionService.estado().tipo"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="icon-circle">
+        @switch (notificacionService.estado().tipo) {
+          @case ('exito') {
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          }
+          @case ('error') {
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          }
+          @case ('confirmacion') {
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            </svg>
+          }
+          @default {
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
+            </svg>
+          }
+        }
+      </div>
+
+      <h3 class="modal-title">{{ notificacionService.estado().titulo }}</h3>
+      <p class="modal-message">{{ notificacionService.estado().mensaje }}</p>
+
+      @if (notificacionService.estado().tipo === 'confirmacion') {
+        <div class="modal-actions-row">
+          <button
+            type="button"
+            class="modal-btn-cancel"
+            (click)="notificacionService.cerrar()"
+          >
+            {{ notificacionService.estado().textoCancelar || 'Cancelar' }}
+          </button>
+
+          <button
+            type="button"
+            class="modal-btn modal-btn-danger"
+            (click)="notificacionService.aceptarConfirmacion()"
+          >
+            {{ notificacionService.estado().textoBoton }}
+          </button>
+        </div>
+      } @else {
+        <button
+          type="button"
+          class="modal-btn"
+          (click)="notificacionService.cerrar()"
+        >
+          {{ notificacionService.estado().textoBoton }}
+        </button>
+      }
+    </div>
+  </div>
+}

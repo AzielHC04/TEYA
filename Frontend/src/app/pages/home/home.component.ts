@@ -1,19 +1,17 @@
-import { Component, OnInit, OnDestroy, NgZone, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ProductService, Product } from '../../core/service/product.service';
-import { CartService } from '../../core/service/cart.service';
+import { ProductCardComponent } from '../../shared/navbar/product-card/product-card.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ProductCardComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, OnDestroy {
-
-  private cartService = inject(CartService);
 
   private todosLosBanners = [
     {
@@ -118,7 +116,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.bannerActual = index;
   }
 
-  // Muestra 4 productos por vista para ocupar el ancho completo
   get masCompradosVisibles(): Product[] {
     const inicio = this.paginaMasComprados * 4;
     return this.masComprados.slice(inicio, inicio + 4);
@@ -131,7 +128,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   iniciarCarruselesProductosSiEsNecesario(intervaloMs: number): void {
     this.ngZone.runOutsideAngular(() => {
-      // Rotar si hay más de 4 productos
       if (this.masComprados.length > 4) {
         this.timerMasComprados = setInterval(() => {
           this.ngZone.run(() => {
@@ -150,14 +146,5 @@ export class HomeComponent implements OnInit, OnDestroy {
         }, intervaloMs);
       }
     });
-  }
-
-  agregarAlCarrito(producto: Product): void {
-    const resultado = this.cartService.agregarProducto(producto, 1);
-    if (!resultado.exito) {
-      window.alert(resultado.mensaje);
-    } else {
-      window.alert(`¡"${producto.nombre}" agregado al carrito correctamente!`);
-    }
   }
 }

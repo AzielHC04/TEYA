@@ -1,34 +1,52 @@
 .ficha-container {
-  max-width: 1200px;
-  margin: 30px auto;
-  padding: 0 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1140px;
+  margin: 24px auto;
+  padding: 0 24px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .breadcrumb {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
-.breadcrumb a {
-  color: #166534;
-  text-decoration: none;
+/* BOTÓN DE REGRESO MINIMALISTA Y PROFESIONAL */
+.btn-regresar-minimal {
+  display: inline-block;
+  background-color: #ffffff;
+  color: #334155;
+  border: 1.5px solid #cbd5e1;
+  padding: 8px 22px;
+  border-radius: 50px;
+  font-size: 13px;
   font-weight: 600;
-  font-size: 14px;
+  letter-spacing: 0.3px;
+  text-decoration: none;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.04);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.breadcrumb a:hover {
-  text-decoration: underline;
+.btn-regresar-minimal:hover {
+  border-color: #16a34a;
+  color: #15803d;
+  background-color: #f0fdf4;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(22, 163, 74, 0.14);
+}
+
+.btn-regresar-minimal:active {
+  transform: translateY(0);
 }
 
 .ficha-card {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 38px;
   background: #ffffff;
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  padding: 34px 36px;
+  border-radius: 18px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.05);
   border: 1px solid #e2e8f0;
+  align-items: stretch;
 }
 
 /* Columna Izquierda */
@@ -37,41 +55,99 @@
   align-items: center;
   justify-content: center;
   background-color: #f8fafc;
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 14px;
+  padding: 24px;
   border: 1px solid #f1f5f9;
+  height: 430px;
 }
 
 .imagen-principal {
   max-width: 100%;
-  max-height: 480px;
+  max-height: 380px;
   object-fit: contain;
   border-radius: 8px;
   transition: transform 0.3s ease;
 }
 
 .imagen-principal:hover {
-  transform: scale(1.02);
+  transform: scale(1.03);
 }
 
 /* Columna Derecha */
 .columna-info {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  padding: 6px 0;
+}
+
+/* ETIQUETAS DE CATEGORÍA CON COLORES EXACTOS Y AURA DE RESPLANDOR */
+.categoria-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  margin-bottom: 14px;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+/* Microorganismos (#5B8C5A) */
+.cat-microorganismos {
+  background-color: #5B8C5A;
+  color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(91, 140, 90, 0.22), 0 4px 14px rgba(91, 140, 90, 0.45);
+}
+
+/* Fungicidas (#B85C4A) */
+.cat-fungicidas {
+  background-color: #B85C4A;
+  color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(184, 92, 74, 0.22), 0 4px 14px rgba(184, 92, 74, 0.45);
+}
+
+/* Insecticidas (#D4A72C) */
+.cat-insecticidas {
+  background-color: #D4A72C;
+  color: #1e293b;
+  box-shadow: 0 0 0 3px rgba(212, 167, 44, 0.25), 0 4px 14px rgba(212, 167, 44, 0.45);
+}
+
+/* Adherentes (#3F7775) */
+.cat-adherentes {
+  background-color: #3F7775;
+  color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(63, 119, 117, 0.22), 0 4px 14px rgba(63, 119, 117, 0.45);
+}
+
+/* Antiestresantes (#A6C9EC) */
+.cat-antiestresantes {
+  background-color: #A6C9EC;
+  color: #0f172a;
+  box-shadow: 0 0 0 3px rgba(166, 201, 236, 0.35), 0 4px 14px rgba(166, 201, 236, 0.55);
+}
+
+/* Respaldo */
+.cat-default {
+  background-color: #e2e8f0;
+  color: #334155;
+  box-shadow: 0 0 0 3px rgba(203, 213, 225, 0.3), 0 4px 12px rgba(148, 163, 184, 0.35);
 }
 
 .producto-titulo {
   font-size: 28px;
   color: #0f172a;
-  margin: 0 0 15px 0;
-  font-weight: 700;
+  margin: 0 0 10px 0;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
 .precio-contenedor {
   display: flex;
   align-items: baseline;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 8px;
 }
 
 .etiqueta-precio {
@@ -80,80 +156,81 @@
 }
 
 .precio-monto {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 800;
-  color: #15803d;
-}
-
-.stock-badge {
-  display: inline-block;
-  align-self: flex-start;
-  padding: 6px 12px;
-  background-color: #dcfce7;
-  color: #166534;
-  font-weight: 600;
-  font-size: 13px;
-  border-radius: 20px;
-  margin-bottom: 20px;
-}
-
-.stock-badge.agotado {
-  background-color: #fee2e2;
-  color: #991b1b;
+  color: #16a34a;
 }
 
 .separador {
   height: 1px;
   background-color: #f1f5f9;
-  margin: 15px 0;
+  margin: 16px 0;
 }
 
 .descripcion-seccion h3 {
-  font-size: 16px;
+  font-size: 15px;
   color: #334155;
-  margin-bottom: 8px;
+  margin: 0 0 8px 0;
+  font-weight: 700;
 }
 
 .descripcion-texto {
-  font-size: 15px;
+  font-size: 14.5px;
   color: #475569;
   line-height: 1.6;
+  margin: 0;
+  max-height: 165px;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
+.descripcion-texto::-webkit-scrollbar {
+  width: 4px;
+}
+.descripcion-texto::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+/* ACCIONES EN UNA SOLA FILA HORIZONTAL */
 .compra-acciones {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-top: auto;
+  align-items: center;
+  gap: 18px;
+  margin-top: 10px;
 }
 
 .cantidad-selector {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 .cantidad-selector label {
   font-weight: 600;
+  font-size: 14px;
   color: #334155;
 }
 
 .controles-num {
   display: flex;
   align-items: center;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 50px;
   overflow: hidden;
+  background: #f8fafc;
 }
 
 .controles-num button {
   width: 36px;
-  height: 36px;
+  height: 40px;
   border: none;
-  background: #f1f5f9;
-  font-size: 18px;
+  background: transparent;
+  font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
   color: #334155;
+  transition: background-color 0.2s;
 }
 
 .controles-num button:hover:not(:disabled) {
@@ -161,37 +238,46 @@
 }
 
 .controles-num button:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .controles-num span {
-  width: 45px;
+  width: 38px;
   text-align: center;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 15px;
+  color: #0f172a;
 }
 
 .btn-agregar {
-  width: 100%;
-  padding: 16px;
-  background-color: #16a34a;
-  color: white;
+  flex: 1;
+  padding: 13px 26px;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: #ffffff;
   border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 700;
+  border-radius: 50px;
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.28);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-agregar:hover:not(:disabled) {
-  background-color: #15803d;
+  background: linear-gradient(135deg, #15803d 0%, #166534 100%);
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.38);
+}
+
+.btn-agregar:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .btn-agregar:disabled {
-  background-color: #94a3b8;
+  background: #cbd5e1;
+  box-shadow: none;
   cursor: not-allowed;
 }
 
@@ -201,9 +287,34 @@
   padding: 60px 0;
 }
 
+.estado-cargas h2 {
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.estado-cargas p {
+  color: #64748b;
+  margin-bottom: 20px;
+}
+
 /* Responsividad */
 @media (max-width: 768px) {
   .ficha-card {
     grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .columna-imagen {
+    height: 260px;
+  }
+
+  .imagen-principal {
+    max-height: 230px;
+  }
+
+  .compra-acciones {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

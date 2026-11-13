@@ -1,8 +1,32 @@
 <div class="admin-dashboard-container">
   <!-- Sidebar Lateral -->
   <aside class="sidebar">
-    <div class="sidebar-brand">
-      <h2>Teya <span>Admin</span></h2>
+    
+    <!-- PERFIL DEL USUARIO LOGUEADO -->
+    <div class="sidebar-profile-card">
+      <div class="avatar-wrapper">
+        @if (authService.usuarioActual()?.fotoUrl) {
+          <img 
+            [src]="authService.usuarioActual()?.fotoUrl" 
+            [alt]="authService.usuarioActual()?.name" 
+            class="avatar-img"
+          />
+        } @else {
+          <div class="avatar-initials">
+            {{ obtenerIniciales(authService.usuarioActual()?.name) }}
+          </div>
+        }
+        <span class="status-dot" title="En línea"></span>
+      </div>
+
+      <div class="profile-meta">
+        <h2 class="profile-name">
+          {{ authService.usuarioActual()?.name || 'Usuario' }}
+        </h2>
+        <span class="profile-role">
+          {{ authService.usuarioActual()?.role === 'ADMIN' ? 'Administrador' : authService.usuarioActual()?.email }}
+        </span>
+      </div>
     </div>
 
     <nav class="sidebar-menu">
@@ -22,7 +46,10 @@
 
     <div class="sidebar-footer">
       <a routerLink="/home" class="btn-back">
-        <span class="icon">⬅️</span> Volver a la Tienda
+        <svg class="back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span>Volver a la Tienda</span>
       </a>
     </div>
   </aside>
@@ -31,7 +58,24 @@
   <main class="main-content">
     <header class="topbar">
       <h3>Panel de Control</h3>
-      <div class="user-badge">Administrador</div>
+
+      <!-- PÍLDORA DE USUARIO EN LA BARRA SUPERIOR (CLICKEABLE A MI PERFIL) -->
+      <a routerLink="/miperfil" class="topbar-user-pill" title="Ir a Mi Perfil para cambiar foto">
+        @if (authService.usuarioActual()?.fotoUrl) {
+          <img 
+            [src]="authService.usuarioActual()?.fotoUrl" 
+            [alt]="authService.usuarioActual()?.name" 
+            class="topbar-avatar"
+          />
+        } @else {
+          <span class="topbar-initials">
+            {{ obtenerIniciales(authService.usuarioActual()?.name) }}
+          </span>
+        }
+        <span class="topbar-username">
+          {{ authService.usuarioActual()?.name || 'Administrador' }}
+        </span>
+      </a>
     </header>
 
     <div class="page-body">

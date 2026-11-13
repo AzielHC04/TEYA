@@ -1,18 +1,11 @@
-
 import {
   Injectable,
   signal,
   PLATFORM_ID,
   inject
 } from '@angular/core';
-
-import {
-  isPlatformBrowser
-} from '@angular/common';
-
-import {
-  CartService
-} from './cart.service';
+import { isPlatformBrowser } from '@angular/common';
+import { CartService } from './cart.service';
 
 export interface UsuarioAutenticado {
   id: string;
@@ -21,6 +14,7 @@ export interface UsuarioAutenticado {
   role: string;
   apellidos?: string;
   telefono?: string;
+  fotoUrl?: string;
 }
 
 @Injectable({
@@ -31,27 +25,22 @@ export class AuthService {
   private platformId = inject(PLATFORM_ID);
   private cartService = inject(CartService);
 
-  // Estado reactivo de la cuenta actual.
   public usuarioActual = signal<UsuarioAutenticado | null>(
     this.obtenerUsuarioInicial()
   );
 
-  // Recuperar usuario guardado.
   private obtenerUsuarioInicial(): UsuarioAutenticado | null {
-
     if (!isPlatformBrowser(this.platformId)) {
       return null;
     }
 
     const guardado = localStorage.getItem('usuario');
-
     if (!guardado) {
       return null;
     }
 
     try {
       const usuario = JSON.parse(guardado);
-
       if (
         usuario &&
         typeof usuario === 'object' &&
@@ -59,41 +48,71 @@ export class AuthService {
         usuario.id &&
         usuario.email
       ) {
-        return usuario as UsuarioAutenticado;
+        return this.combinarConPerfilLocal(usuario as UsuarioAutenticado);
       }
-
     } catch (error) {
-      console.error(
-        'Error al recuperar usuario:',
-        error
-      );
+      console.error('Error al recuperar usuario:', error);
     }
 
     return null;
   }
 
+  // Combina los datos de sesión con la foto/perfil guardado localmente para ese correo
+  private combinarConPerfilLocal(usuario: UsuarioAutenticado): UsuarioAutenticado {
+    if (!isPlatformBrowser(this.platformId) || !usuario.email) {
+      return usuario;
+    }
+
+    try {
+      const clavePerfil = 'kabnia_perfil_' + encodeURIComponent(usuario.email.toLowerCase().trim());
+      const perfilGuardadoRaw = localStorage.getItem(clavePerfil);
+
+      if (perfilGuardadoRaw) {
+        const perfilGuardado = JSON.parse(perfilGuardadoRaw);
+        return {
+          ...usuario,
+          fotoUrl: perfilGuardado.fotoUrl || usuario.fotoUrl || '',
+          telefono: perfilGuardado.telefono || usuario.telefono
+        };
+      }
+    } catch {
+      // Si falla la lectura, devolvemos el usuario intacto
+    }
+
+    return usuario;
+  }
+
   // Iniciar sesión con la respuesta REAL del backend.
   login(usuario: UsuarioAutenticado): void {
+    const usuarioCompleto = this.combinarConPerfilLocal(usuario);
 
     if (isPlatformBrowser(this.platformId)) {
-
-      localStorage.setItem(
-        'usuario',
-        JSON.stringify(usuario)
-      );
-
-      // Evitar utilizar tokens anteriores
-      // que no pertenecen a esta autenticación.
+      localStorage.setItem('usuario', JSON.stringify(usuarioCompleto));
       localStorage.removeItem('token');
     }
 
-    // Actualización inmediata para el navbar.
-    this.usuarioActual.set(usuario);
+    this.usuarioActual.set(usuarioCompleto);
   }
 
-  // Cerrar sesión.
-  logout(): void {
+  // Actualizar datos del usuario en sesión
+  actualizarUsuario(datosParciales: Partial<UsuarioAutenticado>): void {
+    const actual = this.usuarioActual();
+    if (!actual) return;
 
+    const actualizado: UsuarioAutenticado = {
+      ...actual,
+      ...datosParciales
+    };
+
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('usuario', JSON.stringify(actualizado));
+    }
+
+    this.usuarioActual.set(actualizado);
+  }
+
+  // Cerrar sesión (no borra kabnia_perfil_<correo> para que tu foto siga ahí al volver)
+  logout(): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('usuario');
       localStorage.removeItem('token');
@@ -101,19 +120,13 @@ export class AuthService {
     }
 
     this.usuarioActual.set(null);
-
-    // Tu CartService actual utiliza un carrito local
-    // compartido, así que lo limpiamos al salir para
-    // que otra persona no vea esos productos.
     this.cartService.limpiarCarrito();
   }
 
-  // Consultar estado local.
   estaLogueado(): boolean {
     return this.usuarioActual() !== null;
   }
 
-  // Comprobar rol.
   esAdministrador(): boolean {
     return this.usuarioActual()?.role === 'ADMIN';
   }

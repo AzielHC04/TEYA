@@ -1,8 +1,19 @@
 <div class="profile-content-area">
-  <div class="section-header">
-    <span class="cuenta-label">MI CUENTA</span>
-    <h2>Mis Pedidos</h2>
-    <p>Consulta el estatus de tus compras actuales y el historial de tus adquisiciones en KABNIA.</p>
+  <div class="section-header-flex">
+    <div class="header-text">
+      <a routerLink="/miperfil" class="btn-volver-perfil">
+        Volver a mi perfil
+      </a>
+      <span class="cuenta-label">MI CUENTA</span>
+      <h2>Mis Pedidos</h2>
+      <p>Consulta el estatus de tus compras actuales y el historial de tus adquisiciones en KABNIA.</p>
+    </div>
+
+    <div class="header-actions">
+      <a routerLink="/products" class="btn-seguir-comprando">
+        Seguir comprando
+      </a>
+    </div>
   </div>
 
   @if (cargando) {
@@ -52,6 +63,9 @@
       } @empty {
         <div class="profile-card empty-card">
           <p>Aún no tienes ningún pedido registrado en la plataforma.</p>
+          <a routerLink="/products" class="btn-seguir-comprando empty-btn">
+            Explorar catálogo
+          </a>
         </div>
       }
     </div>

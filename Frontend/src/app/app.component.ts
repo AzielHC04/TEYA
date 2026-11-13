@@ -7,6 +7,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { ProductsComponent } from "./pages/products/products.component";
 import { CarritoComponent } from './pages/carrito/carrito.component';
 import { NosotrosComponent } from './pages/nosotros/nosotros.component';
+import { NotificacionModalComponent } from './shared/notificacion-modal/notificacion-modal.component';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +19,8 @@ import { NosotrosComponent } from './pages/nosotros/nosotros.component';
     HomeComponent, 
     ProductsComponent, 
     CarritoComponent, 
-    NosotrosComponent
+    NosotrosComponent,
+    NotificacionModalComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
